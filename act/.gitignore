@@ -27,3 +27,4 @@ database-debug.log
 firebase-debug.log
 firebase.json
 firestore-debug.log
+.firebase

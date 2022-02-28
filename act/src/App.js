@@ -11,8 +11,59 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { AccessAlarm, ThreeDRotation } from '@mui/icons-material';
+import React, { useState } from 'react';
+
+
+//1 Firebase config -----------------------------------------------------//
+// * Firebase imports and init
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged} from "firebase/auth";
+import SignInButton from './components/SignInButton';
+import SignOutButton from './components/SignOutButton';
+
+// https://firebase.google.com/docs/web/setup#available-libraries
+const firebaseConfig = {
+  apiKey: "AIzaSyBSCaZ13T9nckWzjRKfVlmgsMq7-S4xRBY",
+  authDomain: "act-dev-1.firebaseapp.com",
+  databaseURL: "https://act-dev-1-default-rtdb.firebaseio.com",
+  projectId: "act-dev-1",
+  storageBucket: "act-dev-1.appspot.com",
+  messagingSenderId: "729474256375",
+  appId: "1:729474256375:web:c58ef58fff165b233832f2",
+  measurementId: "G-T2S3H96TZN"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+var provider = new GoogleAuthProvider();
+const auth = getAuth(app);
+provider.setCustomParameters({
+  'hd': 'tamu.edu'
+});
+//1 ---------------------------------------------------------------------//
 
 function App() {
+  const [loggedIn, setLogIn] = useState(false);
+  const [user, setUser] = useState(false);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      setLogIn(true);
+      setUser(user);
+      // ...
+    } else {
+      // User is signed out
+      setLogIn(false);
+      setUser(false);
+    }
+  });
+
   return (
     <BrowserRouter>
 
@@ -25,6 +76,36 @@ function App() {
         <Route exact path="/login" element={<Login />}/>
       </Routes>
     </BrowserRouter>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          
+          Learn React
+        </a>
+        
+        {loggedIn ? (
+          <>
+            Logged in as {user.email}
+            <SignOutButton auth={auth} />
+          </>
+        ) : (
+          <>
+            Not logged in
+            <SignInButton auth={auth} provider={provider} />
+          </>
+        )}
+
+      </header>
+    </div>
   );
 }
 

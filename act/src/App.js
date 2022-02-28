@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Navbar from './comp/Navbar';
 import EditTrades from'./comp/EditTrades';
@@ -19,8 +18,8 @@ import React, { useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged} from "firebase/auth";
-import SignInButton from './components/SignInButton';
-import SignOutButton from './components/SignOutButton';
+import SignInButton from './comp/SignInButton';
+import SignOutButton from './comp/SignOutButton';
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 const firebaseConfig = {
@@ -75,23 +74,8 @@ function App() {
         <Route exact path="/edit-trades" element={<EditTrades />}/>
         <Route exact path="/login" element={<Login />}/>
       </Routes>
-    </BrowserRouter>
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          
-          Learn React
-        </a>
-        
+
+      <div className="App">
         {loggedIn ? (
           <>
             Logged in as {user.email}
@@ -104,8 +88,9 @@ function App() {
           </>
         )}
 
-      </header>
-    </div>
+      </div>
+    </BrowserRouter>
+
   );
 }
 

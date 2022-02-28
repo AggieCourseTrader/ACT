@@ -20,7 +20,8 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged} from "firebase/auth";
 import SignInButton from './comp/SignInButton';
 import SignOutButton from './comp/SignOutButton';
-
+import CourseSearchBox from './comp/CourseSearchBox';
+import { getFirestore } from 'firebase/firestore';
 // https://firebase.google.com/docs/web/setup#available-libraries
 const firebaseConfig = {
   apiKey: "AIzaSyBSCaZ13T9nckWzjRKfVlmgsMq7-S4xRBY",
@@ -35,6 +36,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
 
 var provider = new GoogleAuthProvider();
@@ -89,6 +91,8 @@ function App() {
         )}
 
       </div>
+
+      <CourseSearchBox db={db}/>
     </BrowserRouter>
 
   );

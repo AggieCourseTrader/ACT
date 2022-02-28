@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
+import {onAuthStateChanged, auth} from '../firebase-config'
 
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   const [count, setCount] = useState(0);
-
- // ALl javascript, functiosn, or fetchs to db will be up here
-
+  let navigate = useNavigate();
+  useEffect(() => {
+   onAuthStateChanged(auth, (user) => {
+     if (user) {
+        const uid = user.uid;
+     } else {
+       navigate("/")
+     }
+    });
+ 
+   }, [])
 
   return (
     <div>

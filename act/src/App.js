@@ -4,6 +4,7 @@ import EditTrades from'./comp/EditTrades';
 import MyTrades from  './comp/MyTrades';
 import Marketplace from './comp/Marketplace';
 import Login from './comp/Login';
+import Footer from './comp/Footer';
 import { BrowserRouter, Routes, Route,} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -78,7 +79,7 @@ function App() {
       <div className="App">
         {loggedIn ? (
           <>
-            Logged in as {user.email}
+            Logged in as {user.displayName}
             <SignOutButton auth={auth} />
           </>
         ) : (
@@ -89,6 +90,7 @@ function App() {
         )}
 
       </div>
+      <Footer/>
     </BrowserRouter>
 
   );

@@ -1,5 +1,4 @@
 import './App.css';
-import Navbar from './comp/Navbar';
 import EditTrades from'./comp/EditTrades';
 import MyTrades from  './comp/MyTrades';
 import Marketplace from './comp/Marketplace';
@@ -17,7 +16,6 @@ import React, { useState } from 'react';
 function App() {
   return (
     <BrowserRouter>
-      <Navbar/>
       <Routes>
         <Route exact path="/marketplace" element={<Marketplace />} />
         <Route exact path="/my-trades" element={<MyTrades />}/>

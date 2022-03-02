@@ -68,6 +68,4 @@ function MyTrades() {
   );
 }
 
-export default function Trades() {
-  return <MyTrades />;
-}
+export default MyTrades;

@@ -5,6 +5,9 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 // Generate Order Data
 function createData(id, dropCourse, addCourse) {
   return { id, dropCourse, addCourse };
@@ -36,11 +39,17 @@ export default function Orders() {
           <TableBody>
             {rows.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell>Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b></TableCell>
+                  <TableCell>
+                    Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b>
+                    <IconButton aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
             ))}
           </TableBody>
         </Table>
+
       </React.Fragment>
   );
 }

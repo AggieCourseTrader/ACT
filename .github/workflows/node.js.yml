@@ -32,7 +32,6 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - run: cd act
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test

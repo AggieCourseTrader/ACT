@@ -13,10 +13,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: act
 
     strategy:
       matrix:
@@ -26,7 +22,7 @@ jobs:
     steps:
     
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/cache@v2
+      uses: actions/setup-node@v2
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}

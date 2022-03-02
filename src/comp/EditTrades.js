@@ -10,13 +10,13 @@ function EditTrades() {
  useEffect(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-       const uid = user.uid;
+       // const uid = user.uid;
     } else {
       navigate("/")
     }
    });
 
-  }, [])
+  },/*removed dependency array*/)
 
 
   return (

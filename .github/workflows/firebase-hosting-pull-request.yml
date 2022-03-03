@@ -23,4 +23,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ACT_DEV_1 }}'
+          expires: 1d
           projectId: act-dev-1

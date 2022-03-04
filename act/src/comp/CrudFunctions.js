@@ -68,11 +68,12 @@ export async function addUser (email, displayName, oAuthId) {
 export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   
   // Get current time and convert from milliseconds to seconds
-  const date_ts = Date.now() / (10^3); 
+  const date_ts = (new Date()).getTime() / 1000; 
 
   const db_timestamp = new Timestamp(date_ts, 0);
 
   let tradeDoc;
+  let tradeRef;
 
   for (let i = 0; i < addCourseIds.length; i++) {
   
@@ -86,7 +87,10 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
       status: "requested"
     }
   
-    await addDoc(trades, tradeDoc);
+    tradeRef = await addDoc(trades, tradeDoc);
+    await updateDoc(tradeRef, {
+      trade_id: tradeRef.id
+    });
   }  
 }
 

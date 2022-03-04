@@ -1,13 +1,17 @@
 import * as React from 'react';
+import ChatIcon from '@mui/icons-material/Chat';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
+import IconButton from "@mui/material/IconButton";
+import {TableContainer} from "@mui/material";
+import {Link} from "react-router-dom";
 
 // Generate Order Data
 function createData(id, dropCourse, addCourse) {
-  return { id, dropCourse, addCourse };
+  return {id, dropCourse, addCourse};
 }
 
 const rows = [
@@ -28,19 +32,28 @@ const rows = [
   ),
 ];
 
-export default function Orders() {
+export default function MyMatches() {
   return (
       <React.Fragment>
         <Title>My Matches</Title>
-        <Table size="medium">
-          <TableBody>
-            {rows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b></TableCell>
-                </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <TableContainer>
+          <Table size="small">
+            <TableBody>
+              {rows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton component={Link} to="/messages">
+                        <ChatIcon/>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </React.Fragment>
   );
 }

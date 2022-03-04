@@ -24,8 +24,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // collections to be used in the functions
-const trades = collection(db, "trades")
-const users = collection(db, "users")
+const trades = collection(db, "trades");
+const users = collection(db, "users");
+const courses = collection(db, "courses");
 
 
 
@@ -63,6 +64,23 @@ export async function addUser (email, displayName, oAuthId) {
   } 
 }
 
+// Get all of the course sections with the given name
+export async function getCoursesByName(courseName) {
+
+  const q = query(courses, where("course", "==", courseName));
+  const receivedCourses = await getDocs(q);
+
+  return receivedCourses;  
+}
+
+// Get the course section with the given name
+export async function getCourseByCrn(crn) {
+
+  const q = query(courses, where("crn", "==", crn));
+  const receivedCourses = await getDocs(q);
+
+  return receivedCourses;  
+}
 
 // Creates a trade for each section the user can add with the user wanting to drop a certain course
 export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
@@ -94,8 +112,8 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   }  
 }
 
-// Get all trade entries for a user
-export async function readAllTrades(userId) {
+// Get all trades that a user created
+export async function getCreatedTrades(userId) {
 
   const q = query(trades, where("creatorID", "==", userId));
   const receivedTrades = await getDocs(q);
@@ -103,15 +121,22 @@ export async function readAllTrades(userId) {
   return receivedTrades;  
 }
 
+// Get all trades that a user matched with 
+export async function getMatchedTrades(userId) {
 
-// Get trade with a specific user and dropCourseId
-export async function getTrade(userId, dropCourseId) {
+  const q = query(trades, where("matchID", "==", userId));
+  const receivedTrades = await getDocs(q);
 
-  const q = query(trades, where("creatorID", "==", userId), where("dropClassID", "==", dropCourseId));
+  return receivedTrades;  
+}
+
+// Get the specific trade
+export async function getTrade(tradeId) {
+
+  const q = query(trades, where("trade_id", "==", tradeId));
   const receivedTrades = await getDocs(q);
 
   return receivedTrades;
-
 }
 
 
@@ -119,8 +144,6 @@ export async function getTrade(userId, dropCourseId) {
 export async function modifyTrade(tradeId, newDropCourseId, newAddCourseId) {
    
   const tradeRef = doc(db, "trades", tradeId);
-
-  // Set the "capital" field of the city 'DC'
   
   const updatedFields = {
     addClassID: newAddCourseId,

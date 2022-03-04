@@ -61,6 +61,7 @@ export async function addUser (email, displayName, oAuthId) {
     }
 
     const docRef = await addDoc(users, userDoc);
+    return docRef;
   } 
 }
 
@@ -93,6 +94,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   let tradeDoc;
   let tradeRef;
 
+  let tradeArray;
   for (let i = 0; i < addCourseIds.length; i++) {
   
     // All attributes except tradeId which is automatically generated
@@ -109,7 +111,11 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
     await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
+
+    tradeArray.push(tradeRef);
   }  
+  
+  return tradeArray;
 }
 
 // Get all trades that a user created

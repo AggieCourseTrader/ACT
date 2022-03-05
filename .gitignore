@@ -30,4 +30,5 @@ firebase.json
 firestore-debug.log
 ui-debug.log
 .firebase
-#package-lock.json
+.firebaserc
+package-lock.json

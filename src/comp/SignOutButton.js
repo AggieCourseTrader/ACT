@@ -1,9 +1,10 @@
 import { signOut } from "../firebase-config";
-import React, { useState } from 'react';
+import React from 'react';
+// import { useState } from 'react';
 
 
 function SignOutButton(props) {
-	const [auth, setAuth] = useState(props.auth);
+	// const [auth, setAuth] = useState(props.auth);
 
 
 	const signOutFunction = () => {

@@ -35,7 +35,7 @@ function Login() {
   });
   
   if (loggedIn) {
-    const newUser = addUser (user.email, user.displayName, user.uid);
+    addUser (user.email, user.displayName, user.uid);
   }
 
 

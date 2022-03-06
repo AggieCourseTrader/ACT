@@ -2,15 +2,11 @@
 //1 Firebase config -----------------------------------------------------//
 // * Firebase imports and init
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
-import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, query, where, setDoc, addDoc,
          getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
-import { firebaseConfig } from '../firebase-config';
+import { app } from '../firebase-config'
 
 
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // collections to be used in the functions

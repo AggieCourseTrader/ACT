@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+// import { useState } from 'react';
 
 function Navbar() {
   // Declare a new state variable, which we'll call "count"

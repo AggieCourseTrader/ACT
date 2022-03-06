@@ -21,14 +21,20 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 // collections to be used in the functions
 const trades = collection(db, "trades");
 const users = collection(db, "users");
 const courses = collection(db, "courses");
 
-
+// export {
+//   app,
+//   db,
+//   trades,
+//   users,
+//   courses
+// };
 
 // Adds given user to the user collection
 export async function addUser (email, displayName, oAuthId) {
@@ -70,7 +76,6 @@ export async function getCoursesByName(courseName) {
 
   const q = query(courses, where("course", "==", courseName));
   const receivedCourses = await getDocs(q);
-
   return receivedCourses;  
 }
 
@@ -79,8 +84,7 @@ export async function getCourseByCrn(crn) {
 
   const q = query(courses, where("crn", "==", crn));
   const receivedCourses = await getDocs(q);
-
-  return receivedCourses;  
+  return receivedCourses;
 }
 
 // Creates a trade for each section the user can add with the user wanting to drop a certain course

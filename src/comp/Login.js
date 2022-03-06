@@ -57,6 +57,7 @@ function Login() {
      // const uid = user.uid;
     // setLogIn(true);
      //setUser(user);
+     addUser (user.email, user.displayName, user.uid);
      navigate("/marketplace")
    } else {
      // User is signed out
@@ -71,9 +72,7 @@ function Login() {
   'hd': 'tamu.edu'
   });
   
-  if (loggedIn) {
-    addUser (user.email, user.displayName, user.uid);
-  }
+  
 
   /*{loggedIn ? (
     <>

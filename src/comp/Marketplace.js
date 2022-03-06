@@ -8,8 +8,8 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { Card, CardActions, CardContent, Button } from '@mui/material';
 import Navbar from './Navbar';
-import AddClassSelect from './AddClassSelect';
-import DropClassSelect from './DropClassSelect';
+// import AddClassSelect from './AddClassSelect';
+// import DropClassSelect from './DropClassSelect';
 import AddCourseSelect from './AddCourseSelect';
 import DropCourseSelect from './DropCourseSelect';
 function Marketplace() {

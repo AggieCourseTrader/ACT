@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { ConstructionOutlined } from '@mui/icons-material';
-import { Autocomplete, TextField, Box } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { getCourseByCrn, getCoursesByName } from './CrudFunctions';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+// import { ConstructionOutlined } from '@mui/icons-material';
+import { Autocomplete, TextField } from '@mui/material';
+// import Grid from '@mui/material/Grid';
+import { getCoursesByName } from './CrudFunctions';
+// import {createTheme} from '@mui/material/styles';
 
 //4 Structure ---------------------//
 
@@ -18,7 +18,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 // db (type: firestore db)
 
 
-const mdTheme = createTheme();
+// const mdTheme = createTheme();
 
 function CourseSearchBox({ db, selectionCallBack }) {
 	const [searchResults, setSearchResults] = useState([]);
@@ -28,6 +28,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	const [courseSelected, setCourseSelected] = useState(undefined);
 	const [sectionSelected, setSectionSelected] = useState('');
 
+	console.log(sectionSelected);
 	//* Updates search results whenever something is typed
 	useEffect(async () => {
 		let text = searchText;
@@ -60,7 +61,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 								match = false;
 								break;
 							}
-							if(c[i] != courseNumber[i]) {
+							if(c[i] !== courseNumber[i]) {
 								match = false;
 								break
 							}
@@ -130,7 +131,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 		setSectionSelected('');
 		setSectionResults([]);
 
-		if(courseSelected == undefined) {
+		if(courseSelected === undefined) {
 			return;
 		}
 		let arr = [];
@@ -149,10 +150,10 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				let day = t[0];
 				let times = t[1];
 				times.forEach((t) => {
-					if (t.substring(t.length - 3) == "LAB") {
+					if (t.substring(t.length - 3) === "LAB") {
 						labDays.push(day);
 						labTimes = t.substring(0, t.length - 4);
-					} else if (t.substring(t.length - 3) == "LEC") {
+					} else if (t.substring(t.length - 3) === "LEC") {
 						lecDays.push(day);
 						lecTimes = t.substring(0, t.length - 4);
 					} 
@@ -184,7 +185,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			let item = {
 				'section' : section.data().section,
 				'lec' : lecDays.join('') + " " + lecTimes + " LEC",
-				'lab' : (labDays == []) ? '' : labDays.join('') + " " + labTimes + " LAB"
+				'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB"
 			};
 			console.log(item);
 			arr.push(item);
@@ -204,7 +205,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 		
 
 				<Autocomplete
-				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name == v))}}
+				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
 				sx={{ width: 300 }}
 				// sx={{
 				// 	overflow: 'auto',
@@ -220,7 +221,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			
 
 				<Autocomplete
-				disabled={(courseSelected == undefined) ? true : false}
+				disabled={(courseSelected === undefined) ? true : false}
 				autoHighlight
 				onChange={(e, v) => {console.log(v)}}
 				

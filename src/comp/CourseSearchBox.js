@@ -23,7 +23,7 @@ import { getCoursesByName } from './CrudFunctions';
 function CourseSearchBox({ db, selectionCallBack }) {
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
-	const [queryCounter, setQueryCounter] = useState(0);
+	// const [queryCounter, setQueryCounter] = useState(0);
 	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState(undefined);
 	const [sectionSelected, setSectionSelected] = useState('');
@@ -38,7 +38,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			let courseNumber = text.replace(/\D*/g, '');
 			let arr = [];
 			console.log(courseText);
-			if(queryCounter > 20 || text.length < 2) {
+			if(text.length < 2) {
 				setSearchResults([]);
 				return;
 			}
@@ -125,11 +125,11 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				});
 			}
 			setSearchResults(arr);
-			setQueryCounter(queryCounter + 1);
+			// setQueryCounter(queryCounter + 1);
 		};
 
 		f();
-	}, [searchText]);
+	}, [searchText, db]);
 
 	//* Runs whenever a course is selected from the dropdown
 	useEffect(() => {
@@ -176,6 +176,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					else if(p.indexOf(x) > p.indexOf(y)) {
 						return 1;
 					}
+					return 0;
 				});
 	
 				lecDays.sort((x, y) => {
@@ -186,6 +187,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					else if(p.indexOf(x) > p.indexOf(y)) {
 						return 1;
 					}
+					return 0;
 				});
 	
 	
@@ -202,7 +204,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 		};
 
 		f();
-	}, [courseSelected]);
+	}, [courseSelected, db]);
 
 	// let getCourseList = async (text) => {
 		

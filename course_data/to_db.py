@@ -50,8 +50,30 @@ class Course:
             "meeting_times" : self.dates
         }
         
-
-
+class Major:
+    def __init__(self, name):
+        self.name = name
+        self.keywords = [name[:i] for i in range(1, len(name) + 1)]
+        self.courses = []
+        self.map = {}
+        pass
+    
+    def addCourse(self, course):
+        course_number = course.course.split(' ')[1]
+        
+        if(course_number not in self.map):
+            self.courses.append(course_number)
+            self.map[course_number] = [course.crn]
+        else:
+            self.map[course_number].append(course.crn)
+            
+    def getDict(self):
+        return {
+            u"name" : self.name,
+            u"keywords" : self.keywords,
+            u"courses" : self.courses,
+            u"course_map" : self.map
+        }
 class Group:
     def __init__(self, course_id):
         self.course_id = course_id
@@ -61,6 +83,7 @@ def parse_data(file, col_ref):
     with open(file) as f:
         csv_reader = csv.reader(f)
         courseData = {}
+        majors = {}
         first = True
         for row in csv_reader:
             if(first):
@@ -71,8 +94,14 @@ def parse_data(file, col_ref):
             courseData[row[2]].add(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
         for crn, course in courseData.items():
-            col_ref.add(course.getDict())
-        
+            major = course.course.split(' ')[0]
+            if(major not in majors):
+                majors[major] = Major(major)
+            majors[major].addCourse(course)
+
+        print("o")
+        for majorName, major in majors.items():
+            col_ref.add(major.getDict())
 
 def main():
     file = "C:/Users/user/Documents/sem6/act-practice-1/ACT/act/course_data/Spring 2022.csv"
@@ -82,7 +111,7 @@ def main():
     db = firestore.client()
     
 
-    col_ref = db.collection(u'courses')
+    col_ref = db.collection(u'majors')
 
     parse_data(file, col_ref)
 

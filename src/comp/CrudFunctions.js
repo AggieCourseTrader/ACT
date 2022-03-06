@@ -60,7 +60,7 @@ export async function addUser (email, displayName, oAuthId) {
       oAuthID: oAuthId
     }
 
-    const docRef = await addDoc(users, userDoc);
+    const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
     return docRef;
   } 
 }
@@ -78,12 +78,13 @@ export async function getCoursesByName(courseName) {
 export async function getCourseByCrn(crn) {
 
   const q = query(courses, where("crn", "==", crn));
-  const receivedCourses = await getDocs(q);
+  const receivedCourse = await getDocs(q);
 
-  return receivedCourses;  
+  return receivedCourse;  
 }
 
 // Creates a trade for each section the user can add with the user wanting to drop a certain course
+// Returns array of trade document references
 export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   
   // Get current time and convert from milliseconds to seconds
@@ -94,7 +95,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   let tradeDoc;
   let tradeRef;
 
-  let tradeArray;
+  let tradeArray = [];
   for (let i = 0; i < addCourseIds.length; i++) {
   
     // All attributes except tradeId which is automatically generated
@@ -142,12 +143,33 @@ export async function getTrade(tradeId) {
   const q = query(trades, where("trade_id", "==", tradeId));
   const receivedTrades = await getDocs(q);
 
+  let tradeRef; 
+
+  if (!receivedTrades.empty) {
+    receivedTrades.forEach((doc) => {
+      tradeRef = doc;
+    });
+
+    return tradeRef;
+  }
+
+  else {
+    console.log("No trade with the given ID");
+    return null;
+  }
+}
+
+// Get trades with a specific section being dropped
+export async function getTrades(dropCourseId) {
+
+  const q = query(trades, where("dropClassID", "==", dropCourseId));
+  const receivedTrades = await getDocs(q);
+
   return receivedTrades;
 }
 
-
 // Modifies the given trade with a new dropCourseId, addDropCourseId, or both
-export async function modifyTrade(tradeId, newDropCourseId, newAddCourseId) {
+export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
    
   const tradeRef = doc(db, "trades", tradeId);
   
@@ -156,7 +178,23 @@ export async function modifyTrade(tradeId, newDropCourseId, newAddCourseId) {
     dropClassID: newDropCourseId,
   }
 
-  await updateDoc(tradeRef, updatedFields);
+  tradeRef = await updateDoc(tradeRef, updatedFields);
+  return tradeRef;
+}
+
+// Updates the given trade with the matched user id
+export async function updateTradeMatch(tradeId, matchedUserId) {
+   
+  const tradeRef = doc(db, "trades", tradeId);
+  
+  const updatedFields = {
+    matchID: matchedUserId,
+    status: "matched"
+  }
+
+  const updateRef = await updateDoc(tradeRef, updatedFields);
+  return updateRef;
+
 }
 
 // Deletes the trade with the given tradeId
@@ -164,7 +202,6 @@ export async function deleteTrade(tradeId) {
 
   const tradeRef = doc(db, "trades", tradeId);
   await deleteDoc(tradeRef);
-
 }
 
 

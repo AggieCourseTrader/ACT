@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import SignInButton from './SignInButton';
 import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
+import { addUser } from './CrudFunctions' 
+
+
 // import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -30,6 +33,10 @@ function Login() {
   provider.setCustomParameters({
   'hd': 'tamu.edu'
   });
+  
+  if (loggedIn) {
+    const newUser = addUser (user.email, user.displayName, user.uid);
+  }
 
 
   return (

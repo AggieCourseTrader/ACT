@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
+//import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -40,8 +40,8 @@ const useStyles = makeStyles({
 function Login() {
  // ALl javascript, functiosn, or fetchs to db will be up here
 
- const [loggedIn, setLogIn] = useState(false);
- const [user, setUser] = useState(false);
+// const [loggedIn, setLogIn] = useState(false);
+ //const [user, setUser] = useState(false);
  const navigate = useNavigate();
  const classes = useStyles();
 
@@ -50,9 +50,9 @@ function Login() {
      // User is signed in, see docs for a list of available properties
      // https://firebase.google.com/docs/reference/js/firebase.User
      // const uid = user.uid;
-     setLogIn(true);
-     setUser(user);
-     //navigate("/marketplace")
+    // setLogIn(true);
+     //setUser(user);
+     navigate("/marketplace")
    } else {
      // User is signed out
      setLogIn(false);

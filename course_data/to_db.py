@@ -50,6 +50,7 @@ class Course:
             "meeting_times" : self.dates
         }
         
+
 class Major:
     def __init__(self, name):
         self.name = name
@@ -74,6 +75,8 @@ class Major:
             u"courses" : self.courses,
             u"course_map" : self.map
         }
+
+
 class Group:
     def __init__(self, course_id):
         self.course_id = course_id

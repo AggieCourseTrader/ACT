@@ -1,5 +1,6 @@
 import { signInWithPopup } from "../firebase-config"
 // import { GoogleAuthProvider } from "../firebase-config"
+import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 
 function SignInButton(props) {
@@ -33,7 +34,12 @@ function SignInButton(props) {
 	}
 
 	return (
-	  <button onClick={signIn}>Sign In</button>
+		<Button variant="contained" size="large" onClick={signIn}
+	  	sx={{height: "50px", width:"250px", background: "#FFFFFF", color: "#500000", "&.MuiButtonBase-root:hover": {
+			bgcolor: "#d1d1d1"
+		  }}}>
+		  Get Trading
+		</Button>
 	)
 }
 export default SignInButton

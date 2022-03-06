@@ -2,22 +2,12 @@
 //1 Firebase config -----------------------------------------------------//
 // * Firebase imports and init
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, doc, query, where, setDoc, addDoc,
          getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { firebaseConfig } from '../firebase-config';
 
 
-// https://firebase.google.com/docs/web/setup#available-libraries
-const firebaseConfig = {
-  apiKey: "AIzaSyBSCaZ13T9nckWzjRKfVlmgsMq7-S4xRBY",
-  authDomain: "act-dev-1.firebaseapp.com",
-  databaseURL: "https://act-dev-1-default-rtdb.firebaseio.com",
-  projectId: "act-dev-1",
-  storageBucket: "act-dev-1.appspot.com",
-  messagingSenderId: "729474256375",
-  appId: "1:729474256375:web:c58ef58fff165b233832f2",
-  measurementId: "G-T2S3H96TZN"
-};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

@@ -1,6 +1,5 @@
 import React from 'react';
 import SignInButton from './SignInButton';
-//import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
 import { addUser } from './CrudFunctions' 
 
@@ -71,21 +70,6 @@ function Login() {
   provider.setCustomParameters({
   'hd': 'tamu.edu'
   });
-  
-  
-
-  /*{loggedIn ? (
-    <>
-    Logged in as {user.email}
-    <SignOutButton auth={auth} />
-  </>
-) : (
-  <>
-    Must sign in with TAMU email before able to use application
-    <SignInButton auth={auth} provider={provider} />
-  </>
-)}*/
-
 
   return (
     <div>

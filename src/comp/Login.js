@@ -55,8 +55,9 @@ function Login() {
      navigate("/marketplace")
    } else {
      // User is signed out
-     setLogIn(false);
-     setUser(false);
+     //setLogIn(false);
+     //setUser(false);
+     console.log("fail");
    }
  });
 

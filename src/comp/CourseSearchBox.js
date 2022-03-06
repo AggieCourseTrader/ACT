@@ -202,16 +202,14 @@ function CourseSearchBox({ db, selectionCallBack }) {
 		<>
 		
 		
-		<Grid container spacing={2}>
 
-			<Grid item xs>
 				<Autocomplete
 				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name == v))}}
-				// sx={{ width: 300 }}
-				sx={{
-					overflow: 'auto',
-					flexGrow : 1
-				}}
+				sx={{ width: 300 }}
+				// sx={{
+				// 	overflow: 'auto',
+				// 	flexGrow : 1
+				// }}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -219,23 +217,23 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				renderInput={(params) => <TextField {...params} onChange = {(e) => {setSearchText(e.target.value)}} label="Search a course" />}
 			
 				/>
-			</Grid>
+			
 
-			<Grid item xs>
 				<Autocomplete
 				disabled={(courseSelected == undefined) ? true : false}
 				autoHighlight
 				onChange={(e, v) => {console.log(v)}}
 				
-				sx={{
-					backgroundColor: (theme) =>
-						theme.palette.mode === 'light'
-							? theme.palette.grey[100]
-							: theme.palette.grey[900],
-					flexGrow: 1,
-					width : 300,
-					overflow: 'auto',
-				}}
+				sx = {{width : 300}}
+				// sx={{
+				// 	backgroundColor: (theme) =>
+				// 		theme.palette.mode === 'light'
+				// 			? theme.palette.grey[100]
+				// 			: theme.palette.grey[900],
+				// 	flexGrow: 1,
+				// 	width : 300,
+				// 	overflow: 'auto',
+				// }}
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
@@ -246,8 +244,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				// )}
 				renderInput={(params) => <TextField {...params} label="Select a section" />}
 				/>
-			</Grid>
-		</Grid>
+
 		
 
 

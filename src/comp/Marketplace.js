@@ -35,8 +35,9 @@ function Marketplace() {
       <div style = {{marginTop: 80, marginLeft: 10, marginRight: 10}}>
         <Box>
             <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
-              <AddClassSelect/>
-              <DropClassSelect/>
+              <CourseSearchBox db={db} />
+              {/* <AddClassSelect/>
+              <DropClassSelect/> */}
             </Box>
             <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
               <AddCourseSelect/>

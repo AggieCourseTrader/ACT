@@ -1,9 +1,9 @@
 
 //1 Firebase config -----------------------------------------------------//
 // * Firebase imports and init
-import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
+//import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, doc, query, where, setDoc, addDoc, getDoc,
+import { getFirestore, collection, doc, query, where, setDoc, addDoc,
          getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
 
 
@@ -178,8 +178,8 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
     dropClassID: newDropCourseId,
   }
 
-  tradeRef = await updateDoc(tradeRef, updatedFields);
-  return tradeRef;
+  const tradeUpdateRef = await updateDoc(tradeRef, updatedFields);
+  return tradeUpdateRef;
 }
 
 // Updates the given trade with the matched user id

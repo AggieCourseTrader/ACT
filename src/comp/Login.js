@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SignInButton from './SignInButton';
 //import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";

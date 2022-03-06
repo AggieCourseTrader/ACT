@@ -2,6 +2,11 @@ import React from 'react';
 import SignInButton from './SignInButton';
 //import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
+import { addUser } from './CrudFunctions' 
+
+
+// import { useNavigate } from "react-router-dom";
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from "react-router-dom";
@@ -52,6 +57,7 @@ function Login() {
      // const uid = user.uid;
     // setLogIn(true);
      //setUser(user);
+     addUser (user.email, user.displayName, user.uid);
      navigate("/marketplace")
    } else {
      // User is signed out
@@ -65,6 +71,8 @@ function Login() {
   provider.setCustomParameters({
   'hd': 'tamu.edu'
   });
+  
+  
 
   /*{loggedIn ? (
     <>

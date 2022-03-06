@@ -1,17 +1,49 @@
 import React from 'react';
 // import { useState } from 'react';
+import PageMenu from './Navbar_PageMenu'
+import UserMenu from './Navbar_UserMenu'
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import {makeStyles} from '@mui/styles';
 
-function Navbar() {
-  // Declare a new state variable, which we'll call "count"
+const useStyles = makeStyles(() => ({
+  header: {
+      backgroundColor: "#FFFFFF !important",
+      // marginBottom: "3%",
+  },
+  logo: {
+      color: "#500000",
+      fontWeight: "bold",
+  },
+  toolbar: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+}));
 
- // ALl javascript, functiosn, or fetchs to db will be up here
+export default function Navbar(props) {
+    const {header, logo,toolbar} = useStyles();
 
+    const displayDesktop = () => {
+      return (
+        <div>
+          <Toolbar className = {toolbar}>
+            <PageMenu name = {props.name} justifyContent = "flex-start"/>
+            {courseTraderLogo}
+            <UserMenu name = {props.user.displayName} auth = {props.auth}/>
+          </Toolbar>
+        </div>
+        );
+    };
 
-  return (
-    <div>
-     <h1>future nav</h1>
-    </div>
-  );
-}
+    const courseTraderLogo = (
+        <Typography variant = "h4" align = "center" className = {logo}>
+            Aggie Course Trader
+        </Typography>
+    )
 
-export default Navbar;
+    return (
+      <header>
+        <AppBar className = {header}>{displayDesktop()}</AppBar>
+      </header>
+    );
+  }

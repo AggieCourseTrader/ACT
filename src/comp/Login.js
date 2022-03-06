@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import SignInButton from './SignInButton';
-import SignOutButton from './SignOutButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
 // import { useNavigate } from "react-router-dom";
 
@@ -38,7 +37,6 @@ function Login() {
         {loggedIn ? (
           <>
             Logged in as {user.email}
-            <SignOutButton auth={auth} />
           </>
         ) : (
           <>

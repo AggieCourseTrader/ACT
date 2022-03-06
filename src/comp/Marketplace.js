@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../firebase-config'
+import CourseSearchBox  from './CourseSearchBox'
+import { db } from './CrudFunctions'
+
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { Card, CardActions, CardContent, Button } from '@mui/material';
 import Navbar from './Navbar';
-import AddClassSelect from './AddClassSelect';
-import DropClassSelect from './DropClassSelect';
+// import AddClassSelect from './AddClassSelect';
+// import DropClassSelect from './DropClassSelect';
 import AddCourseSelect from './AddCourseSelect';
 import DropCourseSelect from './DropCourseSelect';
 function Marketplace() {
@@ -32,8 +35,9 @@ function Marketplace() {
       <div style = {{marginTop: 80, marginLeft: 10, marginRight: 10}}>
         <Box>
             <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
-              <AddClassSelect/>
-              <DropClassSelect/>
+              <CourseSearchBox db={db} />
+              {/* <AddClassSelect/>
+              <DropClassSelect/> */}
             </Box>
             <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
               <AddCourseSelect/>

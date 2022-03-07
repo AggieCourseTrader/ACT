@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { onAuthStateChanged, auth } from '../firebase-config'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -17,14 +17,13 @@ const mdTheme = createTheme();
 
 function MyTrades() {
 
-  // const [count, setCount] = useState(0);
-
   let navigate = useNavigate();
+  const [user, setUser] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // const uid = user.uid;
+        setUser(user);
       } else {
         navigate("/")
       }
@@ -34,7 +33,8 @@ function MyTrades() {
 
   return (
       <div>
-        <Navbar/>
+        <Navbar name="My Trades" auth={auth} user={user}/>
+        <div style = {{marginTop: 80}}>
         <ThemeProvider theme={mdTheme}>
           <Box sx={{display: 'flex'}}>
             <CssBaseline/>
@@ -89,6 +89,7 @@ function MyTrades() {
             </Box>
           </Box>
         </ThemeProvider>
+        </div>
         <Footer/>
       </div>
   );

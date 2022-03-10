@@ -9,13 +9,14 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-// import { AccessAlarm, ThreeDRotation } from '@mui/icons-material';
 import React from 'react';
-// import useState from 'react';
+import {theme} from './assets/theme';
+import {ThemeProvider } from '@mui/material/styles';
 
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <BrowserRouter>
       <Routes>
         <Route exact path="/marketplace" element={<Marketplace />} />
@@ -25,7 +26,7 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
-
+    </ThemeProvider>
   );
 }
 

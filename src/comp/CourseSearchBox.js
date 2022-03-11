@@ -4,8 +4,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { Autocomplete, TextField } from '@mui/material';
 // import Grid from '@mui/material/Grid';
 import { getCoursesByName } from './CrudFunctions';
-import { toHaveDisplayValue } from '@testing-library/jest-dom/dist/matchers';
-import { render } from '@testing-library/react';
+
 // import {createTheme} from '@mui/material/styles';
 
 //4 Structure ---------------------//

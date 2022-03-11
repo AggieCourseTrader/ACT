@@ -217,7 +217,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 				<Autocomplete
 				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
-				sx={{ width: 300, background: '#ffffff' }}
+				sx={{ width: 300, background: '#fffffa' }}
 				// sx={{
 				// 	overflow: 'auto',
 				// 	flexGrow : 1

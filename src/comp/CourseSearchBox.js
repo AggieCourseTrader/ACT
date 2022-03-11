@@ -4,6 +4,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { Autocomplete, TextField } from '@mui/material';
 // import Grid from '@mui/material/Grid';
 import { getCoursesByName } from './CrudFunctions';
+import { toHaveDisplayValue } from '@testing-library/jest-dom/dist/matchers';
+import { render } from '@testing-library/react';
 // import {createTheme} from '@mui/material/styles';
 
 //4 Structure ---------------------//
@@ -190,17 +192,18 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					return 0;
 				});
 	
-	
+				
 				let item = {
 					'section' : section.data().section,
-					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
-					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB"
+					'lec' : (lecDays.length === 0) ? '' : lecDays.join('') + " " + lecTimes + " LEC",
+					'lab' : (labDays.length === 0) ? '' : labDays.join('') + " " + labTimes + " LAB"
 				};
 				console.log(item);
 				arr.push(item);
 			});
 	
 			setSectionResults(arr);
+			console.log(sectionResults);
 		};
 
 		f();
@@ -217,7 +220,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 				<Autocomplete
 				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
-				sx={{ width: 300, background: '#fffffa' }}
+				sx={{ width: 300 }}
 				// sx={{
 				// 	overflow: 'auto',
 				// 	flexGrow : 1
@@ -234,6 +237,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
 					autoHighlight
+					openOnFocus
 				onChange={(e, v) => {console.log(v)}}
 				
 				sx = {{width : 300,  background: '#ffffff' }}
@@ -249,19 +253,37 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
-				options={sectionResults.map((x) => x.section)}
-				// getOptionLabel={(option) => option.section || ""}
-				// renderOption={(option) => (
-				// 	<li>{option.section}</li>
-				// )}
+				// options={sectionResults.map((x) => x.section)}
+
+				options={sectionResults}
+
+				getOptionLabel={(option) => option.section}
+				renderOption={(props, option) => (
+					renderSection(props, option)
+				)}
+
 				renderInput={(params) => <TextField {...params} label="Select a section" />}
 				/>
 
 		
 
-
 		</>		
 	)
+}
+
+function renderSection(props, option) {
+	let sectionDiv = <div style={{float: "left", width: "10%"}}>{option.section}</div>
+	let timeDiv = <div style={{marginLeft : "10%", width: "90%"}}><li style={{textAlign: "right", fontSize: "0.75em"}}>{option.lec}</li> <li  style={{textAlign: "right", fontSize: "0.75em"}}>{option.lab}</li></div>
+	let parentDiv = <div {...props} style={{
+		width: "100%",
+		height: "3em",
+		overflow: "hidden"
+	}}>
+		{sectionDiv}{timeDiv}
+	</div>
+
+
+	return parentDiv;
 }
 
 

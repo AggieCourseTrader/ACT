@@ -202,7 +202,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			});
 	
 			setSectionResults(arr);
-			console.log(sectionResults);
+			// console.log(sectionResults);
 		};
 
 		f();

@@ -1,7 +1,7 @@
 import React from 'react';
 import SignInButton from './SignInButton';
-import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
-import { addUser } from './CrudFunctions' 
+import { auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";
+import { addUser } from '../dbFunctions/CrudFunctions' 
 
 
 // import { useNavigate } from "react-router-dom";

@@ -3,7 +3,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 // import { ConstructionOutlined } from '@mui/icons-material';
 import { Autocomplete, TextField } from '@mui/material';
 // import Grid from '@mui/material/Grid';
-import { getCoursesByName } from './CrudFunctions';
+import { getCoursesByName } from '../dbFunctions/CrudFunctions';
 
 // import {createTheme} from '@mui/material/styles';
 
@@ -240,7 +240,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					openOnFocus
 				onChange={(e, v) => {console.log(v)}}
 				
-				sx = {{width : 300,  background: '#ffffff', marginLeft: "1em" }}
+				sx = {{width : "20em", midWidth : "12em", marginLeft: "1em", float : "right" }}
 
 				
 				id="course-search-box"

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signOut } from "../firebase-config";
+import { signOut } from "../../../firebase-config";
 import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';

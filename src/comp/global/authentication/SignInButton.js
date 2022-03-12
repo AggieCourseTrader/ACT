@@ -1,4 +1,4 @@
-import { signInWithPopup } from "../firebase-config"
+import { signInWithPopup } from "../../../firebase-config"
 // import { GoogleAuthProvider } from "../firebase-config"
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';

@@ -1,9 +1,9 @@
 import './App.css';
-import EditTrades from'./comp/EditTrades';
-import MyTrades from  './comp/MyTrades';
-import Marketplace from './comp/Marketplace';
-import Login from './comp/Login';
-import PageNotFound from './comp/PageNotFound';
+import EditTrades from'./comp/trades/EditTrades';
+import MyTrades from  './comp/trades/MyTrades';
+import Marketplace from './comp/marketplace/Marketplace';
+import Login from './comp/global/authentication/Login';
+import PageNotFound from './comp/global/PageNotFound';
 import { BrowserRouter, Routes, Route,} from "react-router-dom";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

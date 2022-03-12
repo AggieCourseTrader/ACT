@@ -4,7 +4,7 @@
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
 import { getFirestore, collection, doc, query, where, setDoc, addDoc,
          getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
-import { app } from '../firebase-config'
+import { app } from '../../../firebase-config'
 
 
 // // https://firebase.google.com/docs/web/setup#available-libraries

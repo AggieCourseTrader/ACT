@@ -15,6 +15,8 @@ import { getCoursesByName } from './CrudFunctions';
 //				if selected then call selectionCallBack
 //4 -------------------------------//
 
+
+
 //? Params: Input =>
 // db (type: firestore db)
 
@@ -219,11 +221,10 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 				<Autocomplete
 				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
-				sx={{ width: 300 }}
-				// sx={{
-				// 	overflow: 'auto',
-				// 	flexGrow : 1
-				// }}
+				sx={{ width: "12em",
+				minWidth: "12em", 
+				marginLeft : "1em" }}
+
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -239,16 +240,8 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					openOnFocus
 				onChange={(e, v) => {console.log(v)}}
 				
-				sx = {{width : 300,  background: '#ffffff' }}
-				// sx={{
-				// 	backgroundColor: (theme) =>
-				// 		theme.palette.mode === 'light'
-				// 			? theme.palette.grey[100]
-				// 			: theme.palette.grey[900],
-				// 	flexGrow: 1,
-				// 	width : 300,
-				// 	overflow: 'auto',
-				// }}
+				sx = {{width : 300,  background: '#ffffff', marginLeft: "1em" }}
+
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
@@ -275,7 +268,7 @@ function renderSection(props, option) {
 	let timeDiv = <div style={{marginLeft : "10%", width: "90%"}}><li style={{textAlign: "right", fontSize: "0.75em"}}>{option.lec}</li> <li  style={{textAlign: "right", fontSize: "0.75em"}}>{option.lab}</li></div>
 	let parentDiv = <div {...props} style={{
 		width: "100%",
-		height: "3em",
+		minHeight: "3em",
 		overflow: "hidden"
 	}}>
 		{sectionDiv}{timeDiv}

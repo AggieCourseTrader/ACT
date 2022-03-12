@@ -29,11 +29,30 @@ function Marketplace() {
       <Navbar name = "Trade Markteplace" auth={auth} user={user}/>
       <Box sx={{ flexGrow: 1, height: '80vh', background: '#f6f6f6'}}>
         <Box sx={{ flexGrow: 1}}>
-            <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
+            <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
+
+              <Typography sx = {{
+                fontSize : "4vmin",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                color : "#525252"
+              }}>I want a spot in </Typography>
+
               <CourseSearchBox db={db} />
+
             </Box>
-            <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
-                <CourseSearchBox db={db} />
+            <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
+
+            <Typography sx = {{
+                fontSize : "4vmin",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                color : "#525252"
+              }}>I can drop </Typography>
+
+              <CourseSearchBox db={db} />
             </Box>
           </Box>
           <Box sx = {{

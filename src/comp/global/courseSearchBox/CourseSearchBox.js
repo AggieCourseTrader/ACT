@@ -15,7 +15,17 @@ import { getCoursesByName } from '../dbFunctions/CrudFunctions';
 //				if selected then call selectionCallBack
 //4 -------------------------------//
 
+const csb = { width: "12em", minWidth: "12em", marginLeft : "1em" };
 
+const ssb = { width : "20em", midWidth : "12em", marginLeft: "1em", float : "right" };
+
+const rsParentDiv = { width: "100%", minHeight: "3em", overflow: "hidden"};
+
+const rsSectionDiv = {float: "left", width: "10%"};
+
+const rsTimeDiv = {marginLeft : "10%", width: "90%"};
+
+const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 
 //? Params: Input =>
 // db (type: firestore db)
@@ -221,9 +231,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 				<Autocomplete
 				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
-				sx={{ width: "12em",
-				minWidth: "12em", 
-				marginLeft : "1em" }}
+				sx={csb}
 
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
@@ -240,7 +248,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					openOnFocus
 				onChange={(e, v) => {console.log(v)}}
 				
-				sx = {{width : "20em", midWidth : "12em", marginLeft: "1em", float : "right" }}
+				sx = {ssb}
 
 				
 				id="course-search-box"
@@ -264,13 +272,9 @@ function CourseSearchBox({ db, selectionCallBack }) {
 }
 
 function renderSection(props, option) {
-	let sectionDiv = <div style={{float: "left", width: "10%"}}>{option.section}</div>
-	let timeDiv = <div style={{marginLeft : "10%", width: "90%"}}><li style={{textAlign: "right", fontSize: "0.75em"}}>{option.lec}</li> <li  style={{textAlign: "right", fontSize: "0.75em"}}>{option.lab}</li></div>
-	let parentDiv = <div {...props} style={{
-		width: "100%",
-		minHeight: "3em",
-		overflow: "hidden"
-	}}>
+	let sectionDiv = <div style={rsSectionDiv}>{option.section}</div>
+	let timeDiv = <div style={rsTimeDiv}><li style={rsTimeDivLi}>{option.lec}</li> <li  style={rsTimeDivLi}>{option.lab}</li></div>
+	let parentDiv = <div {...props} style={rsParentDiv}>
 		{sectionDiv}{timeDiv}
 	</div>
 

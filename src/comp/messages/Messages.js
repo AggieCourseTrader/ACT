@@ -14,6 +14,8 @@ import {
   Avatar,
   Conversation
 } from "@chatscope/chat-ui-kit-react";
+import { previews } from 'firebase-tools/lib/previews';
+import { NextPlan } from '@mui/icons-material';
 
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';

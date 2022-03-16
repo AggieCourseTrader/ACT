@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, onSnapshot, query, where, getDoc, doc, arrayUnion, serverTimestamp, increment, setDoc, updateDoc, addDoc, Firestore, orderBy} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, onSnapshot, query, where, getDoc, doc, arrayUnion, serverTimestamp, Timestamp, increment, setDoc, updateDoc, addDoc, Firestore, orderBy} from 'firebase/firestore';
 import { React } from 'react'
 import { app } from '../../firebase-config'
 
@@ -9,11 +9,36 @@ import { app } from '../../firebase-config'
 //TODO: Typing indicator
 //TODO: Restrictions to number of messages or size of messages
 
+
+export class IConversation {
+    constructor(user, setConversations) {
+        this.user = user;
+        this.oAuthId = user.uid;
+        this.db = getFirestore(app);
+
+
+        this.myDoc = doc(this.db, "messageStatus", this.oAuthId);
+
+        this.newConversation = onSnapshot(this.myDoc, (data) => {
+            console.log("Active conversations");
+            console.log(data.data());
+            setConversations(data.data());
+        });
+    }
+
+    unSub() {
+        this.newConversation();
+    }
+}
 export class IMessage {
 
-    constructor(oAuthId, receiver, setMessages) {
+    constructor(user, receiver, setMessages) {
+        let oAuthId = user.uid;
+        this.user = user;
+        console.log("Listening for messages from : " + receiver);
         this.db = getFirestore(app);
         this.oAuthId = oAuthId;
+        this.receiver = receiver;
         this.messageId = (oAuthId.localeCompare(receiver)) ? oAuthId + receiver : receiver + oAuthId;
 
         // Document to notify receiver that we sent them a message
@@ -21,13 +46,14 @@ export class IMessage {
         // Will contain messages from chat
         this.messageLoc = collection(this.db, "messages", this.messageId, "list");
 
+        this.called = 0;
 
         // We want to subscribe to the message stream from this user
-        const newMessage = onSnapshot(query(this.messageLoc, orderBy("timestamp")), (snapshot) => {
+        this.newMessage = onSnapshot(query(this.messageLoc, orderBy("timestamp")), (snapshot) => {
+            this.called += 1;
             let arr = [];
             snapshot.forEach((d) => arr.push(d.data()));
-            console.log("Here;");
-            // setMessages(arr);
+            setMessages(arr);
         });
 
     }
@@ -42,11 +68,15 @@ export class IMessage {
         });
 
         // Notify other user of text
-        const g = "unreadmessages." + this.oAuthId;
-
+        const g = "unreadMessages." + this.oAuthId;
         await updateDoc(this.receiverDoc, {
             [g] : increment(1)
         });
+    }
+
+    unSub() {
+        this.newMessage();
+        console.log("Unsubbed");
     }
 
 }

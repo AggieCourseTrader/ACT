@@ -13,8 +13,6 @@ import '@fontsource/roboto/700.css';
 import { React, useState } from 'react';
 import {theme} from './assets/theme';
 import {ThemeProvider } from '@mui/material/styles';
-import { UserDisconnectedEvent } from '@chatscope/use-chat';
-
 
 
 function App() {

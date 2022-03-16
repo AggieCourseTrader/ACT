@@ -1,4 +1,4 @@
-import {React, useEffect, useState} from 'react';
+import {React, useEffect, useRef, useState} from 'react';
 import { IMessage} from './MessagesHelper';
 import styles from "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
@@ -15,30 +15,33 @@ import {
   Avatar,
   Conversation
 } from "@chatscope/chat-ui-kit-react";
+import { previews } from 'firebase-tools/lib/previews';
+import { NextPlan } from '@mui/icons-material';
 
 function Messages({userId}) {
-    const [conversationArr, setConversationArr] = useState([]);
     const [messageArr, setMessageArr] = useState([]);
     const [text, setText]  = useState('');
 
-    
-
-
-    // const mHelper = new MessageHelper(userId);
+    const messageHelper = useRef(false);
 
     useEffect(() => {
-        // mMessage.sendMessage(text);
-        console.log("hi there;")
+        messageHelper.current = new IMessage(userId, "NIwuHQlzkBbRSAFmqjsz1T3GUxm2", setMessageArr)
+        return () => {
+            messageHelper.current.unSub();
+        }
+    }, [userId]);
+
+    useEffect(() => {
+        if(text === "") {
+            return;
+        }
+        console.log("Sending text : " + text);
+        messageHelper.current.sendMessage(text);
     }, [text]);
 
-    //! We have to update conversation array every time page is rendered or a new message is recieved on the backend
-    useEffect((() => {
-
-    }), [conversationArr]);
 
     //! We have to update message list whenever user clicks on conversation or a new message is received.
     useEffect((() => {
-        console.log("An update was received");
         console.log(messageArr);
     }), [messageArr]);
 
@@ -88,8 +91,8 @@ function Messages({userId}) {
                 {messageArr.map((m, index) => 
                     <Message model={{
                         message : m.text,
-                        direction : (m.sender == userId) ? "outgoing" : "incoming", 
-                        position : (messageArr.length - 1 == index) ? "last" : "normal"
+                        direction : (m.sender == userId) ? "outgoing" : "incoming"
+                        // position : determinePosition(m, index, messageArr)
                     }}/>
                 )}
                 <Message
@@ -108,5 +111,33 @@ function Messages({userId}) {
 }
 
 
+// function determinePosition(m, index, messageArr) {
+//     // If last
+//     if(messageArr.length - 1 === index) {
+//         return "last";
+//     }
+//     // If first
+//     else if(index === 0) {
+//         return "first";
+//     }
+//     // If middle or single
+//     const prev = messageArr[index - 1];
+//     const next = messageArr[index + 1];
+    
+//     if(prev.sender == next.sender) {
+//         if(prev.sender == m.sender) {
+//             return "normal";
+//         }
+//         return "single";
+//     }
+//     else if(prev.sender == m.sender) {
+//         return "last";
+//     }
+//     else if(next.sender == m.sender) {
+//         return "first";
+//     }
+//     return "single";
+    
+// }
 
 export default Messages;

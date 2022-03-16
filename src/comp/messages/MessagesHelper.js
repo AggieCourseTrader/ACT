@@ -12,6 +12,7 @@ import { app } from '../../firebase-config'
 export class IMessage {
 
     constructor(oAuthId, receiver, setMessages) {
+        console.log("Listening for messages from : " + receiver);
         this.db = getFirestore(app);
         this.oAuthId = oAuthId;
         this.messageId = (oAuthId.localeCompare(receiver)) ? oAuthId + receiver : receiver + oAuthId;
@@ -21,13 +22,14 @@ export class IMessage {
         // Will contain messages from chat
         this.messageLoc = collection(this.db, "messages", this.messageId, "list");
 
+        this.called = 0;
 
         // We want to subscribe to the message stream from this user
         const newMessage = onSnapshot(query(this.messageLoc, orderBy("timestamp")), (snapshot) => {
+            this.called += 1;
             let arr = [];
             snapshot.forEach((d) => arr.push(d.data()));
-            console.log("Here;");
-            // setMessages(arr);
+            setMessages(arr);
         });
 
     }
@@ -47,6 +49,12 @@ export class IMessage {
         await updateDoc(this.receiverDoc, {
             [g] : increment(1)
         });
+    }
+
+    unSub() {
+        this.receiverDoc();
+        this.messageLoc();
+        console.log("Unsubbed");
     }
 
 }

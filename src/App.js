@@ -10,23 +10,22 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { React, useState } from 'react';
+import { React } from 'react';
 import {theme} from './assets/theme';
 import {ThemeProvider } from '@mui/material/styles';
 
 
 function App() {
-  const [userId, setUserId] = useState('');
 
   return (
     <ThemeProvider theme={theme}>
     <BrowserRouter>
       <Routes>
-        <Route exact path="/marketplace" element={<Marketplace setUserId={setUserId}/>} />
+        <Route exact path="/marketplace" element={<Marketplace />} />
         <Route exact path="/my-trades" element={<MyTrades />}/>
         <Route exact path="/edit-trades" element={<EditTrades />}/>
-        <Route exact path="/messages" element={<Messages userId={userId}/>}/>
-        <Route exact path="/" element={<Login setUserId={setUserId}/>}/>
+        <Route exact path="/messages" element={<Messages />}/>
+        <Route exact path="/" element={<Login />}/>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

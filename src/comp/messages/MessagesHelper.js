@@ -1,5 +1,4 @@
-import { getFirestore, collection, getDocs, onSnapshot, query, where, getDoc, doc, arrayUnion, serverTimestamp, Timestamp, increment, setDoc, updateDoc, addDoc, Firestore, orderBy} from 'firebase/firestore';
-import { React } from 'react'
+import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
 
 //! Data: 
@@ -40,7 +39,7 @@ export class IConversation {
         let docs = await getDocs(q);
         docs.forEach(async (d) => {
             let data = d.data();
-            if(data.oAuthID != this.oAuthId) {
+            if(data.oAuthID !== this.oAuthId) {
                 await setDoc(this.myDoc, {
                     "activeConversations" : arrayUnion({
                         'id' : data.oAuthID,

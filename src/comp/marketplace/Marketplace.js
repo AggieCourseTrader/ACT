@@ -8,7 +8,7 @@ import { Box } from '@mui/system';
 import { Card, CardActions, CardContent, Button } from '@mui/material';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-function Marketplace({setUserId}) {
+function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
@@ -17,7 +17,6 @@ function Marketplace({setUserId}) {
    onAuthStateChanged(auth, (user) => {
      if (user) {
       setUser(user);
-      setUserId(user.uid);
      } else {
        navigate("/")
      }

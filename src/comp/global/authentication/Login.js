@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Login({setUserId}) {
+function Login() {
  // ALl javascript, functiosn, or fetchs to db will be up here
 
 // const [loggedIn, setLogIn] = useState(false);
@@ -57,7 +57,6 @@ function Login({setUserId}) {
     // setLogIn(true);
      //setUser(user);
      addUser (user.email, user.displayName, user.uid);
-     setUserId(user.uid);
      navigate("/marketplace")
    } else {
      // User is signed out

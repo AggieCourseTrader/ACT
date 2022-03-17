@@ -11,11 +11,9 @@ import {
   Search,
   Sidebar,
   ConversationList,
-  Avatar,
   Conversation
 } from "@chatscope/chat-ui-kit-react";
-// import { previews } from 'firebase-tools/lib/previews';
-// import { NextPlan } from '@mui/icons-material';
+
 
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
@@ -24,18 +22,21 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import { useNavigate } from 'react-router-dom'
 
-function Messages({userId}) {
+
+console.log(styles);
+
+function Messages() {
     const [messageArr, setMessageArr] = useState([]);
     const convHelper = useRef(false);
     const [conversationArr, setConversationArr] = useState([]);
     const [activeConversation, setActiveConversation] = useState('');
-    const [text, setText]  = useState('');
     const [user, setUser] = useState(false);
 
     const messageHelper = useRef(false);
     
 
     let navigate = useNavigate();
+    
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -46,7 +47,7 @@ function Messages({userId}) {
           }
          });
      
-    }, [])
+    }, )
 
     useEffect(() => {
         if(activeConversation) {
@@ -60,7 +61,7 @@ function Messages({userId}) {
                 messageHelper.current.unSub();
             }
         }
-    },[activeConversation])
+    },[activeConversation, user])
 
     useEffect(() => {
         if(user) {
@@ -74,13 +75,12 @@ function Messages({userId}) {
         }
     }, [user]);
 
-    useEffect(() => {
-        if(text != "") {
+    const sendTxt = (text) => {
+        if(text !== "" && messageHelper.current) {
             console.log("Sending text : " + text);
             messageHelper.current.sendMessage(text);
         }
-    }, [text]);
-
+    }
 
     //! We have to update message list whenever user clicks on conversation or a new message is received.
     useEffect((() => {
@@ -103,7 +103,7 @@ function Messages({userId}) {
                                 onClick={() => setActiveConversation(d.id)} 
                                 key={"conversation." + d.id} name={d.fname} 
                                 info="Yolo" 
-                                unreadCnt={(activeConversation != d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
+                                unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                                 active={(activeConversation === d.id)}
                             />
                         )
@@ -117,12 +117,12 @@ function Messages({userId}) {
                         key={"mesageArr." + index}
                         model={{
                             message : m.text,
-                            direction : (user) ? ((m.sender == user.uid) ? "outgoing" : "incoming") : "outgoing",
+                            direction : (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                             position : determinePosition(m, index, messageArr)
                         }}/>
                     )}
                 </MessageList>
-                <MessageInput  style={{backgroundColor: 'rgba(255,255,255,0.5)'}} attachButton={false} placeholder="Type message here" onSend={(e, v, t) => {setText(t)}}/>
+                <MessageInput  style={{backgroundColor: 'rgba(255,255,255,0.5)'}} attachButton={false} placeholder="Type message here" onSend={(e, v, t) => {sendTxt(t)}}/>
             </ChatContainer>
         </MainContainer>
 
@@ -132,9 +132,7 @@ function Messages({userId}) {
     )
 }
 
-function handleSend(text) {
-    console.log(text);
-}
+
 
 function determinePosition(m, index, messageArr) {
     // If last
@@ -149,16 +147,16 @@ function determinePosition(m, index, messageArr) {
     const prev = messageArr[index - 1];
     const next = messageArr[index + 1];
     
-    if(prev.sender == next.sender) {
-        if(prev.sender == m.sender) {
+    if(prev.sender === next.sender) {
+        if(prev.sender === m.sender) {
             return "normal";
         }
         return "single";
     }
-    else if(prev.sender == m.sender) {
+    else if(prev.sender === m.sender) {
         return "last";
     }
-    else if(next.sender == m.sender) {
+    else if(next.sender === m.sender) {
         return "first";
     }
     return "single";

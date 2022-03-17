@@ -25,9 +25,30 @@ export class IConversation {
             setConversations(data.data());
         });
     }
-
+    async clearUnread(id) {
+        const g = "unreadMessages." + id;
+        await updateDoc(this.myDoc, {
+            [g] : 0
+        });
+    }
     unSub() {
         this.newConversation();
+    }
+
+    async addAll() {
+        let q = query(collection(this.db, "users"));
+        let docs = await getDocs(q);
+        docs.forEach(async (d) => {
+            let data = d.data();
+            if(data.oAuthID != this.oAuthId) {
+                await setDoc(this.myDoc, {
+                    "activeConversations" : arrayUnion({
+                        'id' : data.oAuthID,
+                        'fname' : data.firstName
+                    })
+                }, {merge : true});
+            }
+        });
     }
 }
 export class IMessage {
@@ -39,7 +60,7 @@ export class IMessage {
         this.db = getFirestore(app);
         this.oAuthId = oAuthId;
         this.receiver = receiver;
-        this.messageId = (oAuthId.localeCompare(receiver)) ? oAuthId + receiver : receiver + oAuthId;
+        this.messageId = [oAuthId, receiver].sort().join('');
 
         // Document to notify receiver that we sent them a message
         this.receiverDoc= doc(this.db, "messageStatus", receiver);
@@ -69,9 +90,9 @@ export class IMessage {
 
         // Notify other user of text
         const g = "unreadMessages." + this.oAuthId;
-        await updateDoc(this.receiverDoc, {
+        await setDoc(this.receiverDoc, {
             [g] : increment(1)
-        });
+        }, {merge : true});
     }
 
     unSub() {

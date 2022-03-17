@@ -1,6 +1,6 @@
 import {React, useEffect, useRef, useState} from 'react';
 import { IMessage, IConversation} from './MessagesHelper';
-
+import Navbar from '../global/navbar/Navbar';
 
 import {
   MainContainer,
@@ -14,8 +14,8 @@ import {
   Avatar,
   Conversation
 } from "@chatscope/chat-ui-kit-react";
-import { previews } from 'firebase-tools/lib/previews';
-import { NextPlan } from '@mui/icons-material';
+// import { previews } from 'firebase-tools/lib/previews';
+// import { NextPlan } from '@mui/icons-material';
 
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
@@ -26,11 +26,14 @@ import { useNavigate } from 'react-router-dom'
 
 function Messages({userId}) {
     const [messageArr, setMessageArr] = useState([]);
+    const convHelper = useRef(false);
     const [conversationArr, setConversationArr] = useState([]);
+    const [activeConversation, setActiveConversation] = useState('');
     const [text, setText]  = useState('');
     const [user, setUser] = useState(false);
+
     const messageHelper = useRef(false);
-    const convHelper = useRef(false);
+    
 
     let navigate = useNavigate();
 
@@ -43,18 +46,28 @@ function Messages({userId}) {
           }
          });
      
-    }, /*removed dependency array*/)
+    }, [])
 
     useEffect(() => {
-        if(user) {
-            console.log(user.uid);
-            messageHelper.current = new IMessage(user, "NIwuHQlzkBbRSAFmqjsz1T3GUxm2", setMessageArr);
-            convHelper.current = new IConversation(user, setConversationArr);
+        if(activeConversation) {
+            messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
+            if(convHelper.current) {
+                convHelper.current.clearUnread(activeConversation);
+            }
         }
         return () => {
             if(messageHelper.current) {
                 messageHelper.current.unSub();
             }
+        }
+    },[activeConversation])
+
+    useEffect(() => {
+        if(user) {
+            convHelper.current = new IConversation(user, setConversationArr);
+            convHelper.current.addAll();
+        }
+        return () => {
             if(convHelper.current) {
                 convHelper.current.unSub();
             }
@@ -75,21 +88,30 @@ function Messages({userId}) {
     }), [messageArr]);
 
     return (
-    <div style={{ position: "relative", height: "100vh" }}>
-        <MainContainer>
+    <>
+    <Navbar name = "Messages" auth={auth} user={user}/>
+    <div style={{ flexGrow : 1, height: "90vh" }}>
+        <MainContainer style={{border: 'none', backgroundColor : 'transparent'}}>
 
-            <Sidebar position="left" scrollable={false}>
+            <Sidebar position="left" scrollable={false} style={{backgroundColor: 'transparent'}}>
                 <Search placeholder="Search..." />
-                <ConversationList >   
-                    {(conversationArr.activeConversations) ? 
+                <ConversationList >
+ 
+                    {("activeConversations" in conversationArr) ? 
                         conversationArr.activeConversations.map((d) => 
-                            <Conversation key={"conversation." + d.id} name={d.fname} info="Yolo" unreadCnt={(conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0}/>
+                            <Conversation 
+                                onClick={() => setActiveConversation(d.id)} 
+                                key={"conversation." + d.id} name={d.fname} 
+                                info="Yolo" 
+                                unreadCnt={(activeConversation != d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
+                                active={(activeConversation === d.id)}
+                            />
                         )
                     : false}                                                                                          
                 </ConversationList>
             </Sidebar>
-            <ChatContainer>
-                <MessageList>
+            <ChatContainer style={{backgroundColor: 'transparent'}}>
+                <MessageList style={{backgroundColor: 'rgba(255,255,255,0.5)'}}>
                     {messageArr.map((m, index) => 
                         <Message 
                         key={"mesageArr." + index}
@@ -100,11 +122,13 @@ function Messages({userId}) {
                         }}/>
                     )}
                 </MessageList>
-                <MessageInput  attachButton={false} placeholder="Type message here" onSend={(e, v, t) => {setText(t)}}/>
+                <MessageInput  style={{backgroundColor: 'rgba(255,255,255,0.5)'}} attachButton={false} placeholder="Type message here" onSend={(e, v, t) => {setText(t)}}/>
             </ChatContainer>
         </MainContainer>
 
     </div>
+
+    </>
     )
 }
 

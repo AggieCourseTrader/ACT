@@ -7,20 +7,6 @@ import { getFirestore, collection, doc, query, where, setDoc, addDoc, getDoc,
 import { app } from '../../../firebase-config'
 
 
-// // https://firebase.google.com/docs/web/setup#available-libraries
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBSCaZ13T9nckWzjRKfVlmgsMq7-S4xRBY",
-//   authDomain: "act-dev-1.firebaseapp.com",
-//   databaseURL: "https://act-dev-1-default-rtdb.firebaseio.com",
-//   projectId: "act-dev-1",
-//   storageBucket: "act-dev-1.appspot.com",
-//   messagingSenderId: "729474256375",
-//   appId: "1:729474256375:web:c58ef58fff165b233832f2",
-//   measurementId: "G-T2S3H96TZN"
-// };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 // collections to be used in the functions
@@ -28,13 +14,6 @@ const trades = collection(db, "trades");
 const users = collection(db, "users");
 const courses = collection(db, "courses");
 
-// export {
-//   app,
-//   db,
-//   trades,
-//   users,
-//   courses
-// };
 
 // Adds given user to the user collection
 export async function addUser (email, displayName, oAuthId) {

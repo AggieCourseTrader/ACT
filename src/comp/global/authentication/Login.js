@@ -1,8 +1,7 @@
 import React from 'react';
 import SignInButton from './SignInButton';
-//import SignOutButton from './SignOutButton';
-import { auth, onAuthStateChanged, GoogleAuthProvider } from "../firebase-config";
-import { addUser } from './CrudFunctions' 
+import { auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";
+import { addUser } from '../dbFunctions/CrudFunctions' 
 
 
 // import { useNavigate } from "react-router-dom";
@@ -71,21 +70,6 @@ function Login() {
   provider.setCustomParameters({
   'hd': 'tamu.edu'
   });
-  
-  
-
-  /*{loggedIn ? (
-    <>
-    Logged in as {user.email}
-    <SignOutButton auth={auth} />
-  </>
-) : (
-  <>
-    Must sign in with TAMU email before able to use application
-    <SignInButton auth={auth} provider={provider} />
-  </>
-)}*/
-
 
   return (
     <div>
@@ -106,23 +90,23 @@ function Login() {
            sx={{background: "#f6f6f6"}}>
               <div className={classes.wrapper}>
                 <div className={classes.containerBlock}>
-                  <Typography component="h1" variant="h2" color="#500000" align="left" gutterBottom='true'>Welcome to Aggie Course Trader</Typography>  
+                  <Typography component="h1" variant="h2" align="left" gutterBottom='true'>Welcome to Aggie Course Trader</Typography>  
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
-                      <Typography variant="h6" color="#000000" align="left" gutterBottom='true'>An app built for students</Typography> 
-                      <Typography variant="body1" color="#000000" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="h6" align="left" gutterBottom='true'>An app built for students</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
-                      <Typography variant="h6" color="#000000" align="left" gutterBottom='true'>Search and add trades to the marketplace</Typography> 
-                      <Typography variant="body1" color="#000000" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="h6" align="left" gutterBottom='true'>Search and add trades to the marketplace</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
-                      <Typography variant="h6" color="#000000" align="left" gutterBottom='true'>Built in Chat System</Typography> 
-                      <Typography variant="body1" color="#000000" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="h6" align="left" gutterBottom='true'>Built in Chat System</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
                     </CardContent>
                   </Card>
                 </div>

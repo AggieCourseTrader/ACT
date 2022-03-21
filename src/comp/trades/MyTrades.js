@@ -1,9 +1,7 @@
 import React, {useEffect} from 'react';
-// import { useState } from 'react';
+import { useState } from 'react';
 import {useNavigate} from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../firebase-config'
-import {createTheme, ThemeProvider} from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import {onAuthStateChanged, auth} from '../../firebase-config'
 import Box from '@mui/material/Box';
 // import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
@@ -13,21 +11,18 @@ import Paper from '@mui/material/Paper';
 // import Chart from './Chart';
 import MyListings from './MyListings';
 import MyMatches from './MyMatches';
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-
-const mdTheme = createTheme();
+import Navbar from "../global/navbar/Navbar";
+import Footer from "../global/Footer";
 
 function MyTrades() {
 
-  // const [count, setCount] = useState(0);
-
   let navigate = useNavigate();
+  const [user, setUser] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // const uid = user.uid;
+        setUser(user);
       } else {
         navigate("/")
       }
@@ -36,20 +31,13 @@ function MyTrades() {
   }, /*removed dependency array*/)
 
   return (
-      <div>
-        <Navbar/>
-        <ThemeProvider theme={mdTheme}>
-          <Box sx={{display: 'flex'}}>
-            <CssBaseline/>
+      <React.Fragment>
+        <Navbar name="My Trades" auth={auth} user={user}/>
+          <Box sx={{display: 'flex', height:'80vh', background: "#f6f6f6"}}>
             <Box
                 component="main"
                 sx={{
-                  backgroundColor: (theme) =>
-                      theme.palette.mode === 'light'
-                          ? theme.palette.grey[100]
-                          : theme.palette.grey[900],
                   flexGrow: 1,
-                  height: '80vh',
                   overflow: 'auto',
                 }}
             >
@@ -85,9 +73,8 @@ function MyTrades() {
               </Container>
             </Box>
           </Box>
-        </ThemeProvider>
         <Footer/>
-      </div>
+      </React.Fragment>
   );
 }
 

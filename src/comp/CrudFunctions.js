@@ -2,7 +2,7 @@
 //1 Firebase config -----------------------------------------------------//
 // * Firebase imports and init
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
-import { getFirestore, collection, doc, query, where, setDoc, addDoc,
+import { getFirestore, collection, doc, query, where, setDoc, addDoc, getDoc,
          getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { app } from '../firebase-config'
 
@@ -94,8 +94,8 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
       status: "requested"
     }
   
-    tradeRef = await addDoc(trades, tradeDoc);
-    await updateDoc(tradeRef, {
+    await addDoc(trades, tradeDoc);
+    tradeRef = await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
 
@@ -126,23 +126,16 @@ export async function getMatchedTrades(userId) {
 // Get the specific trade
 export async function getTrade(tradeId) {
 
-  const q = query(trades, where("trade_id", "==", tradeId));
-  const receivedTrades = await getDocs(q);
+  const tradeRef = doc(db, "trades", tradeId);
 
-  let tradeRef; 
-
-  if (!receivedTrades.empty) {
-    receivedTrades.forEach((doc) => {
-      tradeRef = doc;
-    });
-
-    return tradeRef;
-  }
-
-  else {
-    console.log("No trade with the given ID");
+  const tradeSnap = await getDoc(tradeRef);
+  
+  if (!tradeSnap.exists()) {
+    console.log("Trade does not exist");
     return null;
   }
+
+  return tradeSnap;
 }
 
 // Get trades with a specific section being dropped
@@ -150,11 +143,18 @@ export async function getTrades(dropCourseId) {
 
   const q = query(trades, where("dropClassID", "==", dropCourseId));
   const receivedTrades = await getDocs(q);
+  
+  if (!receivedTrades.empty) {
+    return receivedTrades;
+  }
 
-  return receivedTrades;
+  else {
+    console.log("No trades with the given drop course ID exist");
+    return null;
+  }
 }
 
-// Modifies the given trade with a new dropCourseId, addDropCourseId, or both
+// Modifies the given trade with the given drop course and add course ids
 export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
    
   const tradeRef = doc(db, "trades", tradeId);
@@ -182,6 +182,20 @@ export async function updateTradeMatch(tradeId, matchedUserId) {
   return updateRef;
 
 }
+
+// Updates the given trade with the new status
+export async function updateTradeStatus(tradeId, tradeStatus) {
+  const tradeRef = doc(db, "trades", tradeId);
+  
+  const updatedFields = {
+    status: tradeStatus
+  }
+
+  const updateRef = await updateDoc(tradeRef, updatedFields);
+  return updateRef;
+}
+
+
 
 // Deletes the trade with the given tradeId
 export async function deleteTrade(tradeId) {

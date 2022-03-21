@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import { useState } from 'react';
 import {useNavigate} from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../firebase-config'
+import {onAuthStateChanged, auth} from '../../firebase-config'
 import Box from '@mui/material/Box';
 // import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
@@ -11,8 +11,8 @@ import Paper from '@mui/material/Paper';
 // import Chart from './Chart';
 import MyListings from './MyListings';
 import MyMatches from './MyMatches';
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "../global/navbar/Navbar";
+import Footer from "../global/Footer";
 
 function MyTrades() {
 

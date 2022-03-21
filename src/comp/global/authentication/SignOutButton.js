@@ -1,4 +1,4 @@
-import { signOut } from "../firebase-config";
+import { signOut } from "../../../firebase-config";
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 // import { useState } from 'react';

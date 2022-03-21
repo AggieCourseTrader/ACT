@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../firebase-config'
+import {onAuthStateChanged, auth} from '../../firebase-config'
 
 
 function EditTrades() {

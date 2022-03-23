@@ -151,7 +151,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				let lecTimes = ''
 				let labDays = []
 				let labTimes = ''
-				console.log(section.data());
+				//console.log(section.data());
 				
 				Object.entries(section.data().meeting_times).forEach((t) => {
 					let day = t[0];
@@ -194,7 +194,8 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				let item = {
 					'section' : section.data().section,
 					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
-					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB"
+					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
+					'crn' : section.data().crn
 				};
 				//console.log(item);
 				arr.push(item);
@@ -238,8 +239,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				disabled={(courseSelected === undefined) ? true : false}
 					autoHighlight
 				onChange={(e, v) => {
-					//console.log(v)
-					selectionCallBack(v)
+					selectionCallBack(sectionResults.find(item => item.section === v))
 				}}
 				
 				sx = {{width : 300,  background: '#ffffff' }}

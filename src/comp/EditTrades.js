@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
   },
   containerDrop: {
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     display: 'flex',
     alignItems: "center",
     width: '100%',
@@ -41,8 +41,8 @@ const useStyles = makeStyles({
 
 function EditTrades() {
   const [userId, setUserId] = useState(null);
-  const [addClass, setAddClass] = useState ({class:'', section: ''});
-  const [dropClass, setDropClass] = useState({class:'', section: ''});
+  const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
+  const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
 
   const classes = useStyles();
   let navigate = useNavigate();
@@ -60,44 +60,44 @@ function EditTrades() {
 
   const selectionAddCallback = (data) => {
     if(data !== undefined){
-      console.log(data);
-      if(typeof data === 'object'){
-        let name = data.name;
-        setAddClass({...addClass, class:name})
-      } else {
-        setAddClass({...addClass, section:data})
+      if(typeof data === 'object') {
+        if(data.name){
+          setAddClass({...addClass, class:data.name})
+        } else if (data.section) {
+          setAddClass({...addClass, section:data.section, crn:data.crn})
+        } 
       }
-    } else {
-      setAddClass({class:'', section:''})
     }
   }
 
   const selectionDropCallback = (data) => {
     if(data !== undefined){
       if(typeof data === 'object'){
-        let name = data.name;
-        setDropClass({...dropClass, class:name})
-      } else {
-        setDropClass({...dropClass, section:data})
+        if(data.name){
+          setDropClass({...dropClass, class:data.name})
+        } else if (data.section) {
+          setDropClass({...dropClass, section:data.section, crn:data.crn})
+        } 
       }
-    } else {
-      setDropClass({class:'', section:''})
-    }
-}
-
+    } 
+  }
 
 
   const tradeAddUpdate = () => {
-    console.log("teAddUpSst");
-    console.log(addClass)
+    //console.log(userId.uid)
+    //console.log(addClass.crn)
+   // console.log(dropClass.crn)
+    (async () => {
+      let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
+      console.log(resp)
+    })();
   }
 
   const tradeDelete = () => {
-    console.log("delete");
+    (async () => {
+      let resp = await deleteTrade(userId.uid, dropClass.crn, addClass.crn);
+    })();
   }
-
-  console.log(addClass)
-  console.log(dropClass)
 
   return (
     <React.Fragment>
@@ -108,7 +108,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.container}>
-          <Typography component="h2" variant="h6" color="primary" gutterBottom>Course to Add</Typography>  
+          <Typography component="h2" variant="h6" color="primary" gutterBottom>I want a spot in</Typography>  
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -118,19 +118,12 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.container}>
-          <Typography component="h2" variant="h6" color="primary" gutterBottom>Course to drop</Typography>  
+          <Typography component="h2" variant="h6" color="primary" gutterBottom>I can drop</Typography>  
         </div>
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
             <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
-        </div>
-      </div>
-      <div className={classes.wrapper}>
-        <div className={classes.container}>
-        <Typography variant='h6' color="primary" gutterBottom>
-          You have created a trade where you want class A and willing to drop class B.
-        </Typography> 
         </div>
       </div>
       <div className={classes.wrapper}>

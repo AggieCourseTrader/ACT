@@ -10,10 +10,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MyListings from './MyListings';
 import MyMatches from './MyMatches';
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-
-const mdTheme = createTheme();
+import Navbar from "../global/navbar/Navbar";
+import Footer from "../global/Footer";
 
 function MyTrades() {
 
@@ -32,21 +30,13 @@ function MyTrades() {
   }, /*removed dependency array*/)
 
   return (
-      <div>
+      <React.Fragment>
         <Navbar name="My Trades" auth={auth} user={user}/>
-        <div style = {{marginTop: 80}}>
-        <ThemeProvider theme={mdTheme}>
-          <Box sx={{display: 'flex'}}>
-            <CssBaseline/>
+          <Box sx={{display: 'flex', height:'80vh', background: "#f6f6f6"}}>
             <Box
                 component="main"
                 sx={{
-                  backgroundColor: (theme) =>
-                      theme.palette.mode === 'light'
-                          ? theme.palette.grey[100]
-                          : theme.palette.grey[900],
                   flexGrow: 1,
-                  height: '80vh',
                   overflow: 'auto',
                 }}
             >
@@ -88,10 +78,8 @@ function MyTrades() {
               </Container>
             </Box>
           </Box>
-        </ThemeProvider>
-        </div>
         <Footer/>
-      </div>
+      </React.Fragment>
   );
 }
 

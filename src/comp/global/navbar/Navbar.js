@@ -4,6 +4,7 @@ import PageMenu from './Navbar_PageMenu'
 import UserMenu from './Navbar_UserMenu'
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import {makeStyles} from '@mui/styles';
+import { Box } from '@mui/system';
 
 const useStyles = makeStyles(() => ({
   header: {
@@ -25,13 +26,11 @@ export default function Navbar(props) {
 
     const displayDesktop = () => {
       return (
-        <div>
           <Toolbar className = {toolbar}>
             <PageMenu name = {props.name} justifyContent = "flex-start"/>
             {courseTraderLogo}
             <UserMenu name = {props.user.displayName} auth = {props.auth}/>
           </Toolbar>
-        </div>
         );
     };
 
@@ -42,8 +41,8 @@ export default function Navbar(props) {
     )
 
     return (
-      <header>
+      <Box sx={{ flexGrow: 1, height:'10vh' }}>
         <AppBar className = {header}>{displayDesktop()}</AppBar>
-      </header>
+      </Box>
     );
   }

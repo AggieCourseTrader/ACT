@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../firebase-config'
-import CourseSearchBox  from './CourseSearchBox'
-import { db } from './CrudFunctions'
+import {onAuthStateChanged, auth} from '../../firebase-config'
+import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
+import { db } from '../global/dbFunctions/CrudFunctions'
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { Card, CardActions, CardContent, Button } from '@mui/material';
-import Navbar from './Navbar';
-import Footer from "./Footer";
+import Navbar from '../global/navbar/Navbar';
+import Footer from "../global/Footer";
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
@@ -29,11 +29,30 @@ function Marketplace() {
       <Navbar name = "Trade Markteplace" auth={auth} user={user}/>
       <Box sx={{ flexGrow: 1, height: '80vh', background: '#f6f6f6'}}>
         <Box sx={{ flexGrow: 1}}>
-            <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
+            <Box sx = {{display: "flex", justifyContent: "center", flexWrap : "wrap", m: 2}}>
+
+              <Typography sx = {{
+                fontSize : "4vmin",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                color : "#525252"
+              }}>I want a spot in </Typography>
+
               <CourseSearchBox db={db} />
+
             </Box>
-            <Box sx = {{display: "flex", justifyContent: "space-evenly", m: 2}}>
-                <CourseSearchBox db={db} />
+            <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
+
+            <Typography sx = {{
+                fontSize : "4vmin",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                color : "#525252"
+              }}>I can drop </Typography>
+
+              <CourseSearchBox db={db} />
             </Box>
           </Box>
           <Box sx = {{

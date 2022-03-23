@@ -43,7 +43,7 @@ export default function PageMenu(props) {
                         Marketplace
                     </Typography>
                 </MenuItem>
-                <MenuItem onClick = {handleClose}>
+                <MenuItem onClick = {handleClose} component = {Link} to = "/messages">
                     <Typography color = "#500000">
                         Messages
                     </Typography>

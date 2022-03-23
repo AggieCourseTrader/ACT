@@ -3,7 +3,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 // import { ConstructionOutlined } from '@mui/icons-material';
 import { Autocomplete, TextField } from '@mui/material';
 // import Grid from '@mui/material/Grid';
-import { getCoursesByName } from './CrudFunctions';
+import { getCoursesByName } from '../dbFunctions/CrudFunctions';
+
 // import {createTheme} from '@mui/material/styles';
 
 //4 Structure ---------------------//
@@ -13,6 +14,18 @@ import { getCoursesByName } from './CrudFunctions';
 //      --> Section search box
 //				if selected then call selectionCallBack
 //4 -------------------------------//
+
+const csb = { width: "12em", minWidth: "12em", marginLeft : "1em" };
+
+const ssb = { width : "20em", midWidth : "12em", marginLeft: "1em", float : "right" };
+
+const rsParentDiv = { width: "100%", minHeight: "3em", overflow: "hidden"};
+
+const rsSectionDiv = {float: "left", width: "10%"};
+
+const rsTimeDiv = {marginLeft : "10%", width: "90%"};
+
+const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 
 //? Params: Input =>
 // db (type: firestore db)
@@ -190,7 +203,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					return 0;
 				});
 	
-	
+				
 				let item = {
 					'section' : section.data().section,
 					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
@@ -202,6 +215,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			});
 	
 			setSectionResults(arr);
+			// console.log(sectionResults);
 		};
 
 		f();
@@ -221,7 +235,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 					setCourseSelected(searchResults.find(x => x.name === v))
 					selectionCallBack(searchResults.find(x => x.name === v))
 				}}
-				sx={{ width: 300, background: '#ffffff' }}
+				sx={csb}
 				// sx={{
 				// 	overflow: 'auto',
 				// 	flexGrow : 1
@@ -241,33 +255,39 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				onChange={(e, v) => {
 					selectionCallBack(sectionResults.find(item => item.section === v))
 				}}
-				
-				sx = {{width : 300,  background: '#ffffff' }}
-				// sx={{
-				// 	backgroundColor: (theme) =>
-				// 		theme.palette.mode === 'light'
-				// 			? theme.palette.grey[100]
-				// 			: theme.palette.grey[900],
-				// 	flexGrow: 1,
-				// 	width : 300,
-				// 	overflow: 'auto',
-				// }}
+				openOnFocus
+				sx = {ssb}
+
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
-				options={sectionResults.map((x) => x.section)}
-				// getOptionLabel={(option) => option.section || ""}
-				// renderOption={(option) => (
-				// 	<li>{option.section}</li>
-				// )}
+				// options={sectionResults.map((x) => x.section)}
+
+				options={sectionResults}
+
+				getOptionLabel={(option) => option.section}
+				renderOption={(props, option) => (
+					renderSection(props, option)
+				)}
+
 				renderInput={(params) => <TextField {...params} label="Select a section" />}
 				/>
 
 		
 
-
 		</>		
 	)
+}
+
+function renderSection(props, option) {
+	let sectionDiv = <div style={rsSectionDiv}>{option.section}</div>
+	let timeDiv = <div style={rsTimeDiv}><li style={rsTimeDivLi}>{option.lec}</li> <li  style={rsTimeDivLi}>{option.lab}</li></div>
+	let parentDiv = <div {...props} style={rsParentDiv}>
+		{sectionDiv}{timeDiv}
+	</div>
+
+
+	return parentDiv;
 }
 
 

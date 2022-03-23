@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../firebase-config'
-import CourseSearchBox  from './CourseSearchBox'
-import { updateTrade, createTrade, deleteTrade, db } from './CrudFunctions';
+import {onAuthStateChanged, auth} from '../../firebase-config'
+import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
+import { updateTrade, createTrade, deleteTrade, db } from '../global/dbFunctions/CrudFunctions';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';

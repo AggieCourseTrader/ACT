@@ -149,7 +149,7 @@ export async function getTradesByDrop(dropCourseId) {
 // Get trades with a specific section being added
 export async function getTradesByAdd(addCourseId) {
 
-  const q = query(trades, where("dropClassID", "==", addCourseId));
+  const q = query(trades, where("addClassID", "==", addCourseId));
 
   const receivedTrades = await getDocs(q);
   

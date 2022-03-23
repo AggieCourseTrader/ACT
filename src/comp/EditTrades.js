@@ -41,8 +41,8 @@ const useStyles = makeStyles({
 
 function EditTrades() {
   const [userId, setUserId] = useState(null);
-  const [addClass, setAddClass] = useState (null);
-  const[ dropClass, setDropClass] = useState(null);
+  const [addClass, setAddClass] = useState ({class:'', section: ''});
+  const [dropClass, setDropClass] = useState({class:'', section: ''});
 
   const classes = useStyles();
   let navigate = useNavigate();
@@ -58,14 +58,45 @@ function EditTrades() {
 
   },/*removed dependency array*/)
 
+  const selectionAddCallback = (data) => {
+    if(data !== undefined){
+      if(typeof data === 'object'){
+        let name = data.name;
+        setAddClass({...addClass, class:name})
+      } else {
+        setAddClass({...addClass, section:data})
+      }
+    } else {
+      setAddClass({class:'', section:''})
+    }
+  }
+
+  const selectionDropCallback = (data) => {
+    if(data !== undefined){
+      if(typeof data === 'object'){
+        let name = data.name;
+        setDropClass({...dropClass, class:name})
+      } else {
+        setDropClass({...dropClass, section:data})
+      }
+    } else {
+      setDropClass({class:'', section:''})
+    }
+}
+
+
 
   const tradeAddUpdate = () => {
     console.log("teAddUpSst");
+    console.log(addClass)
   }
 
   const tradeDelete = () => {
     console.log("delete");
   }
+
+  console.log(addClass)
+  console.log(dropClass)
 
   return (
     <React.Fragment>
@@ -81,7 +112,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} />
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback}/>
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -91,7 +122,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} />
+            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
         </div>
       </div>
       <div className={classes.wrapper}>

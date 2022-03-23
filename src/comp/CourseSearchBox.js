@@ -151,7 +151,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				let lecTimes = ''
 				let labDays = []
 				let labTimes = ''
-				//console.log(section.data());
+				console.log(section.data());
 				
 				Object.entries(section.data().meeting_times).forEach((t) => {
 					let day = t[0];

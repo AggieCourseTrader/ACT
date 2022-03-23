@@ -60,6 +60,7 @@ function EditTrades() {
 
   const selectionAddCallback = (data) => {
     if(data !== undefined){
+      console.log(data);
       if(typeof data === 'object'){
         let name = data.name;
         setAddClass({...addClass, class:name})

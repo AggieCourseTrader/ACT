@@ -3,7 +3,7 @@
 // * Firebase imports and init
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
 import { getFirestore, collection, doc, query, where, setDoc, addDoc,
-         getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
+         getDocs, deleteDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { app } from '../../../firebase-config'
 
 
@@ -88,14 +88,22 @@ export async function getCourseByCrn(crn) {
   return receivedCourse;  
 }
 
+// Get the course section with the given name
+export async function getCoursesByCrn(crns) {
+
+  const q = query(courses, where("crn", 'in', crns));
+  const receivedCourse = await getDocs(q);
+
+  let arr = [];
+  receivedCourse.forEach((doc) => {arr.push(doc.data())});
+
+  return arr;  
+}
+
 // Creates a trade for each section the user can add with the user wanting to drop a certain course
 // Returns array of trade document references
 export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
-  
-  // Get current time and convert from milliseconds to seconds
-  const date_ts = (new Date()).getTime() / 1000; 
 
-  const db_timestamp = new Timestamp(date_ts, 0);
 
   let tradeDoc;
   let tradeRef;
@@ -106,7 +114,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
     // All attributes except tradeId which is automatically generated
     tradeDoc = { 
       addClassID: addCourseIds[i],
-      createdAt: db_timestamp,
+      createdAt: serverTimestamp(),
       creatorID: creatingUserId,
       dropClassID: dropCourseId,
       matchID: -1,

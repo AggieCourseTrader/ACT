@@ -12,43 +12,85 @@ import {Link} from "react-router-dom";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip'
-// Generate Order Data
-function createData(id, dropCourse, addCourse) {
-  return {id, dropCourse, addCourse};
-}
 
-const rows = [
-  createData(
-      1,
-      'CSCE 121',
-      'MATH 152'
-  ),
-  createData(
-      2,
-      'MATH 304',
-      'MATH 251'
-  ),
-  createData(
-      3,
-      'CSCE 421',
-      'CSCE 420'
-  ),
-];
 
-export default function MyMatches() {
+import { getCoursesByCrn, getCreatedTrades, getMatchedTrades } from '../global/dbFunctions/CrudFunctions';
+
+
+export default function MyMatches({userId}) {
+  const [trades, setTrades] = React.useState([]);
+
+  // Init listener
+  React.useEffect(() => {
+    const f = async () => {
+      if(userId !== undefined) {
+        const myTrades = await getCreatedTrades(userId);
+        const otherTrades = await getMatchedTrades(userId);
+  
+        let arr = [];
+        myTrades.forEach((doc) => {
+          arr.push(doc.data());
+        });
+  
+        // Since we are not the creator of the trade the course being added or dropped is opposite for us
+        otherTrades.forEach((doc) => {
+          const data = doc.data();
+          const t = data.dropClassID;
+          data.dropClassID = data.addClassID;
+          data.addClassID = t;
+  
+          arr.push(data);
+        });
+  
+        let crns = arr.map((d) => d.addClassID);
+        crns = crns.concat(arr.map((d) => d.dropClassID));
+  
+        let courseData = await getCoursesByCrn(crns);
+        // Merge the course names with the trade requests
+        arr = arr.map((x) => {
+          let ele = courseData.find(ele => ele.crn === x.addClassID);
+          x.addClass = ele;
+          ele = courseData.find(ele => ele.crn === x.dropClassID);
+          x.dropClass = ele;
+          return x;
+        })
+  
+        // Return
+        setTrades(arr);
+      }
+    }
+
+    f();
+  }, [userId]);
+
+  React.useEffect(() => {
+    console.log(trades);
+  }, [trades]);
+
   return (
       <React.Fragment>
         <Title>My Matches</Title>
         <TableContainer>
           <Table size="small">
             <TableBody>
-              {rows.map((row) => (
+              {trades.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
-                    <Chip size="small" color="primary" icon={<RemoveCircleOutlineIcon/>} style={{verticalAlign:"middle", backgroundColor:'#661429'}}  label={row.dropCourse}/> 
+                    
+                    <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
+                    
+                    <Chip size="small" color="primary" 
+                          icon={<RemoveCircleOutlineIcon/>} 
+                          style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+                          label={[row.dropClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.dropClass.section}</span>]}/> 
+                    
                     <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
-                    <Chip color="success" size="small" style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} icon={<AddCircleOutlineIcon/>} label={row.addCourse}/>
+                    
+                    <Chip color="success" size="small" 
+                          style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
+                          icon={<AddCircleOutlineIcon/>} 
+                          label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
+                   
                     </TableCell>
                     <TableCell align="right">
                       <IconButton component={Link} to="/messages">

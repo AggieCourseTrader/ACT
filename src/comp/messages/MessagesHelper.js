@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp,  increment, setDoc, updateDoc, addDoc, orderBy, getDoc} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
 
 //! Data: 
@@ -90,7 +90,7 @@ export class IMessage {
         // // Notify other user of text
         // const exists = await getDoc(this.receiverDoc);
         
-        const g = "unreadMessages." + this.oAuthId;
+        // const g = "unreadMessages." + this.oAuthId;
         await setDoc(this.receiverDoc, {
             "unreadMessages" : {
                 [this.oAuthId] : increment(1)

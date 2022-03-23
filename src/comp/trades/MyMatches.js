@@ -9,6 +9,9 @@ import IconButton from "@mui/material/IconButton";
 import {TableContainer} from "@mui/material";
 import {Link} from "react-router-dom";
 
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Chip from '@mui/material/Chip'
 // Generate Order Data
 function createData(id, dropCourse, addCourse) {
   return {id, dropCourse, addCourse};
@@ -42,7 +45,10 @@ export default function MyMatches() {
               {rows.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b>
+                      <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
+                    <Chip size="small" color="primary" icon={<RemoveCircleOutlineIcon/>} style={{verticalAlign:"middle", backgroundColor:'#661429'}}  label={row.dropCourse}/> 
+                    <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
+                    <Chip color="success" size="small" style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} icon={<AddCircleOutlineIcon/>} label={row.addCourse}/>
                     </TableCell>
                     <TableCell align="right">
                       <IconButton component={Link} to="/messages">

@@ -6,13 +6,19 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
+import Chip from '@mui/material/Chip';
 import { TableContainer } from "@mui/material";
 // import { Link } from "react-router-dom";
+
+
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 // Generate Order Data
 function createData(id, dropCourse, addCourse) {
   return {id, dropCourse, addCourse};
 }
+
 
 const rows = [
   createData(1, 'CSCE 412', 'CSCE 482'),
@@ -32,7 +38,10 @@ export default function MyListings() {
               {rows.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell>
-                      Drop <b>{row.dropCourse}</b> for <b>{row.addCourse}</b>
+                    <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
+                    <Chip size="small" color="primary" icon={<RemoveCircleOutlineIcon/>} style={{verticalAlign:"middle", backgroundColor:'#661429'}}  label={row.dropCourse}/> 
+                    <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
+                    <Chip color="success" size="small" style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} icon={<AddCircleOutlineIcon/>} label={row.addCourse}/>
                     </TableCell>
                     <TableCell align="right">
                       {/* TODO: Modal logic here */}

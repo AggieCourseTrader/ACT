@@ -46,7 +46,7 @@ function EditTrades() {
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
   const [alert, setAlert] = useState(null)
-  const [clearDrop, setClearDrop] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(false)
 
   const classes = useStyles();
   let navigate = useNavigate();
@@ -95,7 +95,6 @@ function EditTrades() {
     if(dropClass.crn != '' && addClass.crn != '' && (addClass.crn != dropClass.crn)) {
         (async () => {
           let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
-          console.log(resp)
           setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
         })();
     } else {
@@ -133,7 +132,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} clear={clearDrop}/>
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
         </div>
       </div>
       <div className={classes.wrapper}>

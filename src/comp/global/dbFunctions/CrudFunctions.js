@@ -81,8 +81,7 @@ export async function getCoursesByCrn(crns) {
   return arr;  
 }
 
-// Creates a trade for each section the user can add with the user wanting to drop a certain course
-// Returns array of trade document references
+// Creates a trade with the creator wanting to drop and add certain courses
 export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),

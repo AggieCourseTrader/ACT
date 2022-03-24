@@ -76,23 +76,35 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
 
   const db_timestamp = new Timestamp(date_ts, 0);
 
+  const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),
+                          where("dropClassID", "==", dropCourseId));
+  const receivedTrade = await getDocs(q);
+  
+  // If the trade to be created does not already exist
+  if (receivedTrade.empty) {
  
-  // All attributes except tradeId which is automatically generated
-  const tradeDoc = { 
-    addClassID: addCourseId,
-    createdAt: db_timestamp,
-    creatorID: creatingUserId,
-    dropClassID: dropCourseId,
-    matchID: -1,
-    status: "requested"
+    // All attributes except tradeId which is automatically generated
+    const tradeDoc = { 
+      addClassID: addCourseId,
+      createdAt: db_timestamp,
+      creatorID: creatingUserId,
+      dropClassID: dropCourseId,
+      matchID: -1,
+      status: "requested"
+    }
+
+    await addDoc(trades, tradeDoc);
+    const tradeRef = await updateDoc(tradeRef, {
+      trade_id: tradeRef.id
+    });
+    
+    return tradeRef;
   }
 
-  await addDoc(trades, tradeDoc);
-  const tradeRef = await updateDoc(tradeRef, {
-    trade_id: tradeRef.id
-  });
-  
-  return tradeRef;
+  else {
+    console.log("Trade was already created");
+    return null;
+  }
 }
 
 // Get all trades that a user created

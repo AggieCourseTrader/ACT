@@ -41,7 +41,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	const [courseSelected, setCourseSelected] = useState(undefined);
 	const [sectionSelected, setSectionSelected] = useState('');
 
-	console.log(sectionSelected);
+	//console.log(sectionSelected);
 	//* Updates search results whenever something is typed
 	useEffect(() => {
 
@@ -50,7 +50,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
 			let courseNumber = text.replace(/\D*/g, '');
 			let arr = [];
-			console.log(courseText);
+			//console.log(courseText);
 			if(text.length < 2) {
 				setSearchResults([]);
 				return;
@@ -102,7 +102,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 							});
 						});
 					}
-					console.log(doc.id, " => ", doc.data());
+					//console.log(doc.id, " => ", doc.data());
 				});
 			}
 			// * Else filter using number if courseNumber is greaterthan > 2 (limit 3)
@@ -134,7 +134,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 							crns : crns
 						});
 					}
-					console.log(doc.id, " => ", doc.data());
+					//console.log(doc.id, " => ", doc.data());
 				});
 			}
 			setSearchResults(arr);
@@ -164,7 +164,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				let lecTimes = ''
 				let labDays = []
 				let labTimes = ''
-				console.log(section.data());
+				//console.log(section.data());
 				
 				Object.entries(section.data().meeting_times).forEach((t) => {
 					let day = t[0];
@@ -206,10 +206,11 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				
 				let item = {
 					'section' : section.data().section,
-					'lec' : (lecDays.length === 0) ? '' : lecDays.join('') + " " + lecTimes + " LEC",
-					'lab' : (labDays.length === 0) ? '' : labDays.join('') + " " + labTimes + " LAB"
+					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
+					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
+					'crn' : section.data().crn
 				};
-				console.log(item);
+				//console.log(item);
 				arr.push(item);
 			});
 	
@@ -230,9 +231,15 @@ function CourseSearchBox({ db, selectionCallBack }) {
 		
 
 				<Autocomplete
-				onChange={(e, v) => {setCourseSelected(searchResults.find(x => x.name === v))}}
+				onChange={(e, v) => {
+					setCourseSelected(searchResults.find(x => x.name === v))
+					selectionCallBack(searchResults.find(x => x.name === v))
+				}}
 				sx={csb}
-
+				// sx={{
+				// 	overflow: 'auto',
+				// 	flexGrow : 1
+				// }}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -245,9 +252,10 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
 					autoHighlight
-					openOnFocus
-				onChange={(e, v) => {console.log(v)}}
-				
+				onChange={(e, v) => {
+					selectionCallBack(sectionResults.find(item => item.section === v))
+				}}
+				openOnFocus
 				sx = {ssb}
 
 				

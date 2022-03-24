@@ -102,18 +102,17 @@ export async function getCoursesByCrn(crns) {
 
 // Creates a trade for each section the user can add with the user wanting to drop a certain course
 // Returns array of trade document references
-export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
+export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
 
 
   let tradeDoc;
   let tradeRef;
 
   let tradeArray = [];
-  for (let i = 0; i < addCourseIds.length; i++) {
   
     // All attributes except tradeId which is automatically generated
     tradeDoc = { 
-      addClassID: addCourseIds[i],
+      addClassID: addCourseId,
       createdAt: serverTimestamp(),
       creatorID: creatingUserId,
       dropClassID: dropCourseId,
@@ -121,13 +120,13 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
       status: "requested"
     }
   
+  
     tradeRef = await addDoc(trades, tradeDoc);
     await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
 
     tradeArray.push(tradeRef);
-  }  
   
   return tradeArray;
 }

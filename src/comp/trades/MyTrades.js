@@ -29,6 +29,7 @@ function MyTrades() {
 
   }, /*removed dependency array*/)
 
+  // 
   return (
       <React.Fragment>
         <Navbar name="My Trades" auth={auth} user={user}/>
@@ -55,7 +56,7 @@ function MyTrades() {
                           },
                         }}
                     >
-                      <MyListings/>
+                      <MyListings userId={user.uid}/>
                     </Paper>
                   </Grid>
                   {/* My Matches */}
@@ -71,7 +72,7 @@ function MyTrades() {
                           },
                         }}
                     >
-                      <MyMatches/>
+                      <MyMatches userId={user.uid}/>
                     </Paper>
                   </Grid>
                 </Grid>

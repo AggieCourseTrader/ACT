@@ -101,8 +101,8 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
       status: "requested"
     }
 
-    await addDoc(trades, tradeDoc);
-    const tradeRef = await updateDoc(tradeRef, {
+    const tradeRef = await addDoc(trades, tradeDoc);
+    await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
     

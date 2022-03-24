@@ -4,7 +4,7 @@
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
 
 import { getFirestore, collection, doc, query, where, setDoc, addDoc, getDoc,
-         getDocs, deleteDoc, updateDoc, Timestamp } from 'firebase/firestore';
+         getDocs, deleteDoc, updateDoc,  serverTimestamp } from 'firebase/firestore';
 
 import { app } from '../../../firebase-config'
 
@@ -82,7 +82,7 @@ export async function getCoursesByCrn(crns) {
 }
 
 // Creates a trade with the creator wanting to drop and add certain courses
-export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
+export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),
                           where("dropClassID", "==", dropCourseId));
@@ -92,8 +92,8 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseIds) {
   if (receivedTrade.empty) {
  
     // All attributes except tradeId which is automatically generated
-    tradeDoc = { 
-      addClassID: addCourseIds[i],
+    let tradeDoc = { 
+      addClassID: addCourseId,
       createdAt: serverTimestamp(),
       creatorID: creatingUserId,
       dropClassID: dropCourseId,

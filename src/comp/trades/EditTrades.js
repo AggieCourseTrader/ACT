@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
-import { updateTrade, createTrade, deleteTrade, db, getTradeId} from '../global/dbFunctions/CrudFunctions';
+import {createTrade, deleteTrade, db, getTradeId} from '../global/dbFunctions/CrudFunctions';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -46,7 +46,7 @@ function EditTrades() {
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
   const [alert, setAlert] = useState(null)
-  const [isUpdate, setIsUpdate] = useState(false)
+  //const [isUpdate, setIsUpdate] = useState(false)
 
   const classes = useStyles();
   let navigate = useNavigate();
@@ -92,9 +92,10 @@ function EditTrades() {
 
 
   const tradeAddUpdate = () => {
-    if(dropClass.crn != '' && addClass.crn != '' && (addClass.crn != dropClass.crn)) {
+    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
         (async () => {
           let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
+          console.log(resp)
           setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
         })();
     } else {
@@ -103,10 +104,11 @@ function EditTrades() {
   }
 
   const tradeDelete = () => {
-    if(dropClass.crn != '' && addClass.crn != '' && (addClass.crn != dropClass.crn)) {
+    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
       (async () => {
         let tradeId = await getTradeId(userId.uid, dropClass.crn, addClass.crn);
         let del = await deleteTrade(tradeId);
+        console.log(del)
         setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
       })();
     } else {

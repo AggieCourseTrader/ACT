@@ -39,7 +39,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	// const [queryCounter, setQueryCounter] = useState(0);
 	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState(undefined);
-	const [sectionSelected, setSectionSelected] = useState('');
+	
 
 	//console.log(sectionSelected);
 	//* Updates search results whenever something is typed
@@ -148,7 +148,6 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	useEffect(() => {
 
 		const f = async () => {
-			setSectionSelected('');
 			setSectionResults([]);
 	
 			if(courseSelected === undefined) {

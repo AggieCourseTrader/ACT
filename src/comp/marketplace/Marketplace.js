@@ -5,7 +5,8 @@ import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
 import { db } from '../global/dbFunctions/CrudFunctions'
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { Card, CardActions, CardContent, Button } from '@mui/material';
+import { Button } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
 function Marketplace() {
@@ -21,12 +22,73 @@ function Marketplace() {
        navigate("/")
      }
     });
-
+  
    }, /*removed dependency array*/)
+  
+  const matchButton = (params) => {
+    return (
+      <Button>
+        Match
+      </Button>
+    )
+  }
+
+  const columns = [
+  // { field: 'id', headerName: 'ID', width: 90 },
+  {
+    field: 'add',
+    headerName: 'Class I want to Add',
+    flex: 1,
+    editable: true,
+    sortable: false,
+  },
+  {
+    field: 'drop',
+    headerName: 'Class I can Drop',
+    flex: 1,
+    editable: true,
+    sortable: false,
+  },
+  {
+    field: 'action',
+    headerName: 'I want to Match',
+    flex: 1,
+    sortable: false,
+    renderCell: matchButton,
+  },
+];
+
+const rows = [
+  { id: 1, add: 'CSCE 110: 401', drop: 'CSCE 121: 503'},
+  { id: 2, add: 'CSCE 210: 302', drop: 'CSCE 221: 503'},
+  { id: 3, add: 'CSCE 310: 501', drop: 'CSCE 321: 503'},
+  { id: 4, add: 'CSCE 410: 411', drop: 'CSCE 421: 503'},
+  { id: 5, add: 'CSCE 421: 212', drop: 'CSCE 411: 503'},
+  { id: 6, add: 'CSCE 489: 301', drop: 'CSCE 222: 503'},
+  { id: 7, add: 'CSCE 482: 402', drop: 'CSCE 310: 503'},
+  { id: 8, add: 'CSCE 315: 305', drop: 'CSCE 470: 503'},
+  { id: 9, add: 'CSCE 312: 207', drop: 'CSCE 420: 503'},
+];
+
+  // const [page, setPage] = React.useState(0);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
   return (
     <div>
-      <Navbar name = "Trade Markteplace" auth={auth} user={user}/>
+      <Navbar name = "Trade Marketplace" auth={auth} user={user}/>
       <Box sx={{ flexGrow: 1, height: '80vh', background: '#f6f6f6'}}>
         <Box sx={{ flexGrow: 1}}>
             <Box sx = {{display: "flex", justifyContent: "center", flexWrap : "wrap", m: 2}}>
@@ -59,68 +121,19 @@ function Marketplace() {
             border: 2,
             borderRadius: 2,
             marginLeft: "15%",
-            marginRight: '15%'
-          }}>              
-            <Card sx = {{border: 1, display: "flex", borderColor: "#D3D3D3"}}>
-                <CardContent sx={{flexGrow:1}}>
-                  <Typography sx = {{fontSize: 20}}>
-                    CSCE 482: 501 for CSCE 421: 203
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button variant = "outlined">
-                    Trade
-                  </Button>
-                </CardActions>
-              </Card>
-              <Card sx = {{border: 1, display: "flex", borderColor: "#D3D3D3"}}>
-                <CardContent sx={{flexGrow:1}}>
-                  <Typography sx = {{fontSize: 20}}>
-                    MATH 152: 203 for MATH 152: 201
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button variant = "outlined">
-                    Trade
-                  </Button>
-                </CardActions>
-              </Card>
-              <Card sx = {{border: 1, display: "flex", borderColor: "#D3D3D3"}}>
-                <CardContent sx={{flexGrow:1}}>
-                  <Typography sx = {{fontSize: 20}}>
-                    CSCE 411: 201 for CSCE 421: 203
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button variant = "outlined">
-                    Trade
-                  </Button>
-                </CardActions>
-              </Card>
-              <Card sx = {{border: 1, display: "flex", borderColor: "#D3D3D3"}}>
-                <CardContent sx={{flexGrow:1}}>
-                  <Typography sx = {{fontSize: 20}}>
-                    ENGR 102: 200 for CHEM 107: 211
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button variant = "outlined">
-                    Trade
-                  </Button>
-                </CardActions>
-              </Card>
-              <Card sx = {{border: 1, display: "flex", borderColor: "#D3D3D3"}}>
-                <CardContent sx={{flexGrow:1}}>
-                  <Typography sx = {{fontSize: 20}}>
-                    CSCE 222: 206 for CSCE 221: 208
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button variant = "outlined">
-                    Trade
-                  </Button>
-                </CardActions>
-              </Card>
+            marginRight: '15%',
+            height: 300
+          }}>   
+            {/* table section */}
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              rowHeight={38}
+              disableSelectionOnClick
+              disableColumnMenu
+            />
             </Box>
             <Box sx = {{textAlign: "center", m: 2}}>
               <Button variant = "outlined" justifyContent = "center">

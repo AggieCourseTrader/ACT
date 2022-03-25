@@ -40,6 +40,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState(undefined);
 
+
 	//console.log(sectionSelected);
 
 	//* Updates search results whenever something is typed

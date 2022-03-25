@@ -75,25 +75,32 @@ export default function MyListings({userId}) {
         <TableContainer>
           <Table size="small">
             <TableBody>
-              {trades.map((row, index) => (
+              {trades.map((row, index) => {
+                if(!("addClass" in row)  || !("dropClass" in row)) {
+                  return false
+                }
+                if(!(row.addClass) || !(row.dropClass)) {
+                  return false
+                }
+                return (
                   <TableRow key={"my-listings-" + index}>
-                    <TableCell>
-                    
-                    <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
-                    
-                    <Chip size="small" color="primary" 
-                          icon={<RemoveCircleOutlineIcon/>} 
-                          style={{verticalAlign:"middle", backgroundColor:'#661429'}}
-                          label={[row.dropClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.dropClass.section}</span>]}/> 
-                    
-                    <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
-                    
-                    <Chip color="success" size="small" 
-                          style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
-                          icon={<AddCircleOutlineIcon/>} 
-                          label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
-                   
-                    </TableCell>
+                  <TableCell>
+                  
+                  <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
+                  
+                  <Chip size="small" color="primary" 
+                        icon={<RemoveCircleOutlineIcon/>} 
+                        style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+                        label={[row.dropClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.dropClass.section}</span>]}/> 
+                  
+                  <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
+                  
+                  <Chip color="success" size="small" 
+                        style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
+                        icon={<AddCircleOutlineIcon/>} 
+                        label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
+                  
+                  </TableCell>
                     <TableCell align="right">
                       {/* TODO: Modal logic here */}
                       <IconButton>
@@ -101,7 +108,8 @@ export default function MyListings({userId}) {
                       </IconButton>
                     </TableCell>
                   </TableRow>
-              ))}
+                  )
+              })}
             </TableBody>
           </Table>
         </TableContainer>

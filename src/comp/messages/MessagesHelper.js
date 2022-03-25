@@ -87,10 +87,15 @@ export class IMessage {
             sender : this.oAuthId
         });
 
-        // Notify other user of text
-        const g = "unreadMessages." + this.oAuthId;
+        // // Notify other user of text
+        // const exists = await getDoc(this.receiverDoc);
+        
+        // const g = "unreadMessages." + this.oAuthId;
         await setDoc(this.receiverDoc, {
-            [g] : increment(1)
+            "unreadMessages" : {
+                [this.oAuthId] : increment(1)
+            }
+            // [g] : increment(1)
         }, {merge : true});
     }
 

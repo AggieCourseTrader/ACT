@@ -1,14 +1,13 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import {useNavigate} from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../../firebase-config'
+import { useNavigate } from 'react-router-dom'
+import { onAuthStateChanged, auth } from '../../firebase-config'
+
+
 import Box from '@mui/material/Box';
-// import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-// import { mainListItems, secondaryListItems } from './listItems';
-// import Chart from './Chart';
 import MyListings from './MyListings';
 import MyMatches from './MyMatches';
 import Navbar from "../global/navbar/Navbar";
@@ -30,6 +29,7 @@ function MyTrades() {
 
   }, /*removed dependency array*/)
 
+  // 
   return (
       <React.Fragment>
         <Navbar name="My Trades" auth={auth} user={user}/>
@@ -50,10 +50,13 @@ function MyTrades() {
                           p: 2,
                           display: 'flex',
                           flexDirection: 'column',
-                          height: 400,
+                          height: {
+                            xs: 300,
+                            sm: 500,
+                          },
                         }}
                     >
-                      <MyListings/>
+                      <MyListings userId={user.uid}/>
                     </Paper>
                   </Grid>
                   {/* My Matches */}
@@ -63,10 +66,13 @@ function MyTrades() {
                           p: 2,
                           display: 'flex',
                           flexDirection: 'column',
-                          height: 400,
+                          height: {
+                            xs: 300,
+                            sm: 500,
+                          },
                         }}
                     >
-                      <MyMatches/>
+                      <MyMatches userId={user.uid}/>
                     </Paper>
                   </Grid>
                 </Grid>

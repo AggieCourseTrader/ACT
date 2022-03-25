@@ -13,6 +13,8 @@ function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
+  const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
+  const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -86,6 +88,38 @@ const rows = [
   //   setPage(0);
   // };
 
+
+   const selectionAddCallback = (data) => {
+    if(data !== undefined){
+      if(typeof data === 'object') {
+        if(data.name){
+          setAddClass({...addClass, class:data.name})
+        } else if (data.crn) {
+          setAddClass({...addClass, section:data.section, crn:data.crn})
+        } 
+      } else {
+        setAddClass({class:'', section: '', crn: '' })
+      }
+    }
+  }
+
+  const selectionDropCallback = (data) => {
+    if(data !== undefined){
+      if(typeof data === 'object'){
+        if(data.name){
+          setDropClass({...dropClass, class:data.name})
+        } else if (data.crn) {
+          setDropClass({...dropClass, section:data.section, crn:data.crn})
+        } 
+      }
+    } else {
+      setDropClass({class:'', section: '', crn: '' })
+    }
+  }
+
+  console.log(addClass)
+  console.log(dropClass)
+
   return (
     <div>
       <Navbar name = "Trade Marketplace" auth={auth} user={user}/>
@@ -98,10 +132,11 @@ const rows = [
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                color : "#525252"
+                color : "#500000",
+                fontWeight: "lighter"
               }}>I want a spot in </Typography>
 
-              <CourseSearchBox db={db} />
+              <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
 
             </Box>
             <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
@@ -111,10 +146,11 @@ const rows = [
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                color : "#525252"
+                color : "#500000",
+                fontWeight: "lighter"
               }}>I can drop </Typography>
 
-              <CourseSearchBox db={db} />
+              <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
             </Box>
           </Box>
           <Box sx = {{

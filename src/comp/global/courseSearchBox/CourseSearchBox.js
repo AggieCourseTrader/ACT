@@ -39,9 +39,10 @@ function CourseSearchBox({ db, selectionCallBack }) {
 	// const [queryCounter, setQueryCounter] = useState(0);
 	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState(undefined);
-	
+
 
 	//console.log(sectionSelected);
+
 	//* Updates search results whenever something is typed
 	useEffect(() => {
 
@@ -214,7 +215,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			});
 	
 			setSectionResults(arr);
-			// console.log(sectionResults);
+			
 		};
 
 		f();
@@ -222,8 +223,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 	// let getCourseList = async (text) => {
 		
-	// };
-
+	// }
 	return (
 		<>
 		
@@ -252,7 +252,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				disabled={(courseSelected === undefined) ? true : false}
 					autoHighlight
 				onChange={(e, v) => {
-					selectionCallBack(sectionResults.find(item => item.section === v))
+					selectionCallBack(v)
 				}}
 				openOnFocus
 				sx = {ssb}

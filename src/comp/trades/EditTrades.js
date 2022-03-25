@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
-import { updateTrade, createTrade, deleteTrade, db } from '../global/dbFunctions/CrudFunctions';
+import {createTrade, deleteTrade, db, getTradeId} from '../global/dbFunctions/CrudFunctions';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit'
+import Alert from '@mui/material/Alert';
 
 
 const useStyles = makeStyles({
@@ -43,6 +45,8 @@ function EditTrades() {
   const [userId, setUserId] = useState(null);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+  const [alert, setAlert] = useState(null)
+  //const [isUpdate, setIsUpdate] = useState(false)
 
   const classes = useStyles();
   let navigate = useNavigate();
@@ -63,9 +67,11 @@ function EditTrades() {
       if(typeof data === 'object') {
         if(data.name){
           setAddClass({...addClass, class:data.name})
-        } else if (data.section) {
+        } else if (data.crn) {
           setAddClass({...addClass, section:data.section, crn:data.crn})
         } 
+      } else {
+        setAddClass({class:'', section: '', crn: '' })
       }
     }
   }
@@ -75,50 +81,69 @@ function EditTrades() {
       if(typeof data === 'object'){
         if(data.name){
           setDropClass({...dropClass, class:data.name})
-        } else if (data.section) {
+        } else if (data.crn) {
           setDropClass({...dropClass, section:data.section, crn:data.crn})
         } 
       }
-    } 
+    } else {
+      setDropClass({class:'', section: '', crn: '' })
+    }
   }
 
 
   const tradeAddUpdate = () => {
-    //console.log(userId.uid)
-    //console.log(addClass.crn)
-   // console.log(dropClass.crn)
-    (async () => {
-      let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
-      console.log(resp)
-    })();
+    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
+        (async () => {
+          let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
+          console.log(resp)
+          setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
+        })();
+    } else {
+      setAlert(<Alert severity="error">All dropdowns must be filled to create a trade</Alert>)
+    }
   }
 
   const tradeDelete = () => {
-    (async () => {
-      let resp = await deleteTrade(userId.uid, dropClass.crn, addClass.crn);
-    })();
+    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
+      (async () => {
+        let tradeId = await getTradeId(userId.uid, dropClass.crn, addClass.crn);
+        let del = await deleteTrade(tradeId);
+        console.log(del)
+        setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
+      })();
+    } else {
+      setAlert(<Alert severity="error">No Trade was deleted, make sure all dropdowns are filled and have correct info</Alert>);
+    }
   }
 
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
         <div className={classes.container}>
-          <Typography component="h2" variant="h5" color="primary" gutterBottom>Edit Trades</Typography>  
+          <EditIcon/>
         </div>
       </div>
       <div className={classes.wrapper}>
         <div className={classes.container}>
-          <Typography component="h2" variant="h6" color="primary" gutterBottom>I want a spot in</Typography>  
+          <Typography sx = {{
+                fontSize : "4vmin",
+                color : "#500000",
+                fontWeight: "lighter"
+            }}>I want a spot in </Typography>  
         </div>
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback}/>
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
         </div>
       </div>
       <div className={classes.wrapper}>
         <div className={classes.container}>
-          <Typography component="h2" variant="h6" color="primary" gutterBottom>I can drop</Typography>  
+          <Typography sx = {{
+                fontSize : "4vmin",
+                color : "#500000",
+                fontWeight: "lighter"
+            }}>I can drop</Typography>   
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -130,6 +155,11 @@ function EditTrades() {
         <div className={classes.container}>
           <Button sx={{marginRight: "1%"}}variant="outlined" size="large" onClick={tradeDelete}>Delete Trade</Button>
           <Button variant="contained" size="large" onClick={tradeAddUpdate}>Submit Trade</Button>
+        </div>
+      </div>
+      <div className={classes.wrapper}>
+        <div className={classes.container}>
+          <div className="Alert">{alert}</div>
         </div>
       </div>
     </React.Fragment>

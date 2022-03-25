@@ -36,7 +36,8 @@ function Marketplace() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                color : "#525252"
+                color : "#500000",
+                fontWeight: "lighter"
               }}>I want a spot in </Typography>
 
               <CourseSearchBox db={db} />
@@ -49,7 +50,8 @@ function Marketplace() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                color : "#525252"
+                color : "#500000",
+                fontWeight: "lighter"
               }}>I can drop </Typography>
 
               <CourseSearchBox db={db} />

@@ -216,4 +216,24 @@ export async function deleteTrade(tradeId) {
   await deleteDoc(tradeRef);
 }
 
+export async function getTradeId(userId, dropCourseId, addCourseId) {
+
+  const q = query(trades, where("creatorID", "==", userId), where("addClassID", "==", addCourseId),
+                          where("dropClassID", "==", dropCourseId));
+  const receivedTrade = await getDocs(q);
+
+  let tradeId;
+
+  if (!receivedTrade.empty) {
+    receivedTrade.forEach((trade) => { 
+      tradeId = trade.id
+    });
+  }
+
+  else {
+    console.log("Trade does not exist");
+  }
+
+  return tradeId;
+}
 

@@ -81,8 +81,14 @@ export async function getCoursesByCrn(crns) {
   return arr;  
 }
 
+
 // Creates a trade with the creator wanting to drop and add certain courses
+
 export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
+
+
+  let tradeDoc;
+  let tradeRef;
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),
                           where("dropClassID", "==", dropCourseId));
@@ -92,7 +98,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
   if (receivedTrade.empty) {
  
     // All attributes except tradeId which is automatically generated
-    let tradeDoc = { 
+    tradeDoc = { 
       addClassID: addCourseId,
       createdAt: serverTimestamp(),
       creatorID: creatingUserId,
@@ -100,8 +106,9 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
       matchID: -1,
       status: "requested"
     }
-
-    const tradeRef = await addDoc(trades, tradeDoc);
+ 
+  
+    tradeRef = await addDoc(trades, tradeDoc);
     await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
@@ -253,6 +260,26 @@ export async function deleteTrade(tradeId) {
   await deleteDoc(tradeRef);
 }
 
+export async function getTradeId(userId, dropCourseId, addCourseId) {
+
+  const q = query(trades, where("creatorID", "==", userId), where("addClassID", "==", addCourseId),
+                          where("dropClassID", "==", dropCourseId));
+  const receivedTrade = await getDocs(q);
+
+  let tradeId;
+
+  if (!receivedTrade.empty) {
+    receivedTrade.forEach((trade) => { 
+      tradeId = trade.id
+    });
+  }
+
+  else {
+    console.log("Trade does not exist");
+  }
+
+  return tradeId;
+}
 
 export async function getTradeId(userId, dropCourseId, addCourseId) {
 

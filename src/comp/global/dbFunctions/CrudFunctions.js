@@ -197,8 +197,9 @@ export async function getTrades(dropCourseId, addCourseId) {
   const q = query(trades, where("dropClassID", "==", dropCourseId),
                   where("addClassID", "==", addCourseId));
   const receivedTrades = await getDocs(q);
-  
+  console.log("CRUD: " + receivedTrades);
   if (!receivedTrades.empty) {
+    console.log("returning trades");
     return receivedTrades;
   }
 

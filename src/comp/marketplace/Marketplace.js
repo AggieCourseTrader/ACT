@@ -9,6 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
+import {getTrades} from "../global/dbFunctions/CrudFunctions"
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
@@ -35,6 +36,53 @@ function Marketplace() {
     )
   }
 
+  // const selectionDropCallback = (data) => {
+  //   if(data !== undefined){
+  //     if(typeof data === 'object'){
+  //       if(data.name){
+  //         setDropClass({...dropClass, class:data.name})
+  //       } else if (data.crn) {
+  //         setDropClass({...dropClass, section:data.section, crn:data.crn})
+  //       } 
+  //     }
+  //   } else {
+  //     setDropClass({class:'', section: '', crn: '' })
+  //   }
+  // }
+
+  // where both addClass and dropClass are filled
+  let rows = [];
+  const f = () => {
+    if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+      let trades;
+      (async () => {
+      rows = [];
+      trades = await getTrades(addClass.crn, dropClass.crn);
+      // let trades;
+      // tradeSnap.then((data) => {
+      //   trades = data;
+      // });
+      console.log(trades);
+      })();
+      if (trades !== null) {
+        console.log(trades);
+        let counter = 0;
+        trades.forEach((doc) => {
+          // ensure trade isnt already matched
+          if (doc.get('matchID') === -1) {
+            // not matched, add to rows var
+            counter++;
+            let addClassString = addClass.class + ": " + addClass.section;
+            let dropClassString = dropClass.class + ": " + dropClass.section;
+            rows.push({id: counter, add: addClassString, drop: dropClassString});
+          }
+        })
+      }
+    }
+  };
+  f();
+    
+  // where only addClass is filled
   const columns = [
   // { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -60,17 +108,17 @@ function Marketplace() {
   },
 ];
 
-const rows = [
-  { id: 1, add: 'CSCE 110: 401', drop: 'CSCE 121: 503'},
-  { id: 2, add: 'CSCE 210: 302', drop: 'CSCE 221: 503'},
-  { id: 3, add: 'CSCE 310: 501', drop: 'CSCE 321: 503'},
-  { id: 4, add: 'CSCE 410: 411', drop: 'CSCE 421: 503'},
-  { id: 5, add: 'CSCE 421: 212', drop: 'CSCE 411: 503'},
-  { id: 6, add: 'CSCE 489: 301', drop: 'CSCE 222: 503'},
-  { id: 7, add: 'CSCE 482: 402', drop: 'CSCE 310: 503'},
-  { id: 8, add: 'CSCE 315: 305', drop: 'CSCE 470: 503'},
-  { id: 9, add: 'CSCE 312: 207', drop: 'CSCE 420: 503'},
-];
+// const rows = [
+//   { id: 1, add: 'CSCE 110: 401', drop: 'CSCE 121: 503'},
+//   { id: 2, add: 'CSCE 210: 302', drop: 'CSCE 221: 503'},
+//   { id: 3, add: 'CSCE 310: 501', drop: 'CSCE 321: 503'},
+//   { id: 4, add: 'CSCE 410: 411', drop: 'CSCE 421: 503'},
+//   { id: 5, add: 'CSCE 421: 212', drop: 'CSCE 411: 503'},
+//   { id: 6, add: 'CSCE 489: 301', drop: 'CSCE 222: 503'},
+//   { id: 7, add: 'CSCE 482: 402', drop: 'CSCE 310: 503'},
+//   { id: 8, add: 'CSCE 315: 305', drop: 'CSCE 470: 503'},
+//   { id: 9, add: 'CSCE 312: 207', drop: 'CSCE 420: 503'},
+// ];
 
   // const [page, setPage] = React.useState(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);

@@ -86,6 +86,41 @@ function Marketplace() {
       console.log("Printing rows;")
       console.log(rows);
     }
+    else if (addClass.class !== '' && addClass.section !== '') {
+      let trades;
+      setRows([]);
+      trades = await getTradesByDrop(addClass.crn);
+      
+      // let trades;
+      // tradeSnap.then((data) => {
+      //   trades = data;
+      // });
+      console.log(trades);
+
+      let arr = [];
+      if (trades !== null) {
+        console.log(trades);
+        let counter = 0;
+        trades.forEach((doc) => {
+          // ensure trade isnt already matched
+          console.log(doc.data());
+          if (doc.get('matchID') === -1) {
+            // not matched, add to rows var
+            console.log("here")
+            counter++;
+            let addClassString = addClass.class + ": " + addClass.section;
+            let dropClassString = dropClass.class + ": " + dropClass.section;
+            arr.push({id: counter, add: addClassString, drop: dropClassString});
+          }
+        })
+      }
+      setRows(arr);
+      console.log("Printing rows;")
+      console.log(rows);
+    }
+    else if (dropClass.class !== '' && dropClass.section !== '') {
+
+    }
   };
 
   useEffect(() => {

@@ -155,10 +155,12 @@ export async function getTrade(tradeId) {
 }
 
 
+
 // Get trades with a specific section being dropped
 export async function getTradesByDrop(dropCourseId) {
 
   const q = query(trades, where("dropClassID", "==", dropCourseId));
+
 
   const receivedTrades = await getDocs(q);
   
@@ -197,9 +199,9 @@ export async function getTrades(dropCourseId, addCourseId) {
   const q = query(trades, where("dropClassID", "==", dropCourseId),
                   where("addClassID", "==", addCourseId));
   const receivedTrades = await getDocs(q);
-  console.log("CRUD: " + receivedTrades);
+
+  
   if (!receivedTrades.empty) {
-    console.log("returning trades");
     return receivedTrades;
   }
 
@@ -243,6 +245,19 @@ export async function updateTradeMatch(tradeId, matchedUserId) {
     return null
   }
 }
+
+// Updates the given trade with the new status
+export async function updateTradeStatus(tradeId, tradeStatus) {
+  const tradeRef = doc(db, "trades", tradeId);
+  
+  const updatedFields = {
+    status: tradeStatus
+  }
+
+  const updateRef = await updateDoc(tradeRef, updatedFields);
+  return updateRef;
+}
+
 
 // Updates the given trade with the new status
 export async function updateTradeStatus(tradeId, tradeStatus) {

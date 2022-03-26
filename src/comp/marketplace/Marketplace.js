@@ -16,7 +16,9 @@ function Marketplace() {
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+
   const [rows, setRows] = useState([]);
+
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
      if (user) {
@@ -236,6 +238,7 @@ function Marketplace() {
   //   setRowsPerPage(parseInt(event.target.value, 10));
   //   setPage(0);
   // };
+
 
 
    const selectionAddCallback = (data) => {

@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import {getTrades, getTradesByDrop, getCoursesByCrn, getTradesByAdd} from "../global/dbFunctions/CrudFunctions"
+import {getTrades, getTradesByDrop, getCoursesByCrn, getTradesByAdd, updateTradeMatch, createTrade} from "../global/dbFunctions/CrudFunctions"
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
@@ -27,14 +27,6 @@ function Marketplace() {
     });
   
    }, /*removed dependency array*/)
-  
-  const matchButton = (params) => {
-    return (
-      <Button>
-        Match
-      </Button>
-    )
-  }
 
   // const selectionDropCallback = (data) => {
   //   if(data !== undefined){
@@ -78,7 +70,7 @@ function Marketplace() {
             counter++;
             let addClassString = addClass.class + ": " + addClass.section;
             let dropClassString = dropClass.class + ": " + dropClass.section;
-            arr.push({id: counter, add: addClassString, drop: dropClassString});
+            arr.push({id: doc.get("trade_id"), add: addClassString, drop: dropClassString});
           }
         })
       }
@@ -125,7 +117,7 @@ function Marketplace() {
           returnVal.drop = ele.course + ": " + ele.section;
           ele = courseData.find(ele => ele.crn === x.dropClassID);
           returnVal.add = ele.course + ": " + ele.section;
-          returnVal.id = index;
+          returnVal.id = x.trade_id;
           return returnVal;
         })
 
@@ -161,7 +153,7 @@ function Marketplace() {
           returnVal.drop = ele.course + ": " + ele.section;
           ele = courseData.find(ele => ele.crn === x.dropClassID);
           returnVal.add = ele.course + ": " + ele.section;
-          returnVal.id = index;
+          returnVal.id = x.trade_id;
           return returnVal;
         })
 
@@ -201,7 +193,19 @@ function Marketplace() {
     headerName: 'I want to Match',
     flex: 1,
     sortable: false,
-    renderCell: matchButton,
+    renderCell: (params) => (
+      <strong>
+        <Button
+          variant = 'outlined'
+          onClick={() => {
+            updateTradeMatch(params.id, user.uid);
+            alert('match successful');
+          }}
+        >
+          Trade
+        </Button>
+      </strong>
+    )
   },
 ];
 
@@ -317,7 +321,14 @@ function Marketplace() {
             />
             </Box>
             <Box sx = {{textAlign: "center", m: 2}}>
-              <Button variant = "outlined" justifyContent = "center">
+              <Button variant = "outlined" justifyContent = "center"
+                onClick={() => {
+                  if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+                    createTrade(user.uid, dropClass.crn, addClass.crn);
+                    alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                  }
+                }}
+              >
                 Create Trade
               </Button>
             </Box>

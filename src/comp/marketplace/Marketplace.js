@@ -16,7 +16,7 @@ function Marketplace() {
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
-
+  const [rows, setRows] = useState([]);
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
      if (user) {
@@ -51,36 +51,48 @@ function Marketplace() {
   // }
 
   // where both addClass and dropClass are filled
-  let rows = [];
-  const f = () => {
+  // let rows = [];
+
+
+  const f = async () => {
     if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
       let trades;
-      (async () => {
-      rows = [];
+      setRows([]);
       trades = await getTrades(addClass.crn, dropClass.crn);
       // let trades;
       // tradeSnap.then((data) => {
       //   trades = data;
       // });
       console.log(trades);
-      })();
+
+      let arr = [];
       if (trades !== null) {
         console.log(trades);
         let counter = 0;
         trades.forEach((doc) => {
           // ensure trade isnt already matched
+          console.log(doc.data());
           if (doc.get('matchID') === -1) {
             // not matched, add to rows var
+            console.log("here")
             counter++;
             let addClassString = addClass.class + ": " + addClass.section;
             let dropClassString = dropClass.class + ": " + dropClass.section;
-            rows.push({id: counter, add: addClassString, drop: dropClassString});
+            arr.push({id: counter, add: addClassString, drop: dropClassString});
           }
         })
       }
+      setRows(arr);
+      console.log("Printing rows;")
+      console.log(rows);
     }
   };
-  f();
+
+  useEffect(() => {
+    f();
+  }, [addClass, dropClass]);
+
+
     
   // where only addClass is filled
   const columns = [

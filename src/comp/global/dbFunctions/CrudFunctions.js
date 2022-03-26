@@ -258,22 +258,6 @@ export async function updateTradeStatus(tradeId, tradeStatus) {
   return updateRef;
 }
 
-
-// Updates the given trade with the new status
-export async function updateTradeStatus(tradeId, tradeStatus) {
-  const tradeRef = doc(db, "trades", tradeId);
-  
-  const updatedFields = {
-    status: tradeStatus
-  }
-
-  const updateRef = await updateDoc(tradeRef, updatedFields);
-  return updateRef;
-}
-
-
-
-
 // Deletes the trade with the given tradeId
 export async function deleteTrade(tradeId) {
 

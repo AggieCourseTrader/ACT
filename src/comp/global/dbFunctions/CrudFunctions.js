@@ -226,15 +226,21 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 export async function updateTradeMatch(tradeId, matchedUserId) {
    
   const tradeRef = doc(db, "trades", tradeId);
-  
-  const updatedFields = {
-    matchID: matchedUserId,
-    status: "matched"
+
+  if (tradeRef.get("status") === "requested") {
+    
+    const updatedFields = {
+      matchID: matchedUserId,
+      status: "matched"
+    }
+
+    const updateRef = await updateDoc(tradeRef, updatedFields);
+    return updateRef;
   }
 
-  const updateRef = await updateDoc(tradeRef, updatedFields);
-  return updateRef;
-
+  else {
+    return null
+  }
 }
 
 // Updates the given trade with the new status

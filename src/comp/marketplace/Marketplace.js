@@ -47,127 +47,124 @@ function Marketplace() {
   // where both addClass and dropClass are filled
   // let rows = [];
 
+   
 
-  const f = async () => {
-    if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-      let trades;
-      setRows([]);
-      trades = await getTrades(addClass.crn, dropClass.crn);
-      // let trades;
-      // tradeSnap.then((data) => {
-      //   trades = data;
-      // });
-      console.log(trades);
-
-      let arr = [];
-      if (trades !== null) {
-        console.log(trades);
-        let counter = 0;
-        trades.forEach((doc) => {
-          // ensure trade isnt already matched
-          console.log(doc.data());
-          if (doc.get('matchID') === -1) {
-            // not matched, add to rows var
-            console.log("here")
-            counter++;
-            let addClassString = addClass.class + ": " + addClass.section;
-            let dropClassString = dropClass.class + ": " + dropClass.section;
-            arr.push({id: doc.get("trade_id"), add: addClassString, drop: dropClassString});
-          }
-        })
-      }
-      setRows(arr);
-      console.log("Printing rows;")
-      console.log(rows);
-    }
-    else if (addClass.class !== '' && addClass.section !== '') {
-      let trades;
-      setRows([]);
-      trades = await getTradesByDrop(addClass.crn);
-      
-      // let trades;
-      // tradeSnap.then((data) => {
-      //   trades = data;
-      // });
-      console.log(trades);
-
-      let arr = [];
-      if (trades !== null) {
-        console.log(trades);
-        let counter = 0;
-        trades.forEach((doc) => {
-          // ensure trade isnt already matched
-          console.log(doc.data());
-          if (doc.get('status') === "requested") {
-            // not matched, add to rows var
-            console.log("here")
-            arr.push(doc.data());
-            counter++;
-          }
-        })
-
-        // The trade requests only have a crn so we have to get the course names from the crns
-        let crns = arr.map((d) => d.addClassID);
-        crns = crns.concat(arr.map((d) => d.dropClassID));
-
-        let courseData = await getCoursesByCrn(crns);
-        console.log(courseData);
-        // Merge the course names with the trade requests
-        arr = arr.map((x, index) => {
-          let returnVal = {};
-          let ele = courseData.find(ele => ele.crn === x.addClassID);
-          returnVal.drop = ele.course + ": " + ele.section;
-          ele = courseData.find(ele => ele.crn === x.dropClassID);
-          returnVal.add = ele.course + ": " + ele.section;
-          returnVal.id = x.trade_id;
-          return returnVal;
-        })
-
-      }
-      setRows(arr);
-      console.log("Printing rows;")
-      console.log(rows);
-    }
-    else if (dropClass.class !== '' && dropClass.section !== '') {
-      let trades;
-      setRows([]);
-      trades = await getTradesByAdd(dropClass.crn);
-
-      let arr = [];
-      if (trades !== null) {
-        console.log(trades);
-        trades.forEach((doc) => {
-          if (doc.get('status') === "requested") {
-            arr.push(doc.data());
-          }
-        })
-
-        // The trade requests only have a crn so we have to get the course names from the crns
-        let crns = arr.map((d) => d.addClassID);
-        crns = crns.concat(arr.map((d) => d.dropClassID));
-
-        let courseData = await getCoursesByCrn(crns);
-
-        // Merge the course names with the trade requests
-        arr = arr.map((x, index) => {
-          let returnVal = {};
-          let ele = courseData.find(ele => ele.crn === x.addClassID);
-          returnVal.drop = ele.course + ": " + ele.section;
-          ele = courseData.find(ele => ele.crn === x.dropClassID);
-          returnVal.add = ele.course + ": " + ele.section;
-          returnVal.id = x.trade_id;
-          return returnVal;
-        })
-
-      }
-      setRows(arr);
-    }
-    else {
-      setRows([]);
-    }
-  };
 
   useEffect(() => {
+    const f = async () => {
+      if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+        let trades;
+        setRows([]);
+        trades = await getTrades(addClass.crn, dropClass.crn);
+        // let trades;
+        // tradeSnap.then((data) => {
+        //   trades = data;
+        // });
+        console.log(trades);
+  
+        let arr = [];
+        if (trades !== null) {
+          console.log(trades);
+          trades.forEach((doc) => {
+            // ensure trade isnt already matched
+            console.log(doc.data());
+            if (doc.get('matchID') === -1) {
+              // not matched, add to rows var
+              console.log("here")
+              let addClassString = addClass.class + ": " + addClass.section;
+              let dropClassString = dropClass.class + ": " + dropClass.section;
+              arr.push({id: doc.get("trade_id"), add: addClassString, drop: dropClassString});
+            }
+          })
+        }
+        setRows(arr);
+        console.log("Printing rows;")
+        console.log(rows);
+      }
+      else if (addClass.class !== '' && addClass.section !== '') {
+        let trades;
+        setRows([]);
+        trades = await getTradesByDrop(addClass.crn);
+        
+        // let trades;
+        // tradeSnap.then((data) => {
+        //   trades = data;
+        // });
+        console.log(trades);
+  
+        let arr = [];
+        if (trades !== null) {
+          console.log(trades);
+          trades.forEach((doc) => {
+            // ensure trade isnt already matched
+            console.log(doc.data());
+            if (doc.get('status') === "requested") {
+              // not matched, add to rows var
+              console.log("here")
+              arr.push(doc.data());
+            }
+          })
+  
+          // The trade requests only have a crn so we have to get the course names from the crns
+          let crns = arr.map((d) => d.addClassID);
+          crns = crns.concat(arr.map((d) => d.dropClassID));
+  
+          let courseData = await getCoursesByCrn(crns);
+          console.log(courseData);
+          // Merge the course names with the trade requests
+          arr = arr.map((x, index) => {
+            let returnVal = {};
+            let ele = courseData.find(ele => ele.crn === x.addClassID);
+            returnVal.drop = ele.course + ": " + ele.section;
+            ele = courseData.find(ele => ele.crn === x.dropClassID);
+            returnVal.add = ele.course + ": " + ele.section;
+            returnVal.id = x.trade_id;
+            return returnVal;
+          })
+  
+        }
+        setRows(arr);
+        console.log("Printing rows;")
+        console.log(rows);
+      }
+      else if (dropClass.class !== '' && dropClass.section !== '') {
+        let trades;
+        setRows([]);
+        trades = await getTradesByAdd(dropClass.crn);
+  
+        let arr = [];
+        if (trades !== null) {
+          console.log(trades);
+          trades.forEach((doc) => {
+            if (doc.get('status') === "requested") {
+              arr.push(doc.data());
+            }
+          })
+  
+          // The trade requests only have a crn so we have to get the course names from the crns
+          let crns = arr.map((d) => d.addClassID);
+          crns = crns.concat(arr.map((d) => d.dropClassID));
+  
+          let courseData = await getCoursesByCrn(crns);
+  
+          // Merge the course names with the trade requests
+          arr = arr.map((x, index) => {
+            let returnVal = {};
+            let ele = courseData.find(ele => ele.crn === x.addClassID);
+            returnVal.drop = ele.course + ": " + ele.section;
+            ele = courseData.find(ele => ele.crn === x.dropClassID);
+            returnVal.add = ele.course + ": " + ele.section;
+            returnVal.id = x.trade_id;
+            return returnVal;
+          })
+  
+        }
+        setRows(arr);
+      }
+      else {
+        setRows([]);
+      }
+    };
     f();
   }, [addClass, dropClass]);
 

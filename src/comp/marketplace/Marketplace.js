@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import {getTrades} from "../global/dbFunctions/CrudFunctions"
+import {getTrades, getTradesByDrop, getCoursesByCrn, getTradesByAdd} from "../global/dbFunctions/CrudFunctions"
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
@@ -104,22 +104,72 @@ function Marketplace() {
         trades.forEach((doc) => {
           // ensure trade isnt already matched
           console.log(doc.data());
-          if (doc.get('matchID') === -1) {
+          if (doc.get('status') === "requested") {
             // not matched, add to rows var
             console.log("here")
+            arr.push(doc.data());
             counter++;
-            let addClassString = addClass.class + ": " + addClass.section;
-            let dropClassString = dropClass.class + ": " + dropClass.section;
-            arr.push({id: counter, add: addClassString, drop: dropClassString});
           }
         })
+
+        // The trade requests only have a crn so we have to get the course names from the crns
+        let crns = arr.map((d) => d.addClassID);
+        crns = crns.concat(arr.map((d) => d.dropClassID));
+
+        let courseData = await getCoursesByCrn(crns);
+        console.log(courseData);
+        // Merge the course names with the trade requests
+        arr = arr.map((x, index) => {
+          let returnVal = {};
+          let ele = courseData.find(ele => ele.crn === x.addClassID);
+          returnVal.drop = ele.course + ": " + ele.section;
+          ele = courseData.find(ele => ele.crn === x.dropClassID);
+          returnVal.add = ele.course + ": " + ele.section;
+          returnVal.id = index;
+          return returnVal;
+        })
+
       }
       setRows(arr);
       console.log("Printing rows;")
       console.log(rows);
     }
     else if (dropClass.class !== '' && dropClass.section !== '') {
+      let trades;
+      setRows([]);
+      trades = await getTradesByAdd(dropClass.crn);
 
+      let arr = [];
+      if (trades !== null) {
+        console.log(trades);
+        trades.forEach((doc) => {
+          if (doc.get('status') === "requested") {
+            arr.push(doc.data());
+          }
+        })
+
+        // The trade requests only have a crn so we have to get the course names from the crns
+        let crns = arr.map((d) => d.addClassID);
+        crns = crns.concat(arr.map((d) => d.dropClassID));
+
+        let courseData = await getCoursesByCrn(crns);
+
+        // Merge the course names with the trade requests
+        arr = arr.map((x, index) => {
+          let returnVal = {};
+          let ele = courseData.find(ele => ele.crn === x.addClassID);
+          returnVal.drop = ele.course + ": " + ele.section;
+          ele = courseData.find(ele => ele.crn === x.dropClassID);
+          returnVal.add = ele.course + ": " + ele.section;
+          returnVal.id = index;
+          return returnVal;
+        })
+
+      }
+      setRows(arr);
+    }
+    else {
+      setRows([]);
     }
   };
 

@@ -26,6 +26,9 @@ export default function MyListings({userId}) {
   const listener = React.useRef(null);
   const [trades, setTrades] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -79,13 +82,13 @@ export default function MyListings({userId}) {
         <div style={{display:'flex', position:'relative'}}>
           <Title>My Listings</Title>
               <Modal
-                open={open}
-                onClose={handleClose}
+                open={openAdd}
+                onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-              <EditTrades/>
+                <EditTrades/>
               </Modal>
-              <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpen}>Add</Button>
+              <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
         <TableContainer>
           <Table size="small">

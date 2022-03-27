@@ -42,13 +42,12 @@ const useStyles = makeStyles({
 
 
 
-function EditTrades() {
+function EditTrades(props) {
   const [userId, setUserId] = useState(null);
-  const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
-  const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+  const [addClass, setAddClass] = useState (props.add);
+  const [dropClass, setDropClass] = useState(props.drop);
   const [alert, setAlert] = useState(null)
   //const [isUpdate, setIsUpdate] = useState(false)
-
   const classes = useStyles();
   let navigate = useNavigate();
 
@@ -72,7 +71,7 @@ function EditTrades() {
           setAddClass({...addClass, section:data.section, crn:data.crn})
         } 
       } else {
-        setAddClass({class:'', section: '', crn: '' })
+        setAddClass({class:null, section: null, crn: null })
       }
     }
   }
@@ -87,7 +86,7 @@ function EditTrades() {
         } 
       }
     } else {
-      setDropClass({class:'', section: '', crn: '' })
+      setDropClass({class:null, section:null, crn:null})
     }
   }
 
@@ -143,7 +142,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} defaultData={addClass}/>
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -157,7 +156,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
+            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} defaultData={dropClass} />
         </div>
       </div>
       <div className={classes.wrapper}>

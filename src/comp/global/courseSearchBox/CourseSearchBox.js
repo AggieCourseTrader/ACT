@@ -33,15 +33,13 @@ const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 
 // const mdTheme = createTheme();
 
-function CourseSearchBox({ db, selectionCallBack }) {
+function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
 	// const [queryCounter, setQueryCounter] = useState(0);
 	const [searchText, setSearchText] = useState('');
-	const [courseSelected, setCourseSelected] = useState(undefined);
-
-
-	//console.log(sectionSelected);
+	const [courseSelected, setCourseSelected] = useState('');
+	//console.log(sectionSelected)
 
 	//* Updates search results whenever something is typed
 	useEffect(() => {
@@ -215,6 +213,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 			});
 	
 			setSectionResults(arr);
+			console.log(arr)
 			
 		};
 
@@ -231,6 +230,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 
 				<Autocomplete
 				onChange={(e, v) => {
+					console.log(v)
 					setCourseSelected(searchResults.find(x => x.name === v))
 					selectionCallBack(searchResults.find(x => x.name === v))
 				}}
@@ -239,6 +239,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				// 	overflow: 'auto',
 				// 	flexGrow : 1
 				// }}
+				//defaultValue={defaultData.class}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -263,7 +264,7 @@ function CourseSearchBox({ db, selectionCallBack }) {
 				// options={sectionResults.map((x) => x.section)}
 
 				options={sectionResults}
-
+				//defaultValue={'test'}
 				getOptionLabel={(option) => option.section}
 				renderOption={(props, option) => (
 					renderSection(props, option)

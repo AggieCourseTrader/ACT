@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -27,9 +26,16 @@ export default function MyListings({userId}) {
   const [trades, setTrades] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openAdd, setOpenAdd] = React.useState(false);
+  const [addClass, setAddClass] = React.useState (null);
+  const [dropClass, setDropClass] = React.useState(null);
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
-  const handleOpen = () => setOpen(true);
+
+  function handleOpen (add,drop) {
+    setAddClass(add)
+    setDropClass(drop)
+    setOpen(true);
+  } 
   const handleClose = () => setOpen(false);
 
   // Init listener
@@ -73,10 +79,6 @@ export default function MyListings({userId}) {
     }
   }, [userId]);
 
-  React.useEffect(() => {
-    console.log(trades);
-  }, [trades]);
-
   return (
       <React.Fragment>
         <div style={{display:'flex', position:'relative'}}>
@@ -86,14 +88,14 @@ export default function MyListings({userId}) {
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades/>
+                <EditTrades add={{class:null, section: null, crn: null}} drop={{class:null, section:null, crn:null}}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
         <TableContainer>
           <Table size="small">
             <TableBody>
-              {trades.map((row, index) => {
+              {trades.map((row, index) => { 
                 if(!("addClass" in row)  || !("dropClass" in row)) {
                   return false
                 }
@@ -102,33 +104,26 @@ export default function MyListings({userId}) {
                 }
                 return (
                   <TableRow key={"my-listings-" + index}>
-                  <TableCell>
-                  
-                  <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
-                  
-                  <Chip size="small" color="primary" 
-                        icon={<RemoveCircleOutlineIcon/>} 
-                        style={{verticalAlign:"middle", backgroundColor:'#661429'}}
-                        label={[row.dropClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.dropClass.section}</span>]}/> 
-                  
-                  <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
-                  
-                  <Chip color="success" size="small" 
-                        style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
-                        icon={<AddCircleOutlineIcon/>} 
-                        label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
-                  
-                  </TableCell>
+                    <TableCell>
+                    
+                    <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
+                    
+                    <Chip size="small" color="primary" 
+                          icon={<RemoveCircleOutlineIcon/>} 
+                          style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+                          label={[row.dropClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.dropClass.section}</span>]}/> 
+                    
+                    <span style={{verticalAlign:"middle" ,fontSize: "1.1em" , color : "#525252" }}> for </span>
+                    
+                    <Chip color="success" size="small" 
+                          style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
+                          icon={<AddCircleOutlineIcon/>} 
+                          label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
+                    </TableCell>
                     <TableCell align="right">
-                      <Modal
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"> 
-                       <EditTrades/>
-                      </Modal>
                       <IconButton>
-                        <EditIcon onClick={handleOpen}/>
+                        <EditIcon onClick={() => handleOpen({class: row.addClass.course, section: row.addClass.section, crn: row.addClass.crn},
+                           {class:row.dropClass.course, section:row.dropClass.section, crn:row.dropClass.crn})}/>
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -137,7 +132,13 @@ export default function MyListings({userId}) {
             </TableBody>
           </Table>
         </TableContainer>
-
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"> 
+            <EditTrades add={addClass} drop={dropClass}/>
+        </Modal>
       </React.Fragment>
   );
 }

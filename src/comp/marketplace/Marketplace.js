@@ -78,8 +78,6 @@ function Marketplace() {
           })
         }
         setRows(arr);
-        console.log("Printing rows;")
-        console.log(rows);
       }
       else if (addClass.class !== '' && addClass.section !== '') {
         let trades;
@@ -124,8 +122,6 @@ function Marketplace() {
   
         }
         setRows(arr);
-        console.log("Printing rows;")
-        console.log(rows);
       }
       else if (dropClass.class !== '' && dropClass.section !== '') {
         let trades;

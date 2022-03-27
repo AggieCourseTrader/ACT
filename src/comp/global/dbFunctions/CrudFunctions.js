@@ -155,10 +155,12 @@ export async function getTrade(tradeId) {
 }
 
 
+
 // Get trades with a specific section being dropped
 export async function getTradesByDrop(dropCourseId) {
 
   const q = query(trades, where("dropClassID", "==", dropCourseId));
+
 
   const receivedTrades = await getDocs(q);
   
@@ -197,6 +199,7 @@ export async function getTrades(dropCourseId, addCourseId) {
   const q = query(trades, where("dropClassID", "==", dropCourseId),
                   where("addClassID", "==", addCourseId));
   const receivedTrades = await getDocs(q);
+
   
   if (!receivedTrades.empty) {
     return receivedTrades;
@@ -226,15 +229,23 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 export async function updateTradeMatch(tradeId, matchedUserId) {
    
   const tradeRef = doc(db, "trades", tradeId);
-  
-  const updatedFields = {
-    matchID: matchedUserId,
-    status: "matched"
+
+  const tradeSnap = await getDoc(tradeRef);
+
+  if (tradeSnap.get('status') === "requested") {
+    
+    const updatedFields = {
+      matchID: matchedUserId,
+      status: "matched"
+    }
+
+    const updateRef = await updateDoc(tradeRef, updatedFields);
+    return updateRef;
   }
 
-  const updateRef = await updateDoc(tradeRef, updatedFields);
-  return updateRef;
-
+  else {
+    return null
+  }
 }
 
 // Updates the given trade with the new status
@@ -248,9 +259,6 @@ export async function updateTradeStatus(tradeId, tradeStatus) {
   const updateRef = await updateDoc(tradeRef, updatedFields);
   return updateRef;
 }
-
-
-
 
 // Deletes the trade with the given tradeId
 export async function deleteTrade(tradeId) {

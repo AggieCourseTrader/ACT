@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,8 +10,9 @@ import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 import Chip from '@mui/material/Chip';
 import { TableContainer } from "@mui/material";
-// import { Link } from "react-router-dom";
-
+import Modal from '@mui/material/Modal';
+import EditTrades from './EditTrades'
+import Button from '@mui/material/Button';
 import { collection, onSnapshot, query, where} from 'firebase/firestore';
 import { db } from '../../firebase-config';
 import { getCoursesByCrn } from '../global/dbFunctions/CrudFunctions';
@@ -23,6 +25,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 export default function MyListings({userId}) {
   const listener = React.useRef(null);
   const [trades, setTrades] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   // Init listener
   React.useEffect(() => {
@@ -71,7 +76,17 @@ export default function MyListings({userId}) {
 
   return (
       <React.Fragment>
-        <Title>My Listings</Title>
+        <div style={{display:'flex', position:'relative'}}>
+          <Title>My Listings</Title>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"> 
+              <EditTrades/>
+              </Modal>
+              <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpen}>Add</Button>
+          </div>
         <TableContainer>
           <Table size="small">
             <TableBody>
@@ -102,9 +117,15 @@ export default function MyListings({userId}) {
                   
                   </TableCell>
                     <TableCell align="right">
-                      {/* TODO: Modal logic here */}
+                      <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"> 
+                       <EditTrades/>
+                      </Modal>
                       <IconButton>
-                        <EditIcon/>
+                        <EditIcon onClick={handleOpen}/>
                       </IconButton>
                     </TableCell>
                   </TableRow>

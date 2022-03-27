@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit'
 import Alert from '@mui/material/Alert';
+import { Box } from '@mui/system';
 
 
 const useStyles = makeStyles({
@@ -117,7 +118,15 @@ function EditTrades() {
   }
 
   return (
-    <React.Fragment>
+    <Box sx={{   
+      position: 'absolute',
+      bgcolor: '#f6f6f6',
+      border: '2px solid #000',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 900,
+      boxShadow: 24,}}>
       <div className={classes.wrapper}>
         <div className={classes.container}>
           <EditIcon/>
@@ -162,7 +171,7 @@ function EditTrades() {
           <div className="Alert">{alert}</div>
         </div>
       </div>
-    </React.Fragment>
+    </Box>
   );
 }
 

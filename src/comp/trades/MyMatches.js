@@ -29,8 +29,12 @@ export default function MyMatches({userId}) {
   
         let arr = [];
         myTrades.forEach((doc) => {
-          arr.push(doc.data());
+          if(doc.data().matchID !== -1){
+            arr.push(doc.data());
+          }
+          
         });
+        console.log(arr)
   
         // Since we are not the creator of the trade the course being added or dropped is opposite for us
         otherTrades.forEach((doc) => {
@@ -57,6 +61,7 @@ export default function MyMatches({userId}) {
   
         // Return
         setTrades(arr);
+        
       }
     }
 

@@ -1,5 +1,4 @@
 import './App.css';
-import EditTrades from'./comp/trades/EditTrades';
 import MyTrades from  './comp/trades/MyTrades';
 import Marketplace from './comp/marketplace/Marketplace';
 import Login from './comp/global/authentication/Login';
@@ -23,7 +22,6 @@ function App() {
       <Routes>
         <Route exact path="/marketplace" element={<Marketplace />} />
         <Route exact path="/my-trades" element={<MyTrades />}/>
-        <Route exact path="/edit-trades" element={<EditTrades />}/>
         <Route exact path="/messages" element={<Messages />}/>
         <Route exact path="/" element={<Login />}/>
         <Route path="*" element={<PageNotFound />} />

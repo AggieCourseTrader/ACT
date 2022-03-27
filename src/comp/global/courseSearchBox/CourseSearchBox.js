@@ -37,7 +37,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
 	// const [queryCounter, setQueryCounter] = useState(0);
-	const [searchText, setSearchText] = useState('');
+	const [searchText, setSearchText] = useState(defaultData.class);
 	const [courseSelected, setCourseSelected] = useState('');
 	//console.log(sectionSelected)
 
@@ -225,9 +225,6 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	// }
 	return (
 		<>
-		
-		
-
 				<Autocomplete
 				onChange={(e, v) => {
 					console.log(v)
@@ -239,7 +236,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				// 	overflow: 'auto',
 				// 	flexGrow : 1
 				// }}
-				//defaultValue={defaultData.class}
+				defaultValue={defaultData.class}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -264,7 +261,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				// options={sectionResults.map((x) => x.section)}
 
 				options={sectionResults}
-				//defaultValue={'test'}
+				defaultValue={defaultData.section}
 				getOptionLabel={(option) => option.section}
 				renderOption={(props, option) => (
 					renderSection(props, option)

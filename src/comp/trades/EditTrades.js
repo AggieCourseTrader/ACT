@@ -47,7 +47,7 @@ function EditTrades(props) {
   const [addClass, setAddClass] = useState (props.add);
   const [dropClass, setDropClass] = useState(props.drop);
   const [alert, setAlert] = useState(null)
-  //const [isUpdate, setIsUpdate] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(props.update)
   const classes = useStyles();
   let navigate = useNavigate();
 

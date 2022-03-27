@@ -88,7 +88,7 @@ export default function MyListings({userId}) {
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades add={{class:null, section: null, crn: null}} drop={{class:null, section:null, crn:null}}/>
+                <EditTrades add={{class:null, section: null, crn: null}} drop={{class:null, section:null, crn:null}} update={false}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
@@ -137,7 +137,7 @@ export default function MyListings({userId}) {
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"> 
-            <EditTrades add={addClass} drop={dropClass}/>
+            <EditTrades add={addClass} drop={dropClass} update={true}/>
         </Modal>
       </React.Fragment>
   );

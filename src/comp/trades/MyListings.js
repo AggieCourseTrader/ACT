@@ -88,7 +88,7 @@ export default function MyListings({userId}) {
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades add={{class:null, section: null, crn: null}} drop={{class:null, section:null, crn:null}} update={false}/>
+                <EditTrades add={undefined} drop={undefined} update={false}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>

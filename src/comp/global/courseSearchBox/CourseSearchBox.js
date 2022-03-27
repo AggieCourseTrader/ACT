@@ -39,7 +39,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	// const [queryCounter, setQueryCounter] = useState(0);
 	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState('');
-
+	const [sectionDefValue, setSectionDefValue] = useState('');
 	const [classDefValue, setClassDefValue] = useState('');
 	//console.log(sectionSelected)
 
@@ -136,20 +136,95 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 			});
 		}
 		setSearchResults(arr);
+		return arr;
 		// setQueryCounter(queryCounter + 1);
 	};
 
-	// useEffect(() => {
-	// 	const g = async () => {
-	// 		if(defaultData !== undefined) {
-	// 			setClassDefValue(defaultData.class);
-	// 			await f(defaultData.class, db);
-	// 			setCourseSelected(searchResults.find(x => x.name === defaultData.class));
-	// 		}
-	// 	}
+	const h = async (cSelected, db) => {
+		setSectionResults([]);
 
-	// 	g();
-	// }, [defaultData, db]);
+		if(cSelected === "") {
+			return;
+		}
+		let arr = [];
+
+		let q = await getCoursesByName(cSelected.name);
+
+
+		q.forEach((section) => {
+			let lecDays = []
+			let lecTimes = ''
+			let labDays = []
+			let labTimes = ''
+			//console.log(section.data());
+			
+			Object.entries(section.data().meeting_times).forEach((t) => {
+				let day = t[0];
+				let times = t[1];
+				times.forEach((t) => {
+					if (t.substring(t.length - 3) === "LAB") {
+						labDays.push(day);
+						labTimes = t.substring(0, t.length - 4);
+					} else if (t.substring(t.length - 3) === "LEC") {
+						lecDays.push(day);
+						lecTimes = t.substring(0, t.length - 4);
+					} 
+					
+				});
+			});
+			
+			labDays.sort((x, y) => {
+				let p = ['M', 'T', 'W', 'R', 'F', 'S']
+				if(p.indexOf(x) < p.indexOf(y)) {
+					return -1;
+				}
+				else if(p.indexOf(x) > p.indexOf(y)) {
+					return 1;
+				}
+				return 0;
+			});
+
+			lecDays.sort((x, y) => {
+				let p = ['M', 'T', 'W', 'R', 'F', 'S']
+				if(p.indexOf(x) < p.indexOf(y)) {
+					return -1;
+				}
+				else if(p.indexOf(x) > p.indexOf(y)) {
+					return 1;
+				}
+				return 0;
+			});
+
+			
+			let item = {
+				'section' : section.data().section,
+				'lec' : lecDays.join('') + " " + lecTimes + " LEC",
+				'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
+				'crn' : section.data().crn
+			};
+			//console.log(item);
+			arr.push(item);
+		});
+
+		setSectionResults(arr);
+		console.log("SEction results are ");
+		console.log(arr);
+		return arr;
+	};
+
+	useEffect(() => {
+		const g = async () => {
+			if(defaultData !== undefined) {	
+				setClassDefValue(defaultData.class);
+				let arr = await f(defaultData.class, db);
+				console.log(arr.find(x => x.name === defaultData.class));
+				arr = await h(arr.find(x => x.name === defaultData.class), db);
+				setSectionDefValue(arr.find(x => x.section === defaultData.section));
+			}
+		}
+
+		g();
+	}, [defaultData, db]);
 	//* Updates search results whenever something is typed
 	useEffect(() => {
 		f(searchText, db);
@@ -157,79 +232,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 
 	//* Runs whenever a course is selected from the dropdown
 	useEffect(() => {
-
-		const f = async () => {
-			setSectionResults([]);
-	
-			if(courseSelected === undefined) {
-				return;
-			}
-			let arr = [];
-	
-			let q = await getCoursesByName(courseSelected.name);
-	
-	
-			q.forEach((section) => {
-				let lecDays = []
-				let lecTimes = ''
-				let labDays = []
-				let labTimes = ''
-				//console.log(section.data());
-				
-				Object.entries(section.data().meeting_times).forEach((t) => {
-					let day = t[0];
-					let times = t[1];
-					times.forEach((t) => {
-						if (t.substring(t.length - 3) === "LAB") {
-							labDays.push(day);
-							labTimes = t.substring(0, t.length - 4);
-						} else if (t.substring(t.length - 3) === "LEC") {
-							lecDays.push(day);
-							lecTimes = t.substring(0, t.length - 4);
-						} 
-						
-					});
-				});
-				
-				labDays.sort((x, y) => {
-					let p = ['M', 'T', 'W', 'R', 'F', 'S']
-					if(p.indexOf(x) < p.indexOf(y)) {
-						return -1;
-					}
-					else if(p.indexOf(x) > p.indexOf(y)) {
-						return 1;
-					}
-					return 0;
-				});
-	
-				lecDays.sort((x, y) => {
-					let p = ['M', 'T', 'W', 'R', 'F', 'S']
-					if(p.indexOf(x) < p.indexOf(y)) {
-						return -1;
-					}
-					else if(p.indexOf(x) > p.indexOf(y)) {
-						return 1;
-					}
-					return 0;
-				});
-	
-				
-				let item = {
-					'section' : section.data().section,
-					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
-					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
-					'crn' : section.data().crn
-				};
-				//console.log(item);
-				arr.push(item);
-			});
-	
-			setSectionResults(arr);
-			console.log(arr)
-			
-		};
-
-		f();
+		h(courseSelected, db);
 	}, [courseSelected, db]);
 
 	// let getCourseList = async (text) => {
@@ -238,17 +241,16 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	return (
 		<>
 				<Autocomplete
+
+				value={classDefValue}
 				onChange={(e, v) => {
 					console.log(v)
 					setCourseSelected(searchResults.find(x => x.name === v))
 					selectionCallBack(searchResults.find(x => x.name === v))
+					setClassDefValue(v);
 				}}
 				sx={csb}
-				// sx={{
-				// 	overflow: 'auto',
-				// 	flexGrow : 1
-				// }}
-				defaultValue={classDefValue}
+
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -260,9 +262,11 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 
 				<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
-					autoHighlight
+				value={sectionDefValue}
+				autoHighlight
 				onChange={(e, v) => {
 					selectionCallBack(v)
+					setSectionDefValue(v);
 				}}
 				openOnFocus
 				sx = {ssb}
@@ -273,8 +277,17 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				// options={sectionResults.map((x) => x.section)}
 
 				options={sectionResults}
-				defaultValue={defaultData.section}
-				getOptionLabel={(option) => option.section}
+				// defaultValue={
+				// 	() => {
+				// 		if (defaultData.section !== undefined){
+				// 			const val = sectionResults.find(x => x.section === defaultData.section)
+				// 			console.log(val);
+				// 			return val;
+				// 		}
+				// 		return "";
+				// 	}
+				// }
+				getOptionLabel={(option) => option.section || ""}
 				renderOption={(props, option) => (
 					renderSection(props, option)
 				)}

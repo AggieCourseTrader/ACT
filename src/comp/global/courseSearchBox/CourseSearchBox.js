@@ -37,85 +37,49 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
 	// const [queryCounter, setQueryCounter] = useState(0);
-	const [searchText, setSearchText] = useState(defaultData.class);
+	const [searchText, setSearchText] = useState('');
 	const [courseSelected, setCourseSelected] = useState('');
+
+	const [classDefValue, setClassDefValue] = useState('');
 	//console.log(sectionSelected)
 
-	//* Updates search results whenever something is typed
-	useEffect(() => {
+	const f = async (searchText, db) => {
+		let text = searchText;
+		let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
+		let courseNumber = text.replace(/\D*/g, '');
+		let arr = [];
+		//console.log(courseText);
+		if(text.length < 2) {
+			setSearchResults([]);
+			return;
+		}
 
-		const f = async () => {
-			let text = searchText;
-			let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
-			let courseNumber = text.replace(/\D*/g, '');
-			let arr = [];
-			//console.log(courseText);
-			if(text.length < 2) {
-				setSearchResults([]);
-				return;
-			}
-	
-			let q = false;
-			// * If courseText is greaterthan >= 2
-			// Search course first, then filter using number
-			if(courseText.length >= 2) {
-				q = query(collection(db, "majors"), where("keywords", 'array-contains', courseText.toUpperCase()));
-				const querySnapshot = await getDocs(q);
-	
-				querySnapshot.forEach((doc) => {
-					let major = doc.data().name;
-					let courseMap = doc.data().course_map;
-					// Match the numbers in a complicated way
-					if(courseNumber.length >= 1) {
-						doc.data().courses.forEach((c) => {
-							c = c.toString();
-							let match = true;
-							for(let i = 0; i < courseNumber.length; i++) {
-								if(i >= c.length) {
-									match = false;
-									break;
-								}
-								if(c[i] !== courseNumber[i]) {
-									match = false;
-									break
-								}
+		let q = false;
+		// * If courseText is greaterthan >= 2
+		// Search course first, then filter using number
+		if(courseText.length >= 2) {
+			q = query(collection(db, "majors"), where("keywords", 'array-contains', courseText.toUpperCase()));
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((doc) => {
+				let major = doc.data().name;
+				let courseMap = doc.data().course_map;
+				// Match the numbers in a complicated way
+				if(courseNumber.length >= 1) {
+					doc.data().courses.forEach((c) => {
+						c = c.toString();
+						let match = true;
+						for(let i = 0; i < courseNumber.length; i++) {
+							if(i >= c.length) {
+								match = false;
+								break;
 							}
-							if(match) {
-								let name = major + " "  + c;
-								let crns = courseMap[parseInt(c)];
-								arr.push({
-									name : name,
-									crns : crns
-								});
+							if(c[i] !== courseNumber[i]) {
+								match = false;
+								break
 							}
-						});
-					}
-					// No numbers were given add everything
-					else {
-						doc.data().courses.forEach((c) => {
-							let name = major + " "  + c;
-							let crns = courseMap[parseInt(c)];
-							arr.push({
-								name : name,
-								crns : crns
-							});
-						});
-					}
-					//console.log(doc.id, " => ", doc.data());
-				});
-			}
-			// * Else filter using number if courseNumber is greaterthan > 2 (limit 3)
-			// Filter using coursename from keywords
-			else if(courseNumber.length > 2) {
-				q = query(collection(db, "majors"), where("courses", 'array-contains', courseNumber));
-				const querySnapshot = await getDocs(q);
-				querySnapshot.forEach((doc) => {
-					let major = doc.data().name;
-					let courseMap = doc.data().course_map;
-					let c = courseNumber;
-					// Match the major
-					if(courseText.length >= 1) {
-						if(doc.data().keywords.includes(courseText.toUpperCase())) {
+						}
+						if(match) {
 							let name = major + " "  + c;
 							let crns = courseMap[parseInt(c)];
 							arr.push({
@@ -123,9 +87,34 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 								crns : crns
 							});
 						}
-					}
-					// No major was specified
-					else {
+					});
+				}
+				// No numbers were given add everything
+				else {
+					doc.data().courses.forEach((c) => {
+						let name = major + " "  + c;
+						let crns = courseMap[parseInt(c)];
+						arr.push({
+							name : name,
+							crns : crns
+						});
+					});
+				}
+				//console.log(doc.id, " => ", doc.data());
+			});
+		}
+		// * Else filter using number if courseNumber is greaterthan > 2 (limit 3)
+		// Filter using coursename from keywords
+		else if(courseNumber.length > 2) {
+			q = query(collection(db, "majors"), where("courses", 'array-contains', courseNumber));
+			const querySnapshot = await getDocs(q);
+			querySnapshot.forEach((doc) => {
+				let major = doc.data().name;
+				let courseMap = doc.data().course_map;
+				let c = courseNumber;
+				// Match the major
+				if(courseText.length >= 1) {
+					if(doc.data().keywords.includes(courseText.toUpperCase())) {
 						let name = major + " "  + c;
 						let crns = courseMap[parseInt(c)];
 						arr.push({
@@ -133,14 +122,37 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 							crns : crns
 						});
 					}
-					//console.log(doc.id, " => ", doc.data());
-				});
-			}
-			setSearchResults(arr);
-			// setQueryCounter(queryCounter + 1);
-		};
+				}
+				// No major was specified
+				else {
+					let name = major + " "  + c;
+					let crns = courseMap[parseInt(c)];
+					arr.push({
+						name : name,
+						crns : crns
+					});
+				}
+				//console.log(doc.id, " => ", doc.data());
+			});
+		}
+		setSearchResults(arr);
+		// setQueryCounter(queryCounter + 1);
+	};
 
-		f();
+	// useEffect(() => {
+	// 	const g = async () => {
+	// 		if(defaultData !== undefined) {
+	// 			setClassDefValue(defaultData.class);
+	// 			await f(defaultData.class, db);
+	// 			setCourseSelected(searchResults.find(x => x.name === defaultData.class));
+	// 		}
+	// 	}
+
+	// 	g();
+	// }, [defaultData, db]);
+	//* Updates search results whenever something is typed
+	useEffect(() => {
+		f(searchText, db);
 	}, [searchText, db]);
 
 	//* Runs whenever a course is selected from the dropdown
@@ -236,7 +248,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				// 	overflow: 'auto',
 				// 	flexGrow : 1
 				// }}
-				defaultValue={defaultData.class}
+				defaultValue={classDefValue}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}

@@ -230,7 +230,9 @@ export async function updateTradeMatch(tradeId, matchedUserId) {
    
   const tradeRef = doc(db, "trades", tradeId);
 
-  if (tradeRef.get("status") === "requested") {
+  const tradeSnap = await getDoc(tradeRef);
+
+  if (tradeSnap.get('status') === "requested") {
     
     const updatedFields = {
       matchID: matchedUserId,

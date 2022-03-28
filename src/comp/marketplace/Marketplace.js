@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
@@ -9,7 +9,8 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import {getTrades, getTradesByDrop, getCoursesByCrn, getTradesByAdd, updateTradeMatch, createTrade} from "../global/dbFunctions/CrudFunctions"
+import { updateTradeMatch, createTrade } from "../global/dbFunctions/CrudFunctions"
+import { onSnapshot, query, collection, where, limit} from 'firebase/firestore';
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
@@ -18,6 +19,10 @@ function Marketplace() {
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
 
   const [rows, setRows] = useState([]);
+  const tradesListener = useRef(null);
+
+  const [myTradeRows, setMyTradeRows] = useState([]);
+  const myTrades = useRef(null);
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -47,124 +52,82 @@ function Marketplace() {
   // where both addClass and dropClass are filled
   // let rows = [];
 
-   //! ----------------------------------------------//
+  //! ----------------------------------------------//
+  // addclass and dropclass
 
-   //! ----------------------------------------------//
+  // get my trades
 
+  // get other trader
+
+  // q = query where "addClass.course" === addClass.class
+  //           where "addClass.section" === addClass.section
+  //           where "dropClass.course" === dropClass.class
+  //           where "dropClass.section" === dropClass.section
+
+
+  //! ----------------------------------------------//
 
   useEffect(() => {
-    const f = async () => {
-      if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTrades(addClass.crn, dropClass.crn);
-        // let trades;
-        // tradeSnap.then((data) => {
-        //   trades = data;
-        // });
-        console.log(trades);
-  
+    if(!user.uid) {
+      return;
+    }
+    //* Get trades listed by others
+    let conditions = [where("creatorID", "!=", user.uid), where("status", "==", "requested")]
+    if(dropClass.class !== "") conditions.push(where("addClass.course", "==", dropClass.class))
+    if(dropClass.section !== "") conditions.push(where("addClass.section", "==", dropClass.section))
+    if(addClass.class !== "") conditions.push(where("dropClass.course", "==", addClass.class))
+    if(addClass.section !== "") conditions.push(where("dropClass.section", "==", addClass.section))
+    console.log(conditions)
+    tradesListener.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
+      (snap) => {
         let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            // ensure trade isnt already matched
-            console.log(doc.data());
-            if (doc.get('matchID') === -1) {
-              // not matched, add to rows var
-              console.log("here")
-              let addClassString = addClass.class + ": " + addClass.section;
-              let dropClassString = dropClass.class + ": " + dropClass.section;
-              arr.push({id: doc.get("trade_id"), add: addClassString, drop: dropClassString});
-            }
-          })
-        }
+        let x = 0;
+        snap.forEach((doc) => {
+          const data = doc.data();
+          arr.push({
+            id: "nm" + x++,
+            add: data.dropClass.course + " : " + data.dropClass.section,
+            drop: data.addClass.course + " : " + data.addClass.section,
+          });
+        });
+        console.log("here");
         setRows(arr);
-      }
-      else if (addClass.class !== '' && addClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTradesByDrop(addClass.crn);
-        
-        // let trades;
-        // tradeSnap.then((data) => {
-        //   trades = data;
-        // });
-        console.log(trades);
-  
+      });
+           
+    //* Get trades listed by me
+    console.log(user.uid);
+    conditions = [where("creatorID", "==", user.uid), where("status", "==", "requested")]
+    if(addClass.class !== "") conditions.push(where("addClass.course", "==", addClass.class))
+    if(addClass.section !== "") conditions.push(where("addClass.section", "==", addClass.section))
+    if(dropClass.class !== "") conditions.push(where("dropClass.course", "==", dropClass.class))
+    if(dropClass.section !== "") conditions.push(where("dropClass.section", "==", dropClass.section))
+    console.log(conditions);
+    myTrades.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
+      (snap) => {
         let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            // ensure trade isnt already matched
-            console.log(doc.data());
-            if (doc.get('status') === "requested") {
-              // not matched, add to rows var
-              console.log("here")
-              arr.push(doc.data());
-            }
-          })
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-          console.log(courseData);
-          // Merge the course names with the trade requests
-          arr = arr.map((x, index) => {
-            let returnVal = {};
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            returnVal.drop = ele.course + ": " + ele.section;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            returnVal.add = ele.course + ": " + ele.section;
-            returnVal.id = x.trade_id;
-            return returnVal;
-          })
-  
-        }
-        setRows(arr);
+        let x = 0;
+        snap.forEach((doc) => {
+          const data = doc.data();
+          arr.push({
+            id: "m" + x++,
+            add: data.addClass.course + " : " + data.addClass.section,
+            drop: data.dropClass.course + " : " + data.dropClass.section,
+          });
+        });
+        console.log("here");
+        setMyTradeRows(arr);
+      });
+
+    //* Remove any event listeners
+    return () => {
+      if(tradesListener.current !== null) {
+        tradesListener.current();
       }
-      else if (dropClass.class !== '' && dropClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTradesByAdd(dropClass.crn);
-  
-        let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            if (doc.get('status') === "requested") {
-              arr.push(doc.data());
-            }
-          })
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-  
-          // Merge the course names with the trade requests
-          arr = arr.map((x, index) => {
-            let returnVal = {};
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            returnVal.drop = ele.course + ": " + ele.section;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            returnVal.add = ele.course + ": " + ele.section;
-            returnVal.id = x.trade_id;
-            return returnVal;
-          })
-  
-        }
-        setRows(arr);
+      if(myTrades.current !== null) {
+        myTrades.current();
       }
-      else {
-        setRows([]);
-      }
-    };
-    f();
-  }, [addClass, dropClass]);
+    }
+  }, [addClass, dropClass, user]);
 
 
     
@@ -248,6 +211,9 @@ function Marketplace() {
         setAddClass({class:'', section: '', crn: '' })
       }
     }
+    else {
+      setAddClass({class:'', section: '', crn: '' })
+    }
   }
 
   const selectionDropCallback = (data) => {
@@ -259,9 +225,13 @@ function Marketplace() {
           setDropClass({...dropClass, section:data.section, crn:data.crn})
         } 
       }
+      else {
+        setDropClass({class:'', section: '', crn: '' })
+      }
     } else {
       setDropClass({class:'', section: '', crn: '' })
     }
+
   }
 
   console.log(addClass)
@@ -309,7 +279,7 @@ function Marketplace() {
           }}>   
             {/* table section */}
             <DataGrid
-              rows={rows}
+              rows={rows.concat(myTradeRows)}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}

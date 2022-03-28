@@ -47,7 +47,9 @@ function Marketplace() {
   // where both addClass and dropClass are filled
   // let rows = [];
 
-   
+   //! ----------------------------------------------//
+
+   //! ----------------------------------------------//
 
 
   useEffect(() => {
@@ -299,8 +301,8 @@ function Marketplace() {
             </Box>
           </Box>
           <Box sx = {{
-            border: 2,
-            borderRadius: 2,
+            // border: 2,
+            // borderRadius: 2,
             marginLeft: "15%",
             marginRight: '15%',
             height: 300

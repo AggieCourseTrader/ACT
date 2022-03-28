@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { onAuthStateChanged, auth } from '../../firebase-config'
-
-
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';

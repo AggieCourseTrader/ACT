@@ -49,20 +49,20 @@ export default function MyListings({userId}) {
             arr.push(doc.data());
           });
   
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
+          // // The trade requests only have a crn so we have to get the course names from the crns
+          // let crns = arr.map((d) => d.addClassID);
+          // crns = crns.concat(arr.map((d) => d.dropClassID));
   
-          let courseData = await getCoursesByCrn(crns);
+          // let courseData = await getCoursesByCrn(crns);
   
-          // Merge the course names with the trade requests
-          arr = arr.map((x) => {
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            x.addClass = ele;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            x.dropClass = ele;
-            return x;
-          })
+          // // Merge the course names with the trade requests
+          // arr = arr.map((x) => {
+          //   let ele = courseData.find(ele => ele.crn === x.addClassID);
+          //   x.addClass = ele;
+          //   ele = courseData.find(ele => ele.crn === x.dropClassID);
+          //   x.dropClass = ele;
+          //   return x;
+          // })
   
           // Return
           setTrades(arr);

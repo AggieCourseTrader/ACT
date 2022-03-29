@@ -90,7 +90,7 @@ function Marketplace() {
         snap.forEach((doc) => {
           const data = doc.data();
           arr.push({
-            id: data.trade_id,
+            id: doc.id,
             add: data.dropClass,
             drop: data.addClass
           });
@@ -112,11 +112,13 @@ function Marketplace() {
         let arr = [];
         snap.forEach((doc) => {
           const data = doc.data();
+
           arr.push({
-            id: data.trade_id,
+            id: doc.id,
             add: data.addClass,
             drop: data.dropClass
           });
+          
         });
         console.log("here");
         setMyTradeRows(arr);

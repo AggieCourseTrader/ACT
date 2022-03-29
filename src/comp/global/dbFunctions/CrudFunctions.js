@@ -44,7 +44,8 @@ export async function addUser (email, displayName, oAuthId) {
       email: email,
       firstName: firstName,
       lastName: lastName,
-      oAuthID: oAuthId
+      oAuthID: oAuthId,
+      displayName: displayName
     }
 
     const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
@@ -249,7 +250,7 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 
 // Updates the given trade with the matched user id
 export async function updateTradeMatch(tradeId, matchedUserId) {
-   
+  console.log(tradeId);
   const tradeRef = doc(db, "trades", tradeId);
 
   const tradeSnap = await getDoc(tradeRef);

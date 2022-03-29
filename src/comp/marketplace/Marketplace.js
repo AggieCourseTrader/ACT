@@ -87,11 +87,10 @@ function Marketplace() {
     tradesListener.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
       (snap) => {
         let arr = [];
-        let x = 0;
         snap.forEach((doc) => {
           const data = doc.data();
           arr.push({
-            id: "nm" + x++,
+            id: data.trade_id,
             add: data.dropClass,
             drop: data.addClass
           });
@@ -111,11 +110,10 @@ function Marketplace() {
     myTrades.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
       (snap) => {
         let arr = [];
-        let x = 0;
         snap.forEach((doc) => {
           const data = doc.data();
           arr.push({
-            id: "m" + x++,
+            id: data.trade_id,
             add: data.addClass,
             drop: data.dropClass
           });

@@ -10,6 +10,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
 import { updateTradeMatch, createTrade } from "../global/dbFunctions/CrudFunctions"
+import Chip from '@mui/material/Chip';
+
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+
 import { onSnapshot, query, collection, where, limit} from 'firebase/firestore';
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
@@ -86,8 +92,8 @@ function Marketplace() {
           const data = doc.data();
           arr.push({
             id: "nm" + x++,
-            add: data.dropClass.course + " : " + data.dropClass.section,
-            drop: data.addClass.course + " : " + data.addClass.section,
+            add: data.dropClass,
+            drop: data.addClass
           });
         });
         console.log("here");
@@ -110,8 +116,8 @@ function Marketplace() {
           const data = doc.data();
           arr.push({
             id: "m" + x++,
-            add: data.addClass.course + " : " + data.addClass.section,
-            drop: data.dropClass.course + " : " + data.dropClass.section,
+            add: data.addClass,
+            drop: data.dropClass
           });
         });
         console.log("here");
@@ -140,6 +146,12 @@ function Marketplace() {
     flex: 1,
     editable: true,
     sortable: false,
+    renderCell: (params) => (
+      <Chip color="success" size="small" 
+      style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
+      icon={<AddCircleOutlineIcon/>} 
+      label={[params.value.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + params.value.section}</span>]}/>
+    )
   },
   {
     field: 'drop',
@@ -147,6 +159,13 @@ function Marketplace() {
     flex: 1,
     editable: true,
     sortable: false,
+    renderCell: (params) => (
+      <Chip size="small" color="primary" 
+        icon={<RemoveCircleOutlineIcon/>} 
+        style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+        label={[params.value.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + params.value.section}</span>]}
+      /> 
+    )
   },
   {
     field: 'action',

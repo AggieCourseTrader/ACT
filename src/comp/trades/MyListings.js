@@ -14,7 +14,7 @@ import EditTrades from './EditTrades'
 import Button from '@mui/material/Button';
 import { collection, onSnapshot, query, where} from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import { getCoursesByCrn } from '../global/dbFunctions/CrudFunctions';
+// import { getCoursesByCrn } from '../global/dbFunctions/CrudFunctions';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -48,21 +48,6 @@ export default function MyListings({userId}) {
           snap.forEach((doc) => {
             arr.push(doc.data());
           });
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-  
-          // Merge the course names with the trade requests
-          arr = arr.map((x) => {
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            x.addClass = ele;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            x.dropClass = ele;
-            return x;
-          })
   
           // Return
           setTrades(arr);

@@ -66,7 +66,7 @@ function Messages() {
     useEffect(() => {
         if(user) {
             convHelper.current = new IConversation(user, setConversationArr);
-            convHelper.current.addAll();
+            // convHelper.current.addAll();
         }
         return () => {
             if(convHelper.current) {
@@ -97,7 +97,7 @@ function Messages() {
                 <Search placeholder="Search..." />
                 <ConversationList >
  
-                    {("activeConversations" in conversationArr) ? 
+                    {(conversationArr) ? ("activeConversations" in conversationArr) ? 
                         conversationArr.activeConversations.map((d) => 
                             <Conversation 
                                 onClick={() => setActiveConversation(d.id)} 
@@ -107,7 +107,7 @@ function Messages() {
                                 active={(activeConversation === d.id)}
                             />
                         )
-                    : false}                                                                                          
+                    : false : false}                                                                                          
                 </ConversationList>
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>

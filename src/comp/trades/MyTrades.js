@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { onAuthStateChanged, auth } from '../../firebase-config'
-
-
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -44,7 +42,7 @@ function MyTrades() {
               <Container maxWidth="lg" sx={{mt: 5, mb: 5}}>
                 <Grid container spacing={3}>
                   {/* My Listings */}
-                  <Grid item xs={12} sm={6} md={6} lg={6}>
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Paper
                         sx={{
                           p: 2,
@@ -60,7 +58,7 @@ function MyTrades() {
                     </Paper>
                   </Grid>
                   {/* My Matches */}
-                  <Grid item xs={12} sm={6} md={6} lg={6}>
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Paper
                         sx={{
                           p: 2,
@@ -72,7 +70,7 @@ function MyTrades() {
                           },
                         }}
                     >
-                      <MyMatches userId={user.uid}/>
+                      <MyMatches user={user}/>
                     </Paper>
                   </Grid>
                 </Grid>

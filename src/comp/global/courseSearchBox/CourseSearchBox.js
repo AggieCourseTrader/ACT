@@ -33,91 +33,58 @@ const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 
 // const mdTheme = createTheme();
 
-function CourseSearchBox({ db, selectionCallBack }) {
+function CourseSearchBox({ db, selectionCallBack, defaultData}) {
+	// Contains all course and sections results
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
-	// const [queryCounter, setQueryCounter] = useState(0);
+
+	// Used by input box - 1
 	const [searchText, setSearchText] = useState('');
-	const [courseSelected, setCourseSelected] = useState(undefined);
+	// Use to notify input box 2 that something was selected
+	const [courseSelected, setCourseSelected] = useState('');
 
+	// Default values for both
+	const [sectionDefValue, setSectionDefValue] = useState('');
+	const [classDefValue, setClassDefValue] = useState('');
 
-	//console.log(sectionSelected);
+	// Temp var to hold section selected until
+	const f = async (searchText, db) => {
+		let text = searchText;
+		let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
+		let courseNumber = text.replace(/\D*/g, '');
+		let arr = [];
+		//console.log(courseText);
+		if(text.length < 2) {
+			setSearchResults([]);
+			return;
+		}
 
-	//* Updates search results whenever something is typed
-	useEffect(() => {
+		let q = false;
+		// * If courseText is greaterthan >= 2
+		// Search course first, then filter using number
+		if(courseText.length >= 2) {
+			q = query(collection(db, "majors"), where("keywords", 'array-contains', courseText.toUpperCase()));
+			const querySnapshot = await getDocs(q);
 
-		const f = async () => {
-			let text = searchText;
-			let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
-			let courseNumber = text.replace(/\D*/g, '');
-			let arr = [];
-			//console.log(courseText);
-			if(text.length < 2) {
-				setSearchResults([]);
-				return;
-			}
-	
-			let q = false;
-			// * If courseText is greaterthan >= 2
-			// Search course first, then filter using number
-			if(courseText.length >= 2) {
-				q = query(collection(db, "majors"), where("keywords", 'array-contains', courseText.toUpperCase()));
-				const querySnapshot = await getDocs(q);
-	
-				querySnapshot.forEach((doc) => {
-					let major = doc.data().name;
-					let courseMap = doc.data().course_map;
-					// Match the numbers in a complicated way
-					if(courseNumber.length >= 1) {
-						doc.data().courses.forEach((c) => {
-							c = c.toString();
-							let match = true;
-							for(let i = 0; i < courseNumber.length; i++) {
-								if(i >= c.length) {
-									match = false;
-									break;
-								}
-								if(c[i] !== courseNumber[i]) {
-									match = false;
-									break
-								}
+			querySnapshot.forEach((doc) => {
+				let major = doc.data().name;
+				let courseMap = doc.data().course_map;
+				// Match the numbers in a complicated way
+				if(courseNumber.length >= 1) {
+					doc.data().courses.forEach((c) => {
+						c = c.toString();
+						let match = true;
+						for(let i = 0; i < courseNumber.length; i++) {
+							if(i >= c.length) {
+								match = false;
+								break;
 							}
-							if(match) {
-								let name = major + " "  + c;
-								let crns = courseMap[parseInt(c)];
-								arr.push({
-									name : name,
-									crns : crns
-								});
+							if(c[i] !== courseNumber[i]) {
+								match = false;
+								break
 							}
-						});
-					}
-					// No numbers were given add everything
-					else {
-						doc.data().courses.forEach((c) => {
-							let name = major + " "  + c;
-							let crns = courseMap[parseInt(c)];
-							arr.push({
-								name : name,
-								crns : crns
-							});
-						});
-					}
-					//console.log(doc.id, " => ", doc.data());
-				});
-			}
-			// * Else filter using number if courseNumber is greaterthan > 2 (limit 3)
-			// Filter using coursename from keywords
-			else if(courseNumber.length > 2) {
-				q = query(collection(db, "majors"), where("courses", 'array-contains', courseNumber));
-				const querySnapshot = await getDocs(q);
-				querySnapshot.forEach((doc) => {
-					let major = doc.data().name;
-					let courseMap = doc.data().course_map;
-					let c = courseNumber;
-					// Match the major
-					if(courseText.length >= 1) {
-						if(doc.data().keywords.includes(courseText.toUpperCase())) {
+						}
+						if(match) {
 							let name = major + " "  + c;
 							let crns = courseMap[parseInt(c)];
 							arr.push({
@@ -125,9 +92,34 @@ function CourseSearchBox({ db, selectionCallBack }) {
 								crns : crns
 							});
 						}
-					}
-					// No major was specified
-					else {
+					});
+				}
+				// No numbers were given add everything
+				else {
+					doc.data().courses.forEach((c) => {
+						let name = major + " "  + c;
+						let crns = courseMap[parseInt(c)];
+						arr.push({
+							name : name,
+							crns : crns
+						});
+					});
+				}
+				//console.log(doc.id, " => ", doc.data());
+			});
+		}
+		// * Else filter using number if courseNumber is greaterthan > 2 (limit 3)
+		// Filter using coursename from keywords
+		else if(courseNumber.length > 2) {
+			q = query(collection(db, "majors"), where("courses", 'array-contains', courseNumber));
+			const querySnapshot = await getDocs(q);
+			querySnapshot.forEach((doc) => {
+				let major = doc.data().name;
+				let courseMap = doc.data().course_map;
+				let c = courseNumber;
+				// Match the major
+				if(courseText.length >= 1) {
+					if(doc.data().keywords.includes(courseText.toUpperCase())) {
 						let name = major + " "  + c;
 						let crns = courseMap[parseInt(c)];
 						arr.push({
@@ -135,142 +127,164 @@ function CourseSearchBox({ db, selectionCallBack }) {
 							crns : crns
 						});
 					}
-					//console.log(doc.id, " => ", doc.data());
-				});
-			}
-			setSearchResults(arr);
-			// setQueryCounter(queryCounter + 1);
-		};
+				}
+				// No major was specified
+				else {
+					let name = major + " "  + c;
+					let crns = courseMap[parseInt(c)];
+					arr.push({
+						name : name,
+						crns : crns
+					});
+				}
+				//console.log(doc.id, " => ", doc.data());
+			});
+		}
+		setSearchResults(arr);
+		return arr;
+		// setQueryCounter(queryCounter + 1);
+	};
 
-		f();
+	const h = async (cSelected, db) => {
+		setSectionResults([]);
+
+		if(cSelected === "" || cSelected === undefined) {
+			return;
+		}
+		let arr = [];
+
+		let q = await getCoursesByName(cSelected.name);
+
+
+		q.forEach((section) => {
+			let lecDays = []
+			let lecTimes = ''
+			let labDays = []
+			let labTimes = ''
+			//console.log(section.data());
+			
+			Object.entries(section.data().meeting_times).forEach((t) => {
+				let day = t[0];
+				let times = t[1];
+				times.forEach((t) => {
+					if (t.substring(t.length - 3) === "LAB") {
+						labDays.push(day);
+						labTimes = t.substring(0, t.length - 4);
+					} else if (t.substring(t.length - 3) === "LEC") {
+						lecDays.push(day);
+						lecTimes = t.substring(0, t.length - 4);
+					} 
+					
+				});
+			});
+			
+			labDays.sort((x, y) => {
+				let p = ['M', 'T', 'W', 'R', 'F', 'S']
+				if(p.indexOf(x) < p.indexOf(y)) {
+					return -1;
+				}
+				else if(p.indexOf(x) > p.indexOf(y)) {
+					return 1;
+				}
+				return 0;
+			});
+
+			lecDays.sort((x, y) => {
+				let p = ['M', 'T', 'W', 'R', 'F', 'S']
+				if(p.indexOf(x) < p.indexOf(y)) {
+					return -1;
+				}
+				else if(p.indexOf(x) > p.indexOf(y)) {
+					return 1;
+				}
+				return 0;
+			});
+
+			
+			let item = {
+				'section' : section.data().section,
+				'lec' : lecDays.join('') + " " + lecTimes + " LEC",
+				'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
+				'crn' : section.data().crn
+			};
+			//console.log(item);
+			arr.push(item);
+		});
+
+		setSectionResults(arr);
+		console.log("SEction results are ");
+		console.log(arr);
+		return arr;
+	};
+
+	useEffect(() => {
+		const g = async () => {
+			if(defaultData !== undefined) {	
+				setClassDefValue(defaultData.class);
+				let arr = await f(defaultData.class, db);
+				console.log(arr.find(x => x.name === defaultData.class));
+				arr = await h(arr.find(x => x.name === defaultData.class), db);
+				setSectionDefValue(arr.find(x => x.section === defaultData.section));
+			}
+		}
+
+		g();
+	}, [defaultData, db]);
+
+
+	//* Updates search results whenever something is typed
+	useEffect(() => {
+		f(searchText, db);
 	}, [searchText, db]);
 
 	//* Runs whenever a course is selected from the dropdown
 	useEffect(() => {
-
-		const f = async () => {
-			setSectionResults([]);
-	
-			if(courseSelected === undefined) {
-				return;
-			}
-			let arr = [];
-	
-			let q = await getCoursesByName(courseSelected.name);
-	
-	
-			q.forEach((section) => {
-				let lecDays = []
-				let lecTimes = ''
-				let labDays = []
-				let labTimes = ''
-				//console.log(section.data());
-				
-				Object.entries(section.data().meeting_times).forEach((t) => {
-					let day = t[0];
-					let times = t[1];
-					times.forEach((t) => {
-						if (t.substring(t.length - 3) === "LAB") {
-							labDays.push(day);
-							labTimes = t.substring(0, t.length - 4);
-						} else if (t.substring(t.length - 3) === "LEC") {
-							lecDays.push(day);
-							lecTimes = t.substring(0, t.length - 4);
-						} 
-						
-					});
-				});
-				
-				labDays.sort((x, y) => {
-					let p = ['M', 'T', 'W', 'R', 'F', 'S']
-					if(p.indexOf(x) < p.indexOf(y)) {
-						return -1;
-					}
-					else if(p.indexOf(x) > p.indexOf(y)) {
-						return 1;
-					}
-					return 0;
-				});
-	
-				lecDays.sort((x, y) => {
-					let p = ['M', 'T', 'W', 'R', 'F', 'S']
-					if(p.indexOf(x) < p.indexOf(y)) {
-						return -1;
-					}
-					else if(p.indexOf(x) > p.indexOf(y)) {
-						return 1;
-					}
-					return 0;
-				});
-	
-				
-				let item = {
-					'section' : section.data().section,
-					'lec' : lecDays.join('') + " " + lecTimes + " LEC",
-					'lab' : (labDays === []) ? '' : labDays.join('') + " " + labTimes + " LAB",
-					'crn' : section.data().crn
-				};
-				//console.log(item);
-				arr.push(item);
-			});
-	
-			setSectionResults(arr);
-			
-		};
-
-		f();
+		h(courseSelected, db);
 	}, [courseSelected, db]);
 
-	// let getCourseList = async (text) => {
-		
-	// }
+
 	return (
 		<>
-		
-		
-
-				<Autocomplete
+			<Autocomplete
+				value={classDefValue || null}
 				onChange={(e, v) => {
+					console.log(v)
 					setCourseSelected(searchResults.find(x => x.name === v))
 					selectionCallBack(searchResults.find(x => x.name === v))
+					setClassDefValue(v);
 				}}
 				sx={csb}
-				// sx={{
-				// 	overflow: 'auto',
-				// 	flexGrow : 1
-				// }}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
 				filterOptions={(x) => x}
 				renderInput={(params) => <TextField {...params} onChange = {(e) => {setSearchText(e.target.value)}} label="Search a course" />}
 			
-				/>
+			/>
 			
 
-				<Autocomplete
+			<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
-					autoHighlight
+				value={sectionDefValue || null}
+				autoHighlight
 				onChange={(e, v) => {
 					selectionCallBack(v)
+					setSectionDefValue(v);
 				}}
 				openOnFocus
 				sx = {ssb}
-
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
-				// options={sectionResults.map((x) => x.section)}
-
 				options={sectionResults}
 
-				getOptionLabel={(option) => option.section}
+				getOptionLabel={(option) => option.section || ""}
 				renderOption={(props, option) => (
 					renderSection(props, option)
 				)}
 
 				renderInput={(params) => <TextField {...params} label="Select a section" />}
-				/>
+			/>
 
 		
 

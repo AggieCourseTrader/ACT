@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit'
 import Alert from '@mui/material/Alert';
+import { Box } from '@mui/system';
 
 
 const useStyles = makeStyles({
@@ -41,13 +42,12 @@ const useStyles = makeStyles({
 
 
 
-function EditTrades() {
+function EditTrades(props) {
   const [userId, setUserId] = useState(null);
-  const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
-  const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+  const [addClass, setAddClass] = useState (props.add);
+  const [dropClass, setDropClass] = useState(props.drop);
   const [alert, setAlert] = useState(null)
-  //const [isUpdate, setIsUpdate] = useState(false)
-
+  //const [isUpdate, setIsUpdate] = useState(props.update)
   const classes = useStyles();
   let navigate = useNavigate();
 
@@ -71,7 +71,7 @@ function EditTrades() {
           setAddClass({...addClass, section:data.section, crn:data.crn})
         } 
       } else {
-        setAddClass({class:'', section: '', crn: '' })
+        setAddClass({class:null, section: null, crn: null })
       }
     }
   }
@@ -86,7 +86,7 @@ function EditTrades() {
         } 
       }
     } else {
-      setDropClass({class:'', section: '', crn: '' })
+      setDropClass({class:null, section:null, crn:null})
     }
   }
 
@@ -117,7 +117,15 @@ function EditTrades() {
   }
 
   return (
-    <React.Fragment>
+    <Box sx={{   
+      position: 'absolute',
+      bgcolor: '#f6f6f6',
+      border: '2px solid #000',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 900,
+      boxShadow: 24,}}>
       <div className={classes.wrapper}>
         <div className={classes.container}>
           <EditIcon/>
@@ -134,7 +142,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} defaultData={addClass}/>
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -148,7 +156,7 @@ function EditTrades() {
       </div>
       <div className={classes.wrapper}>
         <div className={classes.containerDrop}>
-            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
+            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} defaultData={dropClass} />
         </div>
       </div>
       <div className={classes.wrapper}>
@@ -162,7 +170,7 @@ function EditTrades() {
           <div className="Alert">{alert}</div>
         </div>
       </div>
-    </React.Fragment>
+    </Box>
   );
 }
 

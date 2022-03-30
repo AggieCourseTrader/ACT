@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom'
-import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
-import {createTrade, deleteTrade, db, getTradeId} from '../global/dbFunctions/CrudFunctions';
+import {createTrade, deleteTrade, db, updateTrade} from '../global/dbFunctions/CrudFunctions';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -43,24 +42,10 @@ const useStyles = makeStyles({
 
 
 function EditTrades(props) {
-  const [userId, setUserId] = useState(null);
   const [addClass, setAddClass] = useState (props.add);
   const [dropClass, setDropClass] = useState(props.drop);
-  const [alert, setAlert] = useState(null)
-  //const [isUpdate, setIsUpdate] = useState(props.update)
+  const [alert, setAlert] = useState(null);
   const classes = useStyles();
-  let navigate = useNavigate();
-
- useEffect(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUserId(user)
-    } else {
-      navigate("/")
-    }
-   });
-
-  },/*removed dependency array*/)
 
   const selectionAddCallback = (data) => {
     if(data !== undefined){
@@ -70,9 +55,9 @@ function EditTrades(props) {
         } else if (data.crn) {
           setAddClass({...addClass, section:data.section, crn:data.crn})
         } 
-      } else {
-        setAddClass({class:null, section: null, crn: null })
-      }
+      } 
+    } else {
+      setAddClass(undefined)
     }
   }
 
@@ -86,33 +71,40 @@ function EditTrades(props) {
         } 
       }
     } else {
-      setDropClass({class:null, section:null, crn:null})
+      setDropClass(undefined)
     }
   }
 
 
   const tradeAddUpdate = () => {
-    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
+    if(dropClass !== undefined && addClass !== undefined) {
         (async () => {
-          let resp = await createTrade(userId.uid, dropClass.crn, addClass.crn);
-          console.log(resp)
-          setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
+          if(props.tradeId !== undefined) {
+            let resp = await updateTrade(props.tradeId, dropClass.crn, addClass.crn);
+            console.log(resp)
+            setAlert(<Alert severity="success">Congrats your trade was Updated</Alert>)
+          } else if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
+            let resp = await createTrade(props.userId, dropClass.crn, addClass.crn);
+            console.log(resp)
+            setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
+          } else {
+            setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+          }
         })();
     } else {
-      setAlert(<Alert severity="error">All dropdowns must be filled to create a trade</Alert>)
+      setAlert(<Alert severity="error">All dropdowns must be filled</Alert>)
     }
   }
 
   const tradeDelete = () => {
-    if(dropClass.crn !== '' && addClass.crn !== '' && (addClass.crn !== dropClass.crn)) {
+    if(props.tradeId) {
       (async () => {
-        let tradeId = await getTradeId(userId.uid, dropClass.crn, addClass.crn);
-        let del = await deleteTrade(tradeId);
-        console.log(del)
-        setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
+          let del = await deleteTrade(props.tradeId);
+          console.log(del)
+          setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
       })();
     } else {
-      setAlert(<Alert severity="error">No Trade was deleted, make sure all dropdowns are filled and have correct info</Alert>);
+      setAlert(<Alert severity="error">There is no trade to delete</Alert>);
     }
   }
 

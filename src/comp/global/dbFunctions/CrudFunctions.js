@@ -45,7 +45,8 @@ export async function addUser (email, displayName, oAuthId, photoURL) {
       firstName: firstName,
       lastName: lastName,
       oAuthID: oAuthId,
-      photoURL: photoURL
+      photoURL: photoURL,
+      displayName: displayName
     }
 
     const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
@@ -97,12 +98,23 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
   // If the trade to be created does not already exist
   if (receivedTrade.empty) {
  
+    // Get course data
+    let addClassDoc = await getCourseByCrn(addCourseId);
+    let addClass = "";
+    addClassDoc.forEach((d) => {addClass = d.data()});
+
+    let dropClassDoc = await getCourseByCrn(dropCourseId);
+    let dropClass = "";
+    dropClassDoc.forEach((d) => {dropClass = d.data()});
+    console.log("here");
     // All attributes except tradeId which is automatically generated
-    tradeDoc = { 
+    tradeDoc = {
+      addClass: addClass,
       addClassID: addCourseId,
       createdAt: serverTimestamp(),
       creatorID: creatingUserId,
       dropClassID: dropCourseId,
+      dropClass: dropClass,
       matchID: -1,
       status: "requested"
     }
@@ -216,8 +228,19 @@ export async function getTrades(dropCourseId, addCourseId) {
 export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
    
   const tradeRef = doc(db, "trades", tradeId);
+
+  // Get course data
+  let addClassDoc = await getCourseByCrn(newAddCourseId);
+  let addClass = "";
+  addClassDoc.forEach((d) => {addClass = d.data()});
+
+  let dropClassDoc = await getCourseByCrn(newDropCourseId);
+  let dropClass = "";
+  dropClassDoc.forEach((d) => {dropClass = d.data()});
   
   const updatedFields = {
+    addClass: addClass,
+    dropClass: dropClass,
     addClassID: newAddCourseId,
     dropClassID: newDropCourseId,
   }
@@ -228,7 +251,7 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 
 // Updates the given trade with the matched user id
 export async function updateTradeMatch(tradeId, matchedUserId) {
-   
+  console.log(tradeId);
   const tradeRef = doc(db, "trades", tradeId);
 
   const tradeSnap = await getDoc(tradeRef);

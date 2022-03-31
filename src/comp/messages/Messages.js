@@ -29,34 +29,60 @@ import {useNavigate} from 'react-router-dom'
 console.log(styles);
 
 function Messages() {
-  const [messageArr, setMessageArr] = useState([]);
-  const convHelper = useRef(false);
-  const [conversationArr, setConversationArr] = useState([]);
-  const [activeConversation, setActiveConversation] = useState('');
-  const [user, setUser] = useState(false);
+    const [messageArr, setMessageArr] = useState([]);
+    const convHelper = useRef(false);
+    const [conversationArr, setConversationArr] = useState([]);
+    const [activeConversation, setActiveConversation] = useState('');
+    const [user, setUser] = useState(false);
 
-  const messageHelper = useRef(false);
+    const messageHelper = useRef(false);
+    
 
-  let navigate = useNavigate();
+    let navigate = useNavigate();
+    
 
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            setUser(user);
+          } else {
+            navigate("/")
+          }
+         });
+     
+    }, )
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        navigate("/")
-      }
-    });
+    useEffect(() => {
+        if(activeConversation) {
+            messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
+            if(convHelper.current) {
+                convHelper.current.clearUnread(activeConversation);
+            }
+        }
+        return () => {
+            if(messageHelper.current) {
+                messageHelper.current.unSub();
+            }
+        }
+    },[activeConversation, user])
 
-  },)
+    useEffect(() => {
+        if(user) {
+            convHelper.current = new IConversation(user, setConversationArr);
+            // convHelper.current.addAll();
+        }
+        return () => {
+            if(convHelper.current) {
+                convHelper.current.unSub();
+            }
+        }
+    }, [user]);
 
-  useEffect(() => {
-    if (activeConversation) {
-      messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
-      if (convHelper.current) {
-        convHelper.current.clearUnread(activeConversation);
-      }
+    const sendTxt = (text) => {
+        if(text !== "" && messageHelper.current) {
+            console.log("Sending text : " + text);
+            messageHelper.current.sendMessage(text);
+        }
     }
     return () => {
       if (messageHelper.current) {
@@ -65,58 +91,33 @@ function Messages() {
     }
   }, [activeConversation, user])
 
-  useEffect(() => {
-    if (user) {
-      convHelper.current = new IConversation(user, setConversationArr);
-      convHelper.current.addAll();
-    }
-    return () => {
-      if (convHelper.current) {
-        convHelper.current.unSub();
-      }
-    }
-  }, [user]);
+    //! We have to update message list whenever user clicks on conversation or a new message is received.
+    useEffect((() => {
+        console.log(messageArr);
+    }), [messageArr]);
 
-  const sendTxt = (text) => {
-    if (text !== "" && messageHelper.current) {
-      console.log("Sending text : " + text);
-      messageHelper.current.sendMessage(text);
-    }
-  }
+    return (
+    <>
+    <Navbar name = "Messages" auth={auth} user={user}/>
+    <div style={{ flexGrow : 1, height: "90vh" }}>
+        <MainContainer style={{border: 'none', backgroundColor : 'transparent'}}>
 
-  //! We have to update message list whenever user clicks on conversation or a new message is received.
-  useEffect((() => {
-    console.log(messageArr);
-  }), [messageArr]);
-  // console.log(messageArr.slice(-1)[0]['text'])
-  console.log(user)
-  return (
-      <>
-        <Navbar name="Messages" auth={auth} user={user}/>
-        <div style={{flexGrow: 1, height: "90vh"}}>
-          <MainContainer responsive>
-
-            <Sidebar position="left" scrollable={false}>
-              <Search placeholder="Search..."/>
-              <ConversationList>
-
-                {("activeConversations" in conversationArr) ?
-                    conversationArr.activeConversations.map((d) =>
-                        <Conversation
-                            onClick={() => setActiveConversation(d.id)}
-                            key={"conversation." + d.id} name={d.fname + " " + d.lname}
-                            unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
-                            active={(activeConversation === d.id)}
-                        >
-                          <Avatar src="https://lh3.googleusercontent.com/a-/AOh14GjqIrEa76Hw9LCX3HM4zp_1fxQ2msqalkyOId7v=s96-c" name="Avatar" status="available"/>
-                          <Conversation.Content>
-                            <div>Custom content</div>
-                          </Conversation.Content>
-                          <Conversation.Operations />
-                        </Conversation>
-                    )
-                    : false}
-              </ConversationList>
+            <Sidebar position="left" scrollable={false} style={{backgroundColor: 'transparent'}}>
+                <Search placeholder="Search..." />
+                <ConversationList >
+ 
+                    {(conversationArr) ? ("activeConversations" in conversationArr) ? 
+                        conversationArr.activeConversations.map((d) => 
+                            <Conversation 
+                                onClick={() => setActiveConversation(d.id)} 
+                                key={"conversation." + d.id} name={d.fname} 
+                                info="Yolo" 
+                                unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
+                                active={(activeConversation === d.id)}
+                            />
+                        )
+                    : false : false}                                                                                          
+                </ConversationList>
             </Sidebar>
             <ChatContainer>
               <ConversationHeader>

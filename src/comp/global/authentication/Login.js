@@ -67,10 +67,9 @@ function Login() {
  });
 
  var provider = new GoogleAuthProvider();
- // TODO - reinstate this
-  // provider.setCustomParameters({
-  // 'hd': 'tamu.edu'
-  // });
+  provider.setCustomParameters({
+    'hd': 'tamu.edu'
+  });
 
   return (
     <div>

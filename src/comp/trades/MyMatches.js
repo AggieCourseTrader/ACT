@@ -13,24 +13,26 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip'
 
+import { collection, getDocs,  query,  arrayUnion, setDoc, where, doc } from 'firebase/firestore';
 
-import { getCoursesByCrn, getCreatedTrades, getMatchedTrades } from '../global/dbFunctions/CrudFunctions';
+import {getCreatedTrades, getMatchedTrades, db } from '../global/dbFunctions/CrudFunctions';
 
 
-export default function MyMatches({userId}) {
+export default function MyMatches({user}) {
   const [trades, setTrades] = React.useState([]);
 
   // Init listener
   React.useEffect(() => {
     const f = async () => {
-      if(userId !== undefined) {
-        const myTrades = await getCreatedTrades(userId);
-        const otherTrades = await getMatchedTrades(userId);
+      console.log(user);
+      if(user !== undefined) {
+        const myTrades = await getCreatedTrades(user.uid);
+        const otherTrades = await getMatchedTrades(user.uid);
   
         let arr = [];
         myTrades.forEach((doc) => {
           if(doc.data().matchID !== -1){
-            arr.push(doc.data());
+            arr.push({...doc.data(), connectingUserId: doc.data().matchID});
           }
           
         });
@@ -39,25 +41,15 @@ export default function MyMatches({userId}) {
         // Since we are not the creator of the trade the course being added or dropped is opposite for us
         otherTrades.forEach((doc) => {
           const data = doc.data();
-          const t = data.dropClassID;
+          let t = data.dropClassID;
           data.dropClassID = data.addClassID;
           data.addClassID = t;
-  
+          t = data.dropClass
+          data.dropClass = data.addClass
+          data.addClass = t
+          data.connectingUserId = doc.data().creatorID
           arr.push(data);
         });
-  
-        let crns = arr.map((d) => d.addClassID);
-        crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-        let courseData = await getCoursesByCrn(crns);
-        // Merge the course names with the trade requests
-        arr = arr.map((x) => {
-          let ele = courseData.find(ele => ele.crn === x.addClassID);
-          x.addClass = ele;
-          ele = courseData.find(ele => ele.crn === x.dropClassID);
-          x.dropClass = ele;
-          return x;
-        })
   
         // Return
         setTrades(arr);
@@ -66,7 +58,7 @@ export default function MyMatches({userId}) {
     }
 
     f();
-  }, [userId]);
+  }, [user]);
 
   React.useEffect(() => {
     console.log(trades);
@@ -105,7 +97,37 @@ export default function MyMatches({userId}) {
                   
                   </TableCell>
                   <TableCell align="right">
-                      <IconButton component={Link} to="/messages">
+                      <IconButton onClick={async (e) => {
+                        let q = query(collection(db, "users"), where("oAuthID", "==", row.connectingUserId));
+                        let docs = await getDocs(q);
+                        docs.forEach(async (d) => {
+                            let data = d.data();
+                            // Remember we started talking to them
+                            await setDoc(doc(db, "messageStatus", user.uid), {
+                                "activeConversations" : arrayUnion({
+                                    'id' : data.oAuthID,
+                                    'fname' : data.displayName
+                                })
+                            }, {merge : true});
+
+                            // Notify them that we are talking to them
+                            await setDoc(doc(db, "messageStatus", row.connectingUserId), {
+                              "activeConversations" : arrayUnion({
+                                  'id' : user.uid,
+                                  'fname' : user.displayName
+                              })
+                            }, {merge : true});
+                            // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));
+                            // if(theirDoc.exists) {
+                            //   console.log("There doc exists");
+
+                            // }
+                            // else {
+                            //   console.log("There doc does not exists");
+                            // }
+
+                        });
+                      }}component={Link} to="/messages">
                         <ChatIcon/>
                       </IconButton>
                     </TableCell>

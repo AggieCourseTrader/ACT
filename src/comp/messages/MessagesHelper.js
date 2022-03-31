@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
 
 //! Data: 
@@ -34,6 +34,21 @@ export class IConversation {
         this.newConversation();
     }
 
+    async addId(connectingUserId) {
+        let q = query(collection(this.db, "users"), where("oAuthID", "==", connectingUserId));
+        let docs = await getDocs(q);
+        docs.forEach(async (d) => {
+            let data = d.data();
+            if(data.oAuthID !== this.oAuthId) {
+                await setDoc(this.myDoc, {
+                    "activeConversations" : arrayUnion({
+                        'id' : data.oAuthID,
+                        'fname' : data.firstName
+                    })
+                }, {merge : true});
+            }
+        });
+    }
     async addAll() {
         let q = query(collection(this.db, "users"));
         let docs = await getDocs(q);

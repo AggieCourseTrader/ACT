@@ -56,7 +56,7 @@ function Login() {
      // const uid = user.uid;
     // setLogIn(true);
      //setUser(user);
-     addUser (user.email, user.displayName, user.uid);
+     addUser (user.email, user.displayName, user.uid, user.photoURL);
      navigate("/marketplace")
    } else {
      // User is signed out
@@ -67,9 +67,10 @@ function Login() {
  });
 
  var provider = new GoogleAuthProvider();
-  provider.setCustomParameters({
-  'hd': 'tamu.edu'
-  });
+ // TODO - reinstate this
+  // provider.setCustomParameters({
+  // 'hd': 'tamu.edu'
+  // });
 
   return (
     <div>

@@ -18,7 +18,7 @@ const courses = collection(db, "courses");
 
 
 // Adds given user to the user collection
-export async function addUser (email, displayName, oAuthId) {
+export async function addUser (email, displayName, oAuthId, photoURL) {
 
   // Split displayName into first and last name
   let names;
@@ -44,7 +44,8 @@ export async function addUser (email, displayName, oAuthId) {
       email: email,
       firstName: firstName,
       lastName: lastName,
-      oAuthID: oAuthId
+      oAuthID: oAuthId,
+      photoURL: photoURL
     }
 
     const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);

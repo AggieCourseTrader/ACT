@@ -43,7 +43,9 @@ export class IConversation {
                 await setDoc(this.myDoc, {
                     "activeConversations" : arrayUnion({
                         'id' : data.oAuthID,
-                        'fname' : data.firstName
+                        'fname' : data.firstName,
+                        'lname' : data.lastName,
+                        'photoURL' : data.photoURL
                     })
                 }, {merge : true});
             }

@@ -90,15 +90,25 @@ function Messages() {
     console.log(messageArr);
   }), [messageArr]);
   console.log(user)
+  console.log(conversationArr)
+  console.log(activeConversation)
+  // console.log(conversationArr.find(obj => {
+  //   obj.id === activeConversation;
+  // }));
+
+  // Get avatar of the user
+  // const getAvatar = conversationArr.find(obj => {
+  //   return obj.id === activeConversation;
+  // });
 
   return (
       <>
         <Navbar name="Messages" auth={auth} user={user}/>
-        <div style={{flexGrow: 1, height: "90vh"}}>
-          <MainContainer responsive>
+        <div style={{flexGrow: 1, height: "90vh", backgroundColor: '#600000'}}>
+          <MainContainer responsive style={{backgroundColor: '#600000'}}>
 
             <Sidebar position="left" scrollable={false}>
-              <Search placeholder="Search..."/>
+              <Search style={{backgroundColor: '#600000'}} placeholder="Search..."/>
               <ConversationList>
 
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
@@ -109,7 +119,7 @@ function Messages() {
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >
-                          <Avatar src="https://lh3.googleusercontent.com/a-/AOh14GjqIrEa76Hw9LCX3HM4zp_1fxQ2msqalkyOId7v=s96-c" name="Avatar" status="available"/>
+                          <Avatar src={d.photoURL} name="Avatar" status="available"/>
                           <Conversation.Content>
                             <div>Custom content</div>
                           </Conversation.Content>
@@ -121,7 +131,7 @@ function Messages() {
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>
               <ConversationHeader>
-                <Avatar src="https://lh3.googleusercontent.com/a-/AOh14GjqIrEa76Hw9LCX3HM4zp_1fxQ2msqalkyOId7v=s96-c" name="Avatar"/>
+                <Avatar src={""} name="Avatar"/>
                 <ConversationHeader.Content userName={user.displayName} info="Active 10 mins ago"/>
                 <ConversationHeader.Actions>
                   <InfoButton border />

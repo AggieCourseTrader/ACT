@@ -1,5 +1,4 @@
 import React, { useState} from 'react';
-import { useNavigate } from 'react-router-dom'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
 import {createTrade, deleteTrade, db, updateTrade} from '../global/dbFunctions/CrudFunctions';
 import { makeStyles } from '@mui/styles';

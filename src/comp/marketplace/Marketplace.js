@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { updateTradeMatch, createTrade } from "../global/dbFunctions/CrudFunctions"
+import { updateTradeMatch, createTrade,/* getReviews*/} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -30,6 +30,7 @@ function Marketplace() {
   const tradesListener = useRef(null);
 
   const [myTradeRows, setMyTradeRows] = useState([]);
+  //const [reviews, setReviews] = useState([]);
   const myTrades = useRef(null);
 
   const [alert, setAlert] = useState(null)
@@ -76,6 +77,7 @@ function Marketplace() {
 
 
   //! ----------------------------------------------//
+
 
   useEffect(() => {
     if(!user.uid) {
@@ -221,6 +223,20 @@ function Marketplace() {
   // };
 
 
+/*
+  function getBio(id) {
+    (async () => {
+      let arr = []
+      let reviews = await getReviews(id);
+      if(reviews !== null) {
+        reviews.forEach((doc) => {
+          arr.push(doc.data().review)
+        });
+      }
+      setReviews(arr)
+    })();
+  } 
+  */
 
    const selectionAddCallback = (data) => {
     if(data !== undefined){

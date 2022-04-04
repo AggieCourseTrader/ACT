@@ -15,6 +15,7 @@ export const db = getFirestore(app);
 const trades = collection(db, "trades");
 const users = collection(db, "users");
 const courses = collection(db, "courses");
+const reviews = collection(db, "reviews");
 
 
 // Adds given user to the user collection
@@ -309,4 +310,34 @@ export async function getTradeId(userId, dropCourseId, addCourseId) {
   }
 
   return tradeId;
+}
+
+export async function addReviews(userId, review, key) {
+
+  let reviewDoc
+  let reviewRef
+
+  reviewDoc = {
+    userId: userId,
+    review: review,
+    key: key
+  }
+
+  reviewRef = await addDoc(reviews, reviewDoc);
+  return reviewRef;
+}
+
+export async function getReviews(userId) {
+
+  const q = query(reviews, where("userId", "==", userId));
+  const receivedReviews = await getDocs(q);
+    
+  if (!receivedReviews.empty) {
+    return receivedReviews;
+  }
+
+  else {
+    console.log("No Review exist");
+    return null;
+  }
 }

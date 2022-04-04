@@ -13,12 +13,13 @@ export const db = getFirestore(app);
 
 // collections to be used in the functions
 const trades = collection(db, "trades");
-const users = collection(db, "users");
+// const users = collection(db, "users");
 const courses = collection(db, "courses");
+const reviews = collection(db, "reviews");
 
 
 // Adds given user to the user collection
-export async function addUser (email, displayName, oAuthId) {
+export async function addUser (email, displayName, oAuthId, photoURL) {
 
   // Split displayName into first and last name
   let names;
@@ -34,23 +35,24 @@ export async function addUser (email, displayName, oAuthId) {
   const lastName = names[1];
 
   // Look for document to check if user exists
-  const q = query(users, where("oAuthID", "==", oAuthId));
-  const existingUsers = await getDocs(q);
+  // const q = query(users, where("oAuthID", "==", oAuthId));
+  // const existingUsers = await getDocs(q);
    
   //Add user to database if they are not already in it 
-  if (existingUsers.empty) {
+  // if (existingUsers.empty) {
 
-    const userDoc = { 
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      oAuthID: oAuthId,
-      displayName: displayName
-    }
+  const userDoc = {
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    oAuthID: oAuthId,
+    displayName: displayName,
+    photoURL : photoURL
+  }
 
-    const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
-    return docRef;
-  } 
+  const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
+  return docRef;
+  // }
 }
 
 // Get all of the course sections with the given name
@@ -309,4 +311,34 @@ export async function getTradeId(userId, dropCourseId, addCourseId) {
   }
 
   return tradeId;
+}
+
+export async function addReviews(userId, review, key) {
+
+  let reviewDoc
+  let reviewRef
+
+  reviewDoc = {
+    userId: userId,
+    review: review,
+    key: key
+  }
+
+  reviewRef = await addDoc(reviews, reviewDoc);
+  return reviewRef;
+}
+
+export async function getReviews(userId) {
+
+  const q = query(reviews, where("userId", "==", userId));
+  const receivedReviews = await getDocs(q);
+    
+  if (!receivedReviews.empty) {
+    return receivedReviews;
+  }
+
+  else {
+    console.log("No Review exist");
+    return null;
+  }
 }

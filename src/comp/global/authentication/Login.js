@@ -56,7 +56,7 @@ function Login() {
      // const uid = user.uid;
     // setLogIn(true);
      //setUser(user);
-     addUser (user.email, user.displayName, user.uid);
+     addUser (user.email, user.displayName, user.uid, user.photoURL);
      navigate("/marketplace")
    } else {
      // User is signed out
@@ -67,9 +67,9 @@ function Login() {
  });
 
  var provider = new GoogleAuthProvider();
-  // provider.setCustomParameters({
-  // 'hd': 'tamu.edu'
-  // });
+  provider.setCustomParameters({
+    'hd': 'tamu.edu'
+  });
 
   return (
     <div>
@@ -93,20 +93,20 @@ function Login() {
                   <Typography component="h1" variant="h2" align="left" gutterBottom='true'>Welcome to Aggie Course Trader</Typography>  
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" gutterBottom='true'>An app built for students</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="h6" align="left" gutterBottom='true'>An app built for TAMU students</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Meet the tailired built app for TAMU students to help ease the stress of courese registration</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" gutterBottom='true'>Search and add trades to the marketplace</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>In 3 easy steps a user can search for trades on our markeplace place hub and add / edit there own on the my trades page</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" gutterBottom='true'>Built in Chat System</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Future details on the app and pictures to showcase to the user</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Once you find a match you can use our built in private and secure chat system to work out the trade details with the other studnet</Typography> 
                     </CardContent>
                   </Card>
                 </div>

@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { updateTradeMatch, createTrade } from "../global/dbFunctions/CrudFunctions"
+import { updateTradeMatch, createTrade, getReviews } from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
@@ -28,6 +28,7 @@ function Marketplace() {
   const tradesListener = useRef(null);
 
   const [myTradeRows, setMyTradeRows] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const myTrades = useRef(null);
 
   useEffect(() => {
@@ -72,6 +73,7 @@ function Marketplace() {
 
 
   //! ----------------------------------------------//
+
 
   useEffect(() => {
     if(!user.uid) {
@@ -215,6 +217,18 @@ function Marketplace() {
   //   setRowsPerPage(parseInt(event.target.value, 10));
   //   setPage(0);
   // };
+
+  function getBio(id) {
+    (async () => {
+      let arr = []
+      let reviews = await getReviews(id);
+      reviews.forEach((doc) => {
+        arr.push(doc.data().review)
+      });
+      setReviews(arr)
+    })();
+  } 
+
 
 
 

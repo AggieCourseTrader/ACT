@@ -9,8 +9,10 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { updateTradeMatch, createTrade } from "../global/dbFunctions/CrudFunctions"
+import { updateTradeMatch, createTrade,/* getReviews*/} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -28,7 +30,10 @@ function Marketplace() {
   const tradesListener = useRef(null);
 
   const [myTradeRows, setMyTradeRows] = useState([]);
+  //const [reviews, setReviews] = useState([]);
   const myTrades = useRef(null);
+
+  const [alert, setAlert] = useState(null)
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -72,6 +77,7 @@ function Marketplace() {
 
 
   //! ----------------------------------------------//
+
 
   useEffect(() => {
     if(!user.uid) {
@@ -217,6 +223,20 @@ function Marketplace() {
   // };
 
 
+/*
+  function getBio(id) {
+    (async () => {
+      let arr = []
+      let reviews = await getReviews(id);
+      if(reviews !== null) {
+        reviews.forEach((doc) => {
+          arr.push(doc.data().review)
+        });
+      }
+      setReviews(arr)
+    })();
+  } 
+  */
 
    const selectionAddCallback = (data) => {
     if(data !== undefined){
@@ -309,15 +329,35 @@ function Marketplace() {
             </Box>
             <Box sx = {{textAlign: "center", m: 2}}>
               <Button variant = "outlined" justifyContent = "center"
-                onClick={() => {
+                onClick={ async () => {
                   if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-                    createTrade(user.uid, dropClass.crn, addClass.crn);
-                    alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                    const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
+                    console.log('val: ' + val);
+                    if(val !== null) {
+                      // this doesnt show up. look into mui alerts to figure how this works
+                      console.log("here"); // this line is executed, but below lines don't do anything
+                      setAlert(
+                      <Alert severity="success">
+                        <AlertTitle>Success</AlertTitle>
+                        trade request created
+                      </Alert>
+                      );
+                      // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                    }
+                    else { 
+                      setAlert(
+                        <Alert severity="error">
+                          <AlertTitle>Failure</AlertTitle>
+                          trade already exists
+                        </Alert>
+                        );
+                    }
                   }
                 }}
               >
                 Create Trade
               </Button>
+              <div className="Alert">{alert}</div>
             </Box>
         </Box>
       <Footer/>

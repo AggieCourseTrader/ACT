@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { updateTradeMatch, createTrade, getReviews, addReviews } from "../global/dbFunctions/CrudFunctions"
+import { updateTradeMatch, createTrade, getReviews} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
@@ -217,6 +217,8 @@ function Marketplace() {
   //   setRowsPerPage(parseInt(event.target.value, 10));
   //   setPage(0);
   // };
+
+
 
   function getBio(id) {
     (async () => {

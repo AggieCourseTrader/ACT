@@ -105,18 +105,20 @@ export default function MyMatches({user}) {
                             // Remember we started talking to them
                             await setDoc(doc(db, "messageStatus", user.uid), {
                                 "activeConversations" : arrayUnion({
-                                    'id' : data.oAuthID,
-                                    'fname' : data.firstName,
-                                    'lname' : data.lastName
+                                  'id' : data.oAuthID,
+                                  'fname' : data.firstName,
+                                  'lname' : data.lastName,
+                                  'photoURL' : data.photoURL
                                 })
                             }, {merge : true});
 
                             // Notify them that we are talking to them
                             await setDoc(doc(db, "messageStatus", row.connectingUserId), {
                               "activeConversations" : arrayUnion({
-                                  'id' : user.uid,
-                                  'fname' : user.firstName,
-                                  'lname' : user.lastName
+                                'id' : data.oAuthID,
+                                'fname' : data.firstName,
+                                'lname' : data.lastName,
+                                'photoURL' : data.photoURL
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

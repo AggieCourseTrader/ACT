@@ -106,7 +106,8 @@ export default function MyMatches({user}) {
                             await setDoc(doc(db, "messageStatus", user.uid), {
                                 "activeConversations" : arrayUnion({
                                     'id' : data.oAuthID,
-                                    'fname' : data.displayName
+                                    'fname' : data.firstName,
+                                    'lname' : data.lastName
                                 })
                             }, {merge : true});
 
@@ -114,7 +115,8 @@ export default function MyMatches({user}) {
                             await setDoc(doc(db, "messageStatus", row.connectingUserId), {
                               "activeConversations" : arrayUnion({
                                   'id' : user.uid,
-                                  'fname' : user.displayName
+                                  'fname' : user.firstName,
+                                  'lname' : user.lastName
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

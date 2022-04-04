@@ -69,7 +69,7 @@ function Messages() {
   useEffect(() => {
     if (user) {
       convHelper.current = new IConversation(user, setConversationArr);
-      convHelper.current.addAll();
+      // convHelper.current.addAll();
     }
     return () => {
       if (convHelper.current) {

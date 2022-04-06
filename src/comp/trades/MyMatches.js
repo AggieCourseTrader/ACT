@@ -113,12 +113,13 @@ export default function MyMatches({user}) {
                             }, {merge : true});
 
                             // Notify them that we are talking to them
+                            console.log("here");
                             await setDoc(doc(db, "messageStatus", row.connectingUserId), {
                               "activeConversations" : arrayUnion({
-                                'id' : data.oAuthID,
-                                'fname' : data.firstName,
-                                'lname' : data.lastName,
-                                'photoURL' : data.photoURL
+                                'id' : user.uid,
+                                'fname' : user.displayName.split(" ")[0],
+                                'lname' : user.displayName.split(' ')[1],
+                                'photoURL' : user.photoURL
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

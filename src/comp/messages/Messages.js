@@ -33,6 +33,7 @@ function Messages() {
   const convHelper = useRef(false);
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
+  const [activeConversationObj, setActiveConversationObj] = useState('');
   const [user, setUser] = useState(false);
 
   const messageHelper = useRef(false);
@@ -89,17 +90,7 @@ function Messages() {
   useEffect((() => {
     console.log(messageArr);
   }), [messageArr]);
-  console.log(user)
-  console.log(conversationArr)
-  console.log(activeConversation)
-  // console.log(conversationArr.find(obj => {
-  //   obj.id === activeConversation;
-  // }));
 
-  // Get avatar of the user
-  // const getAvatar = conversationArr.find(obj => {
-  //   return obj.id === activeConversation;
-  // });
 
   return (
       <>
@@ -114,7 +105,7 @@ function Messages() {
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
                     conversationArr.activeConversations.map((d) =>
                         <Conversation
-                            onClick={() => setActiveConversation(d.id)}
+                            onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
                             key={"conversation." + d.id} name={d.fname + " " + d.lname}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
@@ -131,8 +122,8 @@ function Messages() {
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>
               <ConversationHeader>
-                <Avatar src={""} name="Avatar"/>
-                <ConversationHeader.Content userName={user.displayName} info="Active 10 mins ago"/>
+                <Avatar src={activeConversationObj.photoURL} name="Avatar"/>
+                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname} info="Active 10 mins ago"/>
                 <ConversationHeader.Actions>
                   <InfoButton border />
                 </ConversationHeader.Actions>

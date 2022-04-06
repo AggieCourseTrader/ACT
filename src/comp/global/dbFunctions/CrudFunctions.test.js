@@ -7,31 +7,6 @@ import { db, trades, createTrade, deleteTrade, getTrade } from "./CrudFunctions"
 
 
 
-/*
-test('Create Trade', () => {
-    return createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 15977, 34157).then((docReference) => {
-    
-        docReference.get().then((docSnapshot) => {
-            expect(docSnapshot.get('creatorID')).toBe("5NoA7gdIGUhHOM0pv7iM1btKvm23");
-            expect(docSnapshot.get('dropClassID')).toBe(15977);
-            expect(docSnapshot.get('addClassID')).toBe(34157);
-        });  
-
-    });
-});
-*/
-/*
-describe('Async test', () => {
-    async function fetchData() {
-        return 'peanut butter';
-    }
-
-    test('the data is peanut butter', async () => {
-        const data = await fetchData();
-        expect(data).toBe('peanut butter');
-    });
-}); 
-*/
  
 let tradeId;
 
@@ -61,22 +36,5 @@ test ('Create trade, get trade, and delete trade', async () => {
     await deleteTrade(tradeId);
     expect(await getTrade(tradeId)).toBe(null);
 });
-
-
-
-//tradeId = ;
-
-//deleteTrade();
-
-//test('deleteTrade: Trade is deleted', () => {
-//    expect(getTrade(tradeId)).toBe(null);
-//});
-
-//let existingTradeSnap = await createTrade();
-
-//let nonExistingCoursesTrade = await createTrade();
-
-
-
 
 

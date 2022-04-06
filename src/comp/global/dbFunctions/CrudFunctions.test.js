@@ -6,15 +6,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { db, trades, createTrade, deleteTrade, getTrade } from "./CrudFunctions"
 
 
-
- 
-let tradeId;
-
 test ('Create trade, get trade, and delete trade', async () => {
 
     let docReference = await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 15977, 34157);
 
-    tradeId = docReference.id;
+    let tradeId = docReference.id;
 
     let docSnapshot = await getTrade(tradeId);
 

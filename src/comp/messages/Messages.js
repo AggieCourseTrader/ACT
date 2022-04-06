@@ -107,11 +107,12 @@ function Messages() {
                         <Conversation
                             onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
                             key={"conversation." + d.id}
-                            name={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
+                            // info={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
+                            // name={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >
-                          <Avatar src={d.photoURL} name="Avatar" status="available"/>
+                          <Avatar src={d.photoURL} name="Avatar"/>
                           <Conversation.Content>
                             <div>Custom content</div>
                           </Conversation.Content>

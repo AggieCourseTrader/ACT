@@ -13,7 +13,6 @@ import {
   MessageList,
   Message,
   MessageInput,
-  Search,
   Sidebar,
   ConversationList,
   Conversation,
@@ -29,8 +28,6 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
-import { TableCell, TableRow } from '@mui/material';
-
 
 console.log(styles);
 

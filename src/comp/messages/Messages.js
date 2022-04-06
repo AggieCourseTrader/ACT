@@ -106,7 +106,8 @@ function Messages() {
                     conversationArr.activeConversations.map((d) =>
                         <Conversation
                             onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
-                            key={"conversation." + d.id} name={d.fname + " " + d.lname}
+                            key={"conversation." + d.id}
+                            name={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >

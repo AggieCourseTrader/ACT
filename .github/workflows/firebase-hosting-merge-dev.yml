@@ -23,5 +23,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ACT_DEV_1 }}'
-          channelId: development
-          projectId: act-dev-1
+          channelId: live
+          projectId: dev-act

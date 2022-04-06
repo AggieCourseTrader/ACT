@@ -1,6 +1,11 @@
 import {React, useEffect, useRef, useState} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
+import Chip from '@mui/material/Chip';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+
 
 import {
   MainContainer,
@@ -24,6 +29,7 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
+import { TableCell, TableRow } from '@mui/material';
 
 
 console.log(styles);
@@ -98,9 +104,8 @@ function Messages() {
         <div style={{flexGrow: 1, height: "90vh", backgroundColor: '#600000'}}>
           <MainContainer responsive style={{backgroundColor: '#600000'}}>
 
-            <Sidebar position="left" scrollable={false}>
-              <Search style={{backgroundColor: '#600000'}} placeholder="Search..."/>
-              <ConversationList>
+            <Sidebar position="left" scrollable={false} >
+              <ConversationList style={{minWidth: "300px"}}>
 
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
                     conversationArr.activeConversations.map((d) =>
@@ -114,7 +119,25 @@ function Messages() {
                         >
                           <Avatar src={d.photoURL} name="Avatar"/>
                           <Conversation.Content>
-                            <div>Custom content</div>
+                            {d.fname + " " + d.lname}
+
+                            <span>
+                            <Chip color="success" size="small" 
+                                style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}} 
+                                icon={<AddCircleOutlineIcon/>} 
+                                label={[d.addClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.addClassSection}</span>]}/>
+                            
+                            
+                                                       
+                            <Chip size="small" color="primary" 
+                                icon={<RemoveCircleOutlineIcon/>} 
+                                style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+                                label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/> 
+                        
+                            </span>
+
+
+
                           </Conversation.Content>
                           <Conversation.Operations />
                         </Conversation>

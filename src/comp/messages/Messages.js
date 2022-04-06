@@ -39,7 +39,11 @@ function Messages() {
   const convHelper = useRef(false);
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
-  const [activeConversationObj, setActiveConversationObj] = useState('');
+  const [activeConversationObj, setActiveConversationObj] = useState({
+      fname : "",
+      lname : "",
+      photoURL : "",
+  });
   const [user, setUser] = useState(false);
 
   const messageHelper = useRef(false);
@@ -147,13 +151,13 @@ function Messages() {
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>
               <ConversationHeader>
-                <Avatar src={activeConversationObj.photoURL} name="Avatar"/>
-                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname} info="Active 10 mins ago"/>
+                {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
+                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
                 <ConversationHeader.Actions>
                   <InfoButton border />
                 </ConversationHeader.Actions>
               </ConversationHeader>
-              <MessageList style={{backgroundColor: 'rgba(255,255,255,0.5)'}}>
+              <MessageList style={{}}>
                 {messageArr.map((m, index) =>
                     <Message
                         key={"mesageArr." + index}

@@ -20,7 +20,7 @@ function Footer(props) {
       <Typography variant="body2" color='secondary' align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit" href="https://mui.com/">
-          Your Website
+          Aggie Course Trader
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}

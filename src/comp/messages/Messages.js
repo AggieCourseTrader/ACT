@@ -4,14 +4,14 @@ import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-// import CloseConversation from "./CloseConversation";
+import CloseConversation from "./CloseConversation";
 
 // import { arrayRemove, getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+// import Box from '@mui/material/Box';
+// import Button from '@mui/material/Button';
+// import Typography from '@mui/material/Typography';
+// import Modal from '@mui/material/Modal';
 
 import {
   MainContainer,
@@ -32,8 +32,8 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
-import {arrayRemove, updateDoc, doc} from "firebase/firestore";
-import {db} from "../global/dbFunctions/CrudFunctions";
+// import {arrayRemove, updateDoc, doc} from "firebase/firestore";
+// import {db} from "../global/dbFunctions/CrudFunctions";
 
 const style = {
   position: 'absolute',
@@ -91,6 +91,11 @@ function Messages() {
         convHelper.current.clearUnread(activeConversation);
       }
     }
+    else {
+      setMessageArr([]);
+      if(messageHelper.current)
+        messageHelper.current.unSub();
+    }
     return () => {
       if (messageHelper.current) {
         messageHelper.current.unSub();
@@ -125,50 +130,8 @@ function Messages() {
 
   return (
       <>
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Close Conversation
-            </Typography>
-            <Avatar src={activeConversationObj.photoURL}/>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Are you sure you want to finalize this trade and close off the conversation with {activeConversationObj.fname}?
-            </Typography>
-            <Button variant="contained" color="primary" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button variant="contained" color="secondary" onClick={async (e) => {
 
-              await updateDoc(doc(db, "messageStatus", user.uid), {
-                "activeConversations" : arrayRemove(activeConversationObj)
-                // [g] : increment(1)
-              });
-
-              const data = {
-                "id" : user.uid,
-                "fname" : user.displayName.split(" ")[0],
-                "lname" : user.displayName.split(" ")[1],
-                "photoURL" : user.photoURL,
-                "addClass" : activeConversationObj.dropClass,
-                "addClassSection" : activeConversationObj.dropClassSection,
-                "dropClass" : activeConversationObj.addClass,
-                "dropClassSection" : activeConversationObj.addClassSection,
-              };
-
-              await updateDoc(doc(db, "messageStatus", activeConversation), {
-                "activeConversations" : arrayRemove(data)
-              });
-            }}>
-              Close
-            </Button>
-          </Box>
-        </Modal>
-
+      <CloseConversation user={user} setActiveConversation={setActiveConversation} setActiveConversationObj={setActiveConversationObj} open={open} handleClose={handleClose} activeConversation={activeConversation} activeConversationObj={activeConversationObj}/>
         <Navbar name="Messages" auth={auth} user={user}/>
         <div style={{flexGrow: 1, height: "90vh"}}>
           <MainContainer responsive>
@@ -197,7 +160,7 @@ function Messages() {
                             <Chip size="small" color="primary" 
                                 key={"chipdrop." + d.id + index}
                                 icon={<RemoveCircleOutlineIcon/>} 
-                                style={{verticalAlign:"middle", marginTop: "0.1em", backgroundColor:'#661429'}}
+                                style={{verticalAlign:"middle", marginTop: "0.1em", marginBottom: "0.1em", backgroundColor:'#661429'}}
                                 label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/>
                             </span>
                           </Conversation.Content>
@@ -210,7 +173,6 @@ function Messages() {
                     )
                     : false : false}
               </ConversationList>
-              {/* <CloseConversation open={open} /> */}
 
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>

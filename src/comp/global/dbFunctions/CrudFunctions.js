@@ -313,7 +313,7 @@ export async function getTradeId(userId, dropCourseId, addCourseId) {
   return tradeId;
 }
 
-export async function addReviews(userId, review, key) {
+export async function addReviews(userId, review, key, tradeSuccess, positiveExperience) {
 
   let reviewDoc
   let reviewRef
@@ -321,7 +321,9 @@ export async function addReviews(userId, review, key) {
   reviewDoc = {
     userId: userId,
     review: review,
-    key: key
+    key: key,
+    tradeSuccess: tradeSuccess,
+    positiveExperience: positiveExperience
   }
 
   reviewRef = await addDoc(reviews, reviewDoc);

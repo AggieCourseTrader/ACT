@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {arrayRemove, updateDoc, doc} from "firebase/firestore";
-import {db} from "../global/dbFunctions/CrudFunctions";
+import {addReviews, db, getTradeId} from "../global/dbFunctions/CrudFunctions";
 import {Avatar} from "@chatscope/chat-ui-kit-react"
 
 const style = {
@@ -19,11 +19,21 @@ const style = {
   p: 4,
 };
 
+const writeReview = async (text, user, activeConversationObj, tradeSuccess, positiveExperience) => {
+  // We need to get the trade id from firestore
+  if(!(tradeId in activeConversationObj)) {
+    return;
+  }
+
+  const f = await addReviews(user.uid, text, activeConversationObj.trade_id, tradeSucess, positiveExperience);
+
+  return f;
+}
 export default function CloseConversation({user, setActiveConversation, setActiveConversationObj, activeConversation, activeConversationObj, open, handleClose}) {
 
   return (
       <>
-
+      {(val == true) ?  true : false}
         <Modal
             open={open}
             onClose={handleClose}

@@ -9,11 +9,13 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { updateTradeMatch, createTrade,/* getReviews*/} from "../global/dbFunctions/CrudFunctions"
+import { getTrade, createTrade, getReviews, getUserInfo} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import Modal from '@mui/material/Modal';
 
+import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
@@ -25,15 +27,22 @@ function Marketplace() {
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+  const [tradeID, setTradeID] = useState([]);
+  const [modalDropClass, setModalDropClass] = useState([]);
+  const [modalAddClass, setModalAddClass] = useState([]);
 
   const [rows, setRows] = useState([]);
   const tradesListener = useRef(null);
 
   const [myTradeRows, setMyTradeRows] = useState([]);
-  //const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [creatorInfo, setCreatorInfo] = useState([]);
   const myTrades = useRef(null);
 
   const [alert, setAlert] = useState(null)
+  // below is for modal
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -79,6 +88,8 @@ function Marketplace() {
   //! ----------------------------------------------//
 
 
+ 
+  
   useEffect(() => {
     if(!user.uid) {
       return;
@@ -178,13 +189,13 @@ function Marketplace() {
     headerName: 'I want to Match',
     flex: 1,
     sortable: false,
+    // working here, change this button so that it brings up a modal that has a button that has trading functionality
     renderCell: (params) => (
       <strong>
         <Button
           variant = 'outlined'
-          onClick={() => {
-            updateTradeMatch(params.id, user.uid);
-            alert('match successful');
+          onClick={() =>  {
+            getBio(params.id);
           }}
         >
           Trade
@@ -223,20 +234,33 @@ function Marketplace() {
   // };
 
 
-/*
+
   function getBio(id) {
     (async () => {
+      let trade = await getTrade(id);
+      setModalDropClass(trade.data().dropClass.course + "-" + trade.data().dropClass.section);
+      setModalAddClass(trade.data().addClass.course + "—" + trade.data().addClass.section);
+      let creatorID = trade.data().creatorID
       let arr = []
-      let reviews = await getReviews(id);
+      let reviews = await getReviews(creatorID);
+
       if(reviews !== null) {
         reviews.forEach((doc) => {
-          arr.push(doc.data().review)
+          arr.push(doc.data())
         });
       }
       setReviews(arr)
+
+      let info = await getUserInfo(creatorID);
+      // console.log(info);
+      // console.log(info.data().firstName);
+      info.forEach((doc) => {
+        setCreatorInfo(doc.data());
+      });
+      setTradeID(id);
     })();
+    setOpen(true)
   } 
-  */
 
    const selectionAddCallback = (data) => {
     if(data !== undefined){
@@ -361,6 +385,14 @@ function Marketplace() {
             </Box>
         </Box>
       <Footer/>
+      <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+          <ReviewModal reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass}/>
+        </Modal>
     </div>
   );
 }

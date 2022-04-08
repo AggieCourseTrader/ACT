@@ -252,6 +252,7 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 // Updates the given trade with the matched user id
 export async function updateTradeMatch(tradeId, matchedUserId) {
   console.log(tradeId);
+  console.log(matchedUserId);
   const tradeRef = doc(db, "trades", tradeId);
 
   const tradeSnap = await getDoc(tradeRef);
@@ -338,6 +339,20 @@ export async function getReviews(userId) {
 
   else {
     console.log("No Review exist");
+    return null;
+  }
+}
+
+export async function getUserInfo(userId) {
+  const q = query(users, where("oAuthID", "==", userId));
+  const userInfo = await getDocs(q);
+
+  if (!userInfo.empty) {
+    return userInfo;
+  }
+
+  else {
+    console.log("user doesn't exist");
     return null;
   }
 }

@@ -6,6 +6,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
 
+import { arrayRemove, getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -146,7 +148,7 @@ function Messages() {
                 // [g] : increment(1)
               }, {merge : true});
 
-              
+
               let q = query(collection(db, "users"), where("oAuthID", "==", activeConversation));
               let docs = await getDocs(q);
               docs.forEach(async (d) => {

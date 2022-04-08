@@ -4,7 +4,7 @@ import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CloseConversation from "./CloseConversation";
+// import CloseConversation from "./CloseConversation";
 
 // import { arrayRemove, getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 
@@ -32,7 +32,7 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
-import {arrayRemove, updateDoc, arrayUnion, collection, doc, getDocs, query, setDoc, where} from "firebase/firestore";
+import {arrayRemove, updateDoc, doc} from "firebase/firestore";
 import {db} from "../global/dbFunctions/CrudFunctions";
 
 const style = {
@@ -162,43 +162,6 @@ function Messages() {
 
               await updateDoc(doc(db, "messageStatus", activeConversation), {
                 "activeConversations" : arrayRemove(data)
-              });
-
-              let q = query(collection(db, "users"), where("oAuthID", "==", activeConversation));
-              let docs = await getDocs(q);
-              docs.forEach(async (d) => {
-                let data = d.data();
-                console.log(data);
-                // Remember we started talking to them
-                // await setDoc(doc(db, "messageStatus", user.uid), {
-                //   "activeConversations" : arrayUnion({
-                //     'id' : data.oAuthID
-                //   })
-                // }, {merge : true});
-
-                // Notify them that we are talking to them
-                // console.log("here");
-                // await setDoc(doc(db, "messageStatus", row.connectingUserId), {
-                //   "activeConversations" : arrayUnion({
-                //     'id' : user.uid,
-                //     'fname' : user.displayName.split(' ')[0],
-                //     'lname' : user.displayName.split(' ')[1],
-                //     'photoURL' : user.photoURL,
-                //     'dropClass' : row.addClass.course,
-                //     'dropClassSection' : row.addClass.section,
-                //     'addClass' : row.dropClass.course,
-                //     'addClassSection' : row.dropClass.section,
-                //   })
-                // }, {merge : true});
-                // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));
-                // if(theirDoc.exists) {
-                //   console.log("There doc exists");
-
-                // }
-                // else {
-                //   console.log("There doc does not exists");
-                // }
-
               });
             }}>
               Close

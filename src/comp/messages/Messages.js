@@ -141,6 +141,12 @@ function Messages() {
               Cancel
             </Button>
             <Button variant="contained" color="secondary" onClick={async (e) => {
+              await setDoc(doc(db, "messageStatus", activeConversation), {
+                "activeConversations" : arrayRemove(activeConversationObj)
+                // [g] : increment(1)
+              }, {merge : true});
+
+              
               let q = query(collection(db, "users"), where("oAuthID", "==", activeConversation));
               let docs = await getDocs(q);
               docs.forEach(async (d) => {

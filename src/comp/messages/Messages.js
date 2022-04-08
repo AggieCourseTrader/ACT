@@ -227,10 +227,12 @@ function Messages() {
                             {d.fname + " " + d.lname}
                             <span>
                             <Chip color="success" size="small" 
+                                key={"chipadd." + d.id + index}
                                 style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}}
                                 icon={<AddCircleOutlineIcon/>} 
                                 label={[d.addClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.addClassSection}</span>]}/>
                             <Chip size="small" color="primary" 
+                                key={"chipdrop." + d.id + index}
                                 icon={<RemoveCircleOutlineIcon/>} 
                                 style={{verticalAlign:"middle", marginTop: "0.1em", backgroundColor:'#661429'}}
                                 label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/>

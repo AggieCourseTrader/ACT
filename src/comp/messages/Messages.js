@@ -69,7 +69,7 @@ function Messages() {
     setOpen(false);
   };
 
-
+  console.log(styles);
   let navigate = useNavigate();
 
 

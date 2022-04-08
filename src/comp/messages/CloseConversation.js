@@ -32,7 +32,7 @@ const writeReview = async (text, user, activeConversationObj, tradeSuccess, posi
     return;
   }
 
-  const f = await addReviews(user.uid, text, activeConversationObj.trade_id, tradeSuccess, positiveExperience);
+  const f = await addReviews(user.uid, text, activeConversationObj.tradeId, tradeSuccess, positiveExperience);
 
   return f;
 }
@@ -96,7 +96,7 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                       <RadioGroup
                           row
                           onChange={(v) => {
-                            setExperience(v)
+                            setExperience(v.target.value)
                           }}
                       >
                         <FormControlLabel value="yes" control={<Radio/>} label="Yes"/>
@@ -108,7 +108,7 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                     <RadioGroup
                         row
                         onChange={(v) => {
-                          setSuccess(v)
+                          setSuccess(v.target.value)
                         }}
                     >
                       <FormControlLabel value="yes" control={<Radio/>} label="Yes"/>

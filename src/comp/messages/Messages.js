@@ -23,7 +23,7 @@ import {
   ConversationList,
   Conversation,
   Avatar,
-  ConversationHeader
+  ConversationHeader, StarButton
 } from "@chatscope/chat-ui-kit-react";
 
 //! Do not remove ------------------------------------>
@@ -32,6 +32,7 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
+import IconButton from "@mui/material/IconButton";
 // import {arrayRemove, updateDoc, doc} from "firebase/firestore";
 // import {db} from "../global/dbFunctions/CrudFunctions";
 
@@ -165,7 +166,6 @@ function Messages() {
                             </span>
                           </Conversation.Content>
                           <Conversation.Operations onClick={() => {
-                            console.log("Clicked on conversation operations");
                             handleOpen();
                           }}
                           />
@@ -179,6 +179,12 @@ function Messages() {
               <ConversationHeader>
                 {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
                 <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                <ConversationHeader.Actions>
+                  <StarButton onClick={() => {
+                    handleOpen();
+                  }}>
+                  </StarButton>
+                </ConversationHeader.Actions>
               </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>

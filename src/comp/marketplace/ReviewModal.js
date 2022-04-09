@@ -63,7 +63,7 @@ function ReviewModal(props) {
             <div className={classes.wrapper}>
                 <div className={classes.container}>
                     <Typography sx = {{
-                        fontSize : "4vmin",
+                        fontSize : 30,
                         color : "#500000",
                         fontWeight: "lighter"
                     }}>

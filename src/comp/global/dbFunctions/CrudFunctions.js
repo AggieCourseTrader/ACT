@@ -136,7 +136,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
  
   
     tradeRef = await addDoc(trades, tradeDoc);
-    updateTradeSnap = await updateDoc(tradeRef, {
+    await updateDoc(tradeRef, {
       trade_id: tradeRef.id
     });
     

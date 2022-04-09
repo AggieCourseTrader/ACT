@@ -2,8 +2,7 @@
  * @jest-environment node
  */
 
-import { doc, DocumentSnapshot, getDoc } from "firebase/firestore";
-import { db, trades, createTrade, deleteTrade, getTrade, 
+import { createTrade, deleteTrade, getTrade, 
         updateTrade, updateTradeMatch} from "./CrudFunctions"
 
 
@@ -56,7 +55,7 @@ test ('Testing trade update function', async () => {
     // Get the updated trade
     docSnapshot = await getTrade(tradeId);
 
-    
+
 
     // Testing that the trade is updated with the correct data
     expect(docSnapshot.get('creatorID')).toBe("5NoA7gdIGUhHOM0pv7iM1btKvm23");

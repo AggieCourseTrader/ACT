@@ -328,9 +328,9 @@ export async function addReviews(userId, review, key) {
   return reviewRef;
 }
 
-export async function getReviews(userId) {
+export async function getReviews(reviewedID) {
 
-  const q = query(reviews, where("userId", "==", userId));
+  const q = query(reviews, where("reviewedID", "==", reviewedID));
   const receivedReviews = await getDocs(q);
     
   if (!receivedReviews.empty) {

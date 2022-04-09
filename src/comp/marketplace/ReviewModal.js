@@ -1,15 +1,15 @@
-import React, { useState} from 'react';
-import {updateTradeMatch} from '../global/dbFunctions/CrudFunctions';
+import React, { useState, useEffect} from 'react';
+import {updateTradeMatch, getUserInfo} from '../global/dbFunctions/CrudFunctions';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
 import { Box } from '@mui/system';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Paper from '@mui/material/Paper';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip';
+
 
 const useStyles = makeStyles({
     wrapper: {
@@ -44,13 +44,8 @@ const useStyles = makeStyles({
   });
 
 function ReviewModal(props) {
+    console.log(props.experiencePercentage)
     const classes = useStyles();
-    console.log(props.creatorInfo.firstName)
-    console.log(props.creatorInfo.lastName)
-    console.log(props.reviews)
-    console.log(props.tradeID)
-    console.log(props.addClass)
-    console.log(props.dropClass)
     return (
         <Box sx={{   
             position: 'absolute',
@@ -60,7 +55,7 @@ function ReviewModal(props) {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: "25em",
-            height: "30em",
+            height: "32em",
             boxShadow: 24,}}
             >
             {/* working here. Need to iterate through every review and display them here */}
@@ -83,9 +78,17 @@ function ReviewModal(props) {
             </div>
             <div className={classes.wrapper}>
                 <div className={classes.container}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h6">
                         {props.creatorInfo.firstName} {props.creatorInfo.lastName}
                     </Typography>
+                </div>
+            </div>
+            <div className={classes.wrapper}>
+                <div className={classes.container}>
+                    {props.hasReviews
+                        ?<Typography id="modal-modal-title" variant="subtitle2">{props.experiencePercentage}% positive trade experience</Typography>
+                        :<Typography variant="subtitle2" sx={{color: "red"}}>No reviews left yet</Typography>
+                    }
                 </div>
             </div>
                 {/* import array of info about each review: 
@@ -101,7 +104,7 @@ function ReviewModal(props) {
                                     }}
                                 >
                                     <CardContent>
-                                        <Typography variant="subtitle2" align="left" gutterBottom='true'>default header</Typography> 
+                                        <Typography variant="subtitle2" align="left" gutterBottom='true'>Review By {review.firstName} {review.lastName}</Typography> 
                                         <Typography variant="body2" align="left" gutterBottom='true'>
                                             {review.review}
                                         </Typography> 

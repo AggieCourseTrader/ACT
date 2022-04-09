@@ -38,11 +38,22 @@ function Marketplace() {
   const [reviews, setReviews] = useState([]);
   const [creatorInfo, setCreatorInfo] = useState([]);
   const myTrades = useRef(null);
+  const [experiencePercentage, setExperiencePercentage] = useState(-1);
+  const [hasReviews, setHasReviews] = useState(false);
 
   const [alert, setAlert] = useState(null)
   // below is for modal
   const [open, setOpen] = React.useState(false);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setHasReviews(false)
+    setReviews([])
+    setCreatorInfo([])
+    setTradeID([])
+    setModalDropClass([])
+    setModalAddClass([])
+    setExperiencePercentage(-1)
+  }
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -100,7 +111,6 @@ function Marketplace() {
     if(dropClass.section !== "") conditions.push(where("addClass.section", "==", dropClass.section))
     if(addClass.class !== "") conditions.push(where("dropClass.course", "==", addClass.class))
     if(addClass.section !== "") conditions.push(where("dropClass.section", "==", addClass.section))
-    console.log(conditions)
     tradesListener.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
       (snap) => {
         let arr = [];
@@ -112,18 +122,15 @@ function Marketplace() {
             drop: data.addClass
           });
         });
-        console.log("here");
         setRows(arr);
       });
            
     //* Get trades listed by me
-    console.log(user.uid);
     conditions = [where("creatorID", "==", user.uid), where("status", "==", "requested")]
     if(addClass.class !== "") conditions.push(where("addClass.course", "==", addClass.class))
     if(addClass.section !== "") conditions.push(where("addClass.section", "==", addClass.section))
     if(dropClass.class !== "") conditions.push(where("dropClass.course", "==", dropClass.class))
     if(dropClass.section !== "") conditions.push(where("dropClass.section", "==", dropClass.section))
-    console.log(conditions);
     myTrades.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
       (snap) => {
         let arr = [];
@@ -137,7 +144,6 @@ function Marketplace() {
           });
           
         });
-        console.log("here");
         setMyTradeRows(arr);
       });
 
@@ -243,17 +249,29 @@ function Marketplace() {
       let creatorID = trade.data().creatorID
       let arr = []
       let reviews = await getReviews(creatorID);
-
+      let sumTotal = 0
+      let sumGood = 0
       if(reviews !== null) {
-        reviews.forEach((doc) => {
-          arr.push(doc.data())
+        setHasReviews(true)
+        reviews.forEach(async (doc) => {
+          let creatorID = doc.data().reviewerID
+          let creatorInfo = await getUserInfo(creatorID)
+          let firstName, lastName;
+          creatorInfo.forEach((info) => {
+            firstName = info.data().firstName
+            lastName = info.data().lastName
+          })
+          if(doc.data().positiveExperience) {
+            sumGood = sumGood+1
+          }
+          sumTotal = sumTotal+1
+          setExperiencePercentage(Math.round(sumGood/sumTotal*100))
+          arr.push({firstName: firstName, lastName: lastName, review: doc.data().review})
         });
       }
       setReviews(arr)
 
       let info = await getUserInfo(creatorID);
-      // console.log(info);
-      // console.log(info.data().firstName);
       info.forEach((doc) => {
         setCreatorInfo(doc.data());
       });
@@ -296,9 +314,6 @@ function Marketplace() {
     }
 
   }
-
-  console.log(addClass)
-  console.log(dropClass)
 
   return (
     <div>
@@ -356,10 +371,8 @@ function Marketplace() {
                 onClick={ async () => {
                   if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
                     const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
-                    console.log('val: ' + val);
                     if(val !== null) {
                       // this doesnt show up. look into mui alerts to figure how this works
-                      console.log("here"); // this line is executed, but below lines don't do anything
                       setAlert(
                       <Alert severity="success">
                         <AlertTitle>Success</AlertTitle>
@@ -391,7 +404,7 @@ function Marketplace() {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
       >
-          <ReviewModal reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass}/>
+          <ReviewModal hasReviews={hasReviews} reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass} experiencePercentage={experiencePercentage}/>
         </Modal>
     </div>
   );

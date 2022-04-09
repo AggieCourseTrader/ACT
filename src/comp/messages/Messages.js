@@ -6,13 +6,6 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
 
-// import { arrayRemove, getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
-
-// import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
-// import Typography from '@mui/material/Typography';
-// import Modal from '@mui/material/Modal';
-
 import {
   MainContainer,
   ChatContainer,
@@ -32,21 +25,6 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
-import IconButton from "@mui/material/IconButton";
-// import {arrayRemove, updateDoc, doc} from "firebase/firestore";
-// import {db} from "../global/dbFunctions/CrudFunctions";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);

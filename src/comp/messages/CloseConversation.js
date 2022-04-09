@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {arrayRemove, updateDoc, doc} from "firebase/firestore";
-import {addReviews, db, getTradeId} from "../global/dbFunctions/CrudFunctions";
+import {addReviews, db} from "../global/dbFunctions/CrudFunctions";
 import {Avatar} from "@chatscope/chat-ui-kit-react"
 import {TextField} from "@mui/material";
 import Radio from '@mui/material/Radio';

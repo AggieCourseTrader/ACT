@@ -73,7 +73,7 @@ function ReviewModal(props) {
             </div>
             <div className={classes.wrapper}>
                 <div className={classes.container}>
-                    <img className={classes.circle} src={props.creatorInfo.photoURL}/>
+                    <img className={classes.circle} src={props.creatorInfo.photoURL} alt="avatar"/>
                 </div>
             </div>
             <div className={classes.wrapper}>

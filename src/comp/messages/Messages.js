@@ -5,7 +5,6 @@ import Chip from '@mui/material/Chip';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
-
 // import { arrayRemove, getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 
 // import Box from '@mui/material/Box';
@@ -28,6 +27,7 @@ import {
 
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import notificationStyles from './notificationStyles.css';
 // ---------------------------------------------------//
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
@@ -47,6 +47,8 @@ const style = {
   p: 4,
 };
 
+
+
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
   const convHelper = useRef(false);
@@ -57,6 +59,8 @@ function Messages() {
       lname : "",
       photoURL : "",
   });
+
+
   const [user, setUser] = useState(false);
   console.log(user);
   const messageHelper = useRef(false);
@@ -84,6 +88,7 @@ function Messages() {
 
   },)
 
+
   useEffect(() => {
     if (activeConversation) {
       messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
@@ -95,7 +100,10 @@ function Messages() {
       setMessageArr([]);
       if(messageHelper.current)
         messageHelper.current.unSub();
+
+      
     }
+
     return () => {
       if (messageHelper.current) {
         messageHelper.current.unSub();
@@ -106,13 +114,18 @@ function Messages() {
   useEffect(() => {
     if (user) {
       convHelper.current = new IConversation(user, setConversationArr);
+
+
       // convHelper.current.addAll();
     }
+
     return () => {
       if (convHelper.current) {
         convHelper.current.unSub();
       }
     }
+
+  
   }, [user]);
 
   const sendTxt = (text) => {
@@ -183,14 +196,24 @@ function Messages() {
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
                     <Message
-                        // style={{color: (m.sender === user.uid) ? "rgb(80, 0, 0, 0.33)" : "white"}}
                         key={"mesageArr." + index}
+                        stlye={{
+
+                        }}
                         model={{
                           message: m.text,
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>
                 )}
+              {/* <Message
+                model={{
+
+                }}
+              /> */}
+
+              <Message className="notification" model={{message: "This chat was closed"}}/>
+
               </MessageList>
               <MessageInput attachButton={false}
                             placeholder="Type message here" onSend={(e, v, t) => {

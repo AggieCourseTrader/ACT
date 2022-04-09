@@ -1,0 +1,9 @@
+.notification .cs-message__content {
+    background-color: #a23737 !important;
+    color:antiquewhite;
+}
+
+.notification .cs-message__content-wrapper {
+    margin-right:auto;
+    margin-left:auto;
+}

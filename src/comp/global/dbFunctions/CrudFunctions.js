@@ -91,7 +91,7 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
 
   let tradeDoc;
   let tradeRef;
-  let updateTradeSnap;
+  //let updateTradeSnap;
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),
                           where("dropClassID", "==", dropCourseId));

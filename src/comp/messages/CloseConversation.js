@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {arrayRemove, updateDoc, doc} from "firebase/firestore";
-import {addReviews, db, getTradeId} from "../global/dbFunctions/CrudFunctions";
+import {addReviews, db} from "../global/dbFunctions/CrudFunctions";
 import {Avatar} from "@chatscope/chat-ui-kit-react"
 import {TextField} from "@mui/material";
 import Radio from '@mui/material/Radio';
@@ -28,7 +28,7 @@ const style = {
 
 const writeReview = async (text, user, activeConversationObj, tradeSuccess, positiveExperience) => {
   // We need to get the trade id from firestore
-  if(!("tradeId" in activeConversationObj)) {
+  if (!("tradeId" in activeConversationObj)) {
     return;
   }
 
@@ -36,7 +36,15 @@ const writeReview = async (text, user, activeConversationObj, tradeSuccess, posi
 
   return f;
 }
-export default function CloseConversation({user, setActiveConversation, setActiveConversationObj, activeConversation, activeConversationObj, open, handleClose}) {
+export default function CloseConversation({
+                                            user,
+                                            setActiveConversation,
+                                            setActiveConversationObj,
+                                            activeConversation,
+                                            activeConversationObj,
+                                            open,
+                                            handleClose
+                                          }) {
 
   const [next, setNext] = React.useState(false);
 
@@ -72,7 +80,7 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                     Next
                   </Button>
                 </div>
-              :
+                :
                 <div>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
                     Leave Feedback
@@ -93,15 +101,15 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                   <br></br>
                   <FormControl>
                     <FormLabel id="question-experience">Did you have a positive experience?</FormLabel>
-                      <RadioGroup
-                          row
-                          onChange={(v) => {
-                            setExperience(v.target.value)
-                          }}
-                      >
-                        <FormControlLabel value="yes" control={<Radio/>} label="Yes"/>
-                        <FormControlLabel value="no" control={<Radio/>} label="No"/>
-                      </RadioGroup>
+                    <RadioGroup
+                        row
+                        onChange={(v) => {
+                          setExperience(v.target.value)
+                        }}
+                    >
+                      <FormControlLabel value={1} control={<Radio/>} label="Yes"/>
+                      <FormControlLabel value="" control={<Radio/>} label="No"/>
+                    </RadioGroup>
                   </FormControl>
                   <FormControl>
                     <FormLabel id="question-experience">Was the trade successful?</FormLabel>
@@ -111,8 +119,8 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                           setSuccess(v.target.value)
                         }}
                     >
-                      <FormControlLabel value="yes" control={<Radio/>} label="Yes"/>
-                      <FormControlLabel value="no" control={<Radio/>} label="No"/>
+                      <FormControlLabel value={1} control={<Radio/>} label="Yes"/>
+                      <FormControlLabel value="" control={<Radio/>} label="No"/>
                     </RadioGroup>
                   </FormControl>
                   <br></br>
@@ -123,7 +131,7 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                   </Button>
                   <Button variant="contained" color="secondary" onClick={async (e) => {
 
-                    writeReview(reviewText, user, activeConversationObj, success, experience);
+                    await writeReview(reviewText, user, activeConversationObj, Boolean(success), Boolean(experience));
 
                     await updateDoc(doc(db, "messageStatus", user.uid), {
                       "activeConversations": arrayRemove(activeConversationObj)
@@ -148,9 +156,9 @@ export default function CloseConversation({user, setActiveConversation, setActiv
                     handleClose();
                     setActiveConversation("");
                     setActiveConversationObj({
-                      fname : "",
-                      lname : "",
-                      photoURL : "",
+                      fname: "",
+                      lname: "",
+                      photoURL: "",
                     });
                   }}>
                     Submit

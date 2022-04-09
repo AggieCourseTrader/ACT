@@ -1,6 +1,11 @@
 import {React, useEffect, useRef, useState} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
+import Chip from '@mui/material/Chip';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+
 
 import {
   MainContainer,
@@ -8,7 +13,6 @@ import {
   MessageList,
   Message,
   MessageInput,
-  Search,
   Sidebar,
   ConversationList,
   Conversation,
@@ -25,7 +29,6 @@ import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
 
-
 console.log(styles);
 
 function Messages() {
@@ -33,6 +36,11 @@ function Messages() {
   const convHelper = useRef(false);
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
+  const [activeConversationObj, setActiveConversationObj] = useState({
+      fname : "",
+      lname : "",
+      photoURL : "",
+  });
   const [user, setUser] = useState(false);
 
   const messageHelper = useRef(false);
@@ -89,17 +97,7 @@ function Messages() {
   useEffect((() => {
     console.log(messageArr);
   }), [messageArr]);
-  console.log(user)
-  console.log(conversationArr)
-  console.log(activeConversation)
-  // console.log(conversationArr.find(obj => {
-  //   obj.id === activeConversation;
-  // }));
 
-  // Get avatar of the user
-  // const getAvatar = conversationArr.find(obj => {
-  //   return obj.id === activeConversation;
-  // });
 
   return (
       <>
@@ -107,21 +105,40 @@ function Messages() {
         <div style={{flexGrow: 1, height: "90vh", backgroundColor: '#600000'}}>
           <MainContainer responsive style={{backgroundColor: '#600000'}}>
 
-            <Sidebar position="left" scrollable={false}>
-              <Search style={{backgroundColor: '#600000'}} placeholder="Search..."/>
-              <ConversationList>
+            <Sidebar position="left" scrollable={false} >
+              <ConversationList style={{minWidth: "300px"}}>
 
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
                     conversationArr.activeConversations.map((d) =>
                         <Conversation
-                            onClick={() => setActiveConversation(d.id)}
-                            key={"conversation." + d.id} name={d.fname + " " + d.lname}
+                            onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
+                            key={"conversation." + d.id}
+                            // info={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
+                            // name={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >
-                          <Avatar src={d.photoURL} name="Avatar" status="available"/>
+                          <Avatar src={d.photoURL} name="Avatar"/>
                           <Conversation.Content>
-                            <div>Custom content</div>
+                            {d.fname + " " + d.lname}
+
+                            <span>
+                            <Chip color="success" size="small" 
+                                style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}} 
+                                icon={<AddCircleOutlineIcon/>} 
+                                label={[d.addClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.addClassSection}</span>]}/>
+                            
+                            
+                                                       
+                            <Chip size="small" color="primary" 
+                                icon={<RemoveCircleOutlineIcon/>} 
+                                style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+                                label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/> 
+                        
+                            </span>
+
+
+
                           </Conversation.Content>
                           <Conversation.Operations />
                         </Conversation>
@@ -131,13 +148,13 @@ function Messages() {
             </Sidebar>
             <ChatContainer style={{backgroundColor: 'transparent'}}>
               <ConversationHeader>
-                <Avatar src={""} name="Avatar"/>
-                <ConversationHeader.Content userName={user.displayName} info="Active 10 mins ago"/>
+                {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
+                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
                 <ConversationHeader.Actions>
                   <InfoButton border />
                 </ConversationHeader.Actions>
               </ConversationHeader>
-              <MessageList style={{backgroundColor: 'rgba(255,255,255,0.5)'}}>
+              <MessageList style={{}}>
                 {messageArr.map((m, index) =>
                     <Message
                         key={"mesageArr." + index}

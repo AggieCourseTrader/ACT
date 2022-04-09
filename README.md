@@ -1,4 +1,5 @@
-[![build](https://github.com/AggieCourseTrader/ACT/actions/workflows/node.js.yml/badge.svg?branch=dev)](https://github.com/AggieCourseTrader/ACT/actions/workflows/node.js.yml)
+[![Latest Deployment (main)](https://github.com/AggieCourseTrader/ACT/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=main)](https://github.com/AggieCourseTrader/ACT/actions/workflows/firebase-hosting-merge.yml)
+[![Latest Build (dev)](https://github.com/AggieCourseTrader/ACT/actions/workflows/firebase-hosting-merge-dev.yml/badge.svg?branch=dev)](https://github.com/AggieCourseTrader/ACT/actions/workflows/firebase-hosting-merge-dev.yml)
 
 ---
 

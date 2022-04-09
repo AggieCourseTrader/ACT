@@ -13,7 +13,7 @@ export const db = getFirestore(app);
 
 // collections to be used in the functions
 export const trades = collection(db, "trades");
-// const users = collection(db, "users");
+const users = collection(db, "users");
 export const courses = collection(db, "courses");
 export const reviews = collection(db, "reviews");
 

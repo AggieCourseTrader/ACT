@@ -105,16 +105,31 @@ export default function MyMatches({user}) {
                             // Remember we started talking to them
                             await setDoc(doc(db, "messageStatus", user.uid), {
                                 "activeConversations" : arrayUnion({
-                                    'id' : data.oAuthID,
-                                    'fname' : data.displayName
+                                  'id' : data.oAuthID,
+                                  'addClass' : row.addClass.course,
+                                  'addClassSection' : row.addClass.section,
+                                  'dropClass' : row.dropClass.course,
+                                  'dropClassSection' : row.dropClass.section,
+                                  'fname' : data.firstName,
+                                  'lname' : data.lastName,
+                                  'photoURL' : data.photoURL,
+                                  'tradeId' : row.trade_id,
                                 })
                             }, {merge : true});
 
                             // Notify them that we are talking to them
+                            console.log("here");
                             await setDoc(doc(db, "messageStatus", row.connectingUserId), {
                               "activeConversations" : arrayUnion({
-                                  'id' : user.uid,
-                                  'fname' : user.displayName
+                                'id' : user.uid,
+                                'fname' : user.displayName.split(' ')[0],
+                                'lname' : user.displayName.split(' ')[1],
+                                'photoURL' : user.photoURL,
+                                'dropClass' : row.addClass.course,
+                                'dropClassSection' : row.addClass.section,
+                                'addClass' : row.dropClass.course,
+                                'addClassSection' : row.dropClass.section,
+                                'tradeId' : row.trade_id,
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

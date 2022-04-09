@@ -56,7 +56,7 @@ function Login() {
      // const uid = user.uid;
     // setLogIn(true);
      //setUser(user);
-     addUser (user.email, user.displayName, user.uid);
+     addUser (user.email, user.displayName, user.uid, user.photoURL);
      navigate("/marketplace")
    } else {
      // User is signed out
@@ -68,7 +68,7 @@ function Login() {
 
  var provider = new GoogleAuthProvider();
   // provider.setCustomParameters({
-  // 'hd': 'tamu.edu'
+  //   'hd': 'tamu.edu'
   // });
 
   return (
@@ -94,7 +94,7 @@ function Login() {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" gutterBottom='true'>An app built for TAMU students</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Meet the tailired built app for TAMU students to help ease the stress of courese registration</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>Meet the tailored built app for TAMU students to help ease the stress of courese registration</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>

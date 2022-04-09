@@ -32,7 +32,7 @@ const writeReview = async (text, user, activeConversationObj, tradeSuccess, posi
     return;
   }
 
-  const f = await addReviews(user.uid, text, activeConversationObj.tradeId, tradeSuccess, positiveExperience);
+  const f = await addReviews(user.uid, text, activeConversationObj.tradeId, tradeSuccess, positiveExperience, activeConversationObj.id);
 
   return f;
 }

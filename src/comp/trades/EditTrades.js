@@ -79,9 +79,13 @@ function EditTrades(props) {
     if(dropClass !== undefined && addClass !== undefined) {
         (async () => {
           if(props.tradeId !== undefined) {
-            let resp = await updateTrade(props.tradeId, dropClass.crn, addClass.crn);
-            console.log(resp)
-            setAlert(<Alert severity="success">Congrats your trade was Updated</Alert>)
+            if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
+              let resp = await updateTrade(props.tradeId, dropClass.crn, addClass.crn);
+              console.log(resp)
+              setAlert(<Alert severity="success">Congrats your trade was Updated</Alert>)
+            } else {
+              setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+            }
           } else if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
             let resp = await createTrade(props.userId, dropClass.crn, addClass.crn);
             console.log(resp)

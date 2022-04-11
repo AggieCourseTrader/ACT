@@ -112,7 +112,10 @@ export default function MyMatches({user}) {
                                   'dropClassSection' : row.dropClass.section,
                                   'fname' : data.firstName,
                                   'lname' : data.lastName,
-                                  'photoURL' : data.photoURL
+                                  'photoURL' : data.photoURL,
+                                  'tradeId' : row.trade_id,
+                                  'status' : 'active',
+                                  'creatorId' : row.creatorID,
                                 })
                             }, {merge : true});
 
@@ -128,6 +131,9 @@ export default function MyMatches({user}) {
                                 'dropClassSection' : row.addClass.section,
                                 'addClass' : row.dropClass.course,
                                 'addClassSection' : row.dropClass.section,
+                                'tradeId' : row.trade_id,
+                                'status' : 'active',
+                                'creatorId' : row.creatorID,
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

@@ -2,10 +2,10 @@ import {React, useEffect, useRef, useState} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
-
+import CloseConversation from "./CloseConversation";
 
 import {
   MainContainer,
@@ -17,19 +17,20 @@ import {
   ConversationList,
   Conversation,
   Avatar,
-  ConversationHeader,
+  ConversationHeader, StarButton,
+  MessageSeparator,
   InfoButton
 } from "@chatscope/chat-ui-kit-react";
 
-
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import notificationStyles from './notificationStyles.css';
 // ---------------------------------------------------//
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
 
-console.log(styles);
+
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
@@ -41,11 +42,21 @@ function Messages() {
       lname : "",
       photoURL : "",
   });
-  const [user, setUser] = useState(false);
 
+
+  const [user, setUser] = useState(false);
+  console.log(user);
   const messageHelper = useRef(false);
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
+  console.log(styles);
   let navigate = useNavigate();
 
 
@@ -60,6 +71,7 @@ function Messages() {
 
   },)
 
+
   useEffect(() => {
     if (activeConversation) {
       messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
@@ -67,6 +79,14 @@ function Messages() {
         convHelper.current.clearUnread(activeConversation);
       }
     }
+    else {
+      setMessageArr([]);
+      if(messageHelper.current)
+        messageHelper.current.unSub();
+
+      
+    }
+
     return () => {
       if (messageHelper.current) {
         messageHelper.current.unSub();
@@ -77,13 +97,18 @@ function Messages() {
   useEffect(() => {
     if (user) {
       convHelper.current = new IConversation(user, setConversationArr);
+
+
       // convHelper.current.addAll();
     }
+
     return () => {
       if (convHelper.current) {
         convHelper.current.unSub();
       }
     }
+
+  
   }, [user]);
 
   const sendTxt = (text) => {
@@ -101,74 +126,100 @@ function Messages() {
 
   return (
       <>
-        <Navbar name="Messages" auth={auth} user={user}/>
-        <div style={{flexGrow: 1, height: "90vh", backgroundColor: '#600000'}}>
-          <MainContainer responsive style={{backgroundColor: '#600000'}}>
 
-            <Sidebar position="left" scrollable={false} >
-              <ConversationList style={{minWidth: "300px"}}>
+      <CloseConversation user={user} setActiveConversation={setActiveConversation} setActiveConversationObj={setActiveConversationObj} open={open} handleClose={handleClose} activeConversation={activeConversation} activeConversationObj={activeConversationObj}/>
+        <Navbar name="Messages" auth={auth} user={user}/>
+        <div style={{flexGrow: 1, height: "90vh"}}>
+          <MainContainer responsive>
+
+            <Sidebar position="left" scrollable={false}>
+
+              <ConversationList className="aggieTheme">
 
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
-                    conversationArr.activeConversations.map((d) =>
+                    conversationArr.activeConversations.map((d, index) =>
                         <Conversation
                             onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
-                            key={"conversation." + d.id}
-                            // info={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
-                            // name={d.addClass + "–" + d.addClassSection + " <=> " + d.dropClass + "–" + d.dropClassSection}
+                            key={"conversation." + d.id + index}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >
-                          <Avatar src={d.photoURL} name="Avatar"/>
+                          <Avatar src={d.photoURL} name="Avatar" status={(d?.status === "closed") ? "dnd" : false}/>
                           <Conversation.Content>
                             {d.fname + " " + d.lname}
-
                             <span>
                             <Chip color="success" size="small" 
-                                style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}} 
+                                key={"chipadd." + d.id + index}
+                                style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}}
                                 icon={<AddCircleOutlineIcon/>} 
                                 label={[d.addClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.addClassSection}</span>]}/>
-                            
-                            
-                                                       
                             <Chip size="small" color="primary" 
+                                key={"chipdrop." + d.id + index}
                                 icon={<RemoveCircleOutlineIcon/>} 
-                                style={{verticalAlign:"middle", backgroundColor:'#661429'}}
-                                label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/> 
-                        
+                                style={{verticalAlign:"middle", marginTop: "0.1em", marginBottom: "0.1em", backgroundColor:'#661429'}}
+                                label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/>
                             </span>
-
-
-
                           </Conversation.Content>
-                          <Conversation.Operations />
-                        </Conversation>
+                          <Conversation.Operations>
+                            <InfoButton onClick={() => handleOpen()} />
+                          </Conversation.Operations>
+                          {/* <Conversation.Operations onClick={() => {
+                            handleOpen();
+                          }} 
+                          // /> */}
+                         </Conversation>
                     )
                     : false : false}
               </ConversationList>
+
             </Sidebar>
-            <ChatContainer style={{backgroundColor: 'transparent'}}>
+            <ChatContainer className="aggieTheme">
               <ConversationHeader>
                 {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
                 <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
                 <ConversationHeader.Actions>
-                  <InfoButton border />
+                  {(activeConversation !== "") ?
+                  <div as="VideoCallButton" title="Show info" onClick={() => {
+                    handleOpen();
+                  }}>
+                    <Button onClick={handleOpen} variant="outlined">End trade</Button>
+                  </div>
+                  : false}
+
                 </ConversationHeader.Actions>
-              </ConversationHeader>
+                </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
                     <Message
                         key={"mesageArr." + index}
+                        className={(user) ? ((m.sender === user.uid) ? "outg" : "inc") : "outg"}
                         model={{
                           message: m.text,
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>
                 )}
+              
+              {
+                (activeConversationObj?.status === "closed") ?
+                  displayClosedConv()
+                :
+                  false
+              }
+
               </MessageList>
-              <MessageInput attachButton={false}
-                            placeholder="Type message here" onSend={(e, v, t) => {
+              
+
+
+              <MessageInput 
+                disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false} 
+                attachButton={false}
+                placeholder="Type message here" 
+                onSend={(e, v, t) => {
                 sendTxt(t)
               }}/>
+
+
             </ChatContainer>
           </MainContainer>
 
@@ -204,6 +255,12 @@ function determinePosition(m, index, messageArr) {
   }
   return "single";
 
+}
+
+function displayClosedConv() {
+  return (
+    <MessageSeparator className="closed" content="This conversation was closed" as="h2" />
+  )
 }
 
 export default Messages;

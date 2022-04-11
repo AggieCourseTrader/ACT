@@ -1,0 +1,40 @@
+
+/* Message color when notification is selected */
+.notification .cs-message__content {
+    background-color: #a23737 !important;
+    color:antiquewhite;
+}
+
+.cs-message-separator.closed{
+    color:#a23737 !important;
+}
+
+.cs-message-separator.closed::before, .cs-message-separator.closed::after{
+    background-color: #a23737 !important;
+}
+/* Center message when notification is selected
+.notification .cs-message__content-wrapper {
+    margin-right:auto;
+    margin-left:auto;
+} */
+
+/* Normal outgoing message formatting
+.outg .cs-message__content {
+    background-color: #66142829 !important;
+}
+
+/* Normal incoming message formatting */
+/* .inc .cs-message__content {
+    background-color: #6614286e !important;
+}
+
+
+.aggieTheme .cs-conversation--active {
+    background-color: #efecdc !important;
+    color:black;
+}
+
+.aggieTheme .cs-conversation-header, .aggieTheme .cs-conversation-header__user-name {
+    background-color: #d6d3c4 !important;
+}
+ */ 

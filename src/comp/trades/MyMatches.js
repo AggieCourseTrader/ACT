@@ -114,6 +114,8 @@ export default function MyMatches({user}) {
                                   'lname' : data.lastName,
                                   'photoURL' : data.photoURL,
                                   'tradeId' : row.trade_id,
+                                  'status' : 'active',
+                                  'creatorId' : row.creatorID,
                                 })
                             }, {merge : true});
 
@@ -130,6 +132,8 @@ export default function MyMatches({user}) {
                                 'addClass' : row.dropClass.course,
                                 'addClassSection' : row.dropClass.section,
                                 'tradeId' : row.trade_id,
+                                'status' : 'active',
+                                'creatorId' : row.creatorID,
                               })
                             }, {merge : true});
                             // const theirDoc = await getDoc(doc(db, "messageStatus", row.connectingUserId));

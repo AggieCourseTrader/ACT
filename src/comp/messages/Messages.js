@@ -2,6 +2,7 @@ import {React, useEffect, useRef, useState} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
@@ -16,15 +17,20 @@ import {
   ConversationList,
   Conversation,
   Avatar,
-  ConversationHeader, StarButton
+  ConversationHeader, StarButton,
+  MessageSeparator,
+  InfoButton
 } from "@chatscope/chat-ui-kit-react";
 
 //! Do not remove ------------------------------------>
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import notificationStyles from './notificationStyles.css';
 // ---------------------------------------------------//
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
+
+
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
@@ -36,6 +42,8 @@ function Messages() {
       lname : "",
       photoURL : "",
   });
+
+
   const [user, setUser] = useState(false);
   console.log(user);
   const messageHelper = useRef(false);
@@ -63,6 +71,7 @@ function Messages() {
 
   },)
 
+
   useEffect(() => {
     if (activeConversation) {
       messageHelper.current = new IMessage(user, activeConversation, setMessageArr);
@@ -74,7 +83,10 @@ function Messages() {
       setMessageArr([]);
       if(messageHelper.current)
         messageHelper.current.unSub();
+
+      
     }
+
     return () => {
       if (messageHelper.current) {
         messageHelper.current.unSub();
@@ -85,13 +97,18 @@ function Messages() {
   useEffect(() => {
     if (user) {
       convHelper.current = new IConversation(user, setConversationArr);
+
+
       // convHelper.current.addAll();
     }
+
     return () => {
       if (convHelper.current) {
         convHelper.current.unSub();
       }
     }
+
+  
   }, [user]);
 
   const sendTxt = (text) => {
@@ -117,7 +134,7 @@ function Messages() {
 
             <Sidebar position="left" scrollable={false}>
 
-              <ConversationList style={{minWidth: "300px"}}>
+              <ConversationList className="aggieTheme">
 
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
                     conversationArr.activeConversations.map((d, index) =>
@@ -127,7 +144,7 @@ function Messages() {
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
                         >
-                          <Avatar src={d.photoURL} name="Avatar"/>
+                          <Avatar src={d.photoURL} name="Avatar" status={(d?.status === "closed") ? "dnd" : false}/>
                           <Conversation.Content>
                             {d.fname + " " + d.lname}
                             <span>
@@ -143,43 +160,66 @@ function Messages() {
                                 label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/>
                             </span>
                           </Conversation.Content>
-                          <Conversation.Operations onClick={() => {
+                          <Conversation.Operations>
+                            <InfoButton onClick={() => handleOpen()} />
+                          </Conversation.Operations>
+                          {/* <Conversation.Operations onClick={() => {
                             handleOpen();
-                          }}
-                          />
-                        </Conversation>
+                          }} 
+                          // /> */}
+                         </Conversation>
                     )
                     : false : false}
               </ConversationList>
 
             </Sidebar>
-            <ChatContainer style={{backgroundColor: 'transparent'}}>
+            <ChatContainer className="aggieTheme">
               <ConversationHeader>
                 {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
                 <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
                 <ConversationHeader.Actions>
-                  <StarButton onClick={() => {
+                  {(activeConversation !== "") ?
+                  <div as="VideoCallButton" title="Show info" onClick={() => {
                     handleOpen();
                   }}>
-                  </StarButton>
+                    <Button onClick={handleOpen} variant="outlined">End trade</Button>
+                  </div>
+                  : false}
+
                 </ConversationHeader.Actions>
-              </ConversationHeader>
+                </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
                     <Message
-                        // style={{color: (m.sender === user.uid) ? "rgb(80, 0, 0, 0.33)" : "white"}}
                         key={"mesageArr." + index}
+                        className={(user) ? ((m.sender === user.uid) ? "outg" : "inc") : "outg"}
                         model={{
                           message: m.text,
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>
                 )}
+              
+              {
+                (activeConversationObj?.status === "closed") ?
+                  displayClosedConv()
+                :
+                  false
+              }
+
               </MessageList>
-              <MessageInput attachButton={false}
-                            placeholder="Type message here" onSend={(e, v, t) => {
+              
+
+
+              <MessageInput 
+                disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false} 
+                attachButton={false}
+                placeholder="Type message here" 
+                onSend={(e, v, t) => {
                 sendTxt(t)
               }}/>
+
+
             </ChatContainer>
           </MainContainer>
 
@@ -215,6 +255,12 @@ function determinePosition(m, index, messageArr) {
   }
   return "single";
 
+}
+
+function displayClosedConv() {
+  return (
+    <MessageSeparator className="closed" content="This conversation was closed" as="h2" />
+  )
 }
 
 export default Messages;

@@ -92,6 +92,12 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
 
   let tradeDoc;
   let tradeRef;
+
+  // Do not create the trade if it is for the same section
+  if (dropCourseId == addCourseId) {
+    return null;
+  }
+
   //let updateTradeSnap;
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),

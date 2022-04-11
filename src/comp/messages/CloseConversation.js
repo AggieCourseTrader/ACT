@@ -50,8 +50,12 @@ const submitReview = async (user, setActiveConversation, setActiveConversationOb
       "dropClassSection": activeConversationObj.addClassSection,
       "status" : activeConversationObj.status,
       "tradeId": activeConversationObj.tradeId,
-      "creatorId" : activeConversationObj.creatorId,
+
     };
+
+    if(activeConversationObj?.creatorId) {
+      data["creatorId"] = activeConversationObj.creatorId;
+    }
 
     await updateDoc(doc(db, "messageStatus", activeConversation), {
       "activeConversations": arrayRemove(data)

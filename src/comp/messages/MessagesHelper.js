@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
 
 //! Data: 
@@ -34,6 +34,23 @@ export class IConversation {
         this.newConversation();
     }
 
+    async addId(connectingUserId) {
+        let q = query(collection(this.db, "users"), where("oAuthID", "==", connectingUserId));
+        let docs = await getDocs(q);
+        docs.forEach(async (d) => {
+            let data = d.data();
+            if(data.oAuthID !== this.oAuthId) {
+                await setDoc(this.myDoc, {
+                    "activeConversations" : arrayUnion({
+                        'id' : data.oAuthID,
+                        'fname' : data.firstName,
+                        'lname' : data.lastName,
+                        'photoURL' : data.photoURL
+                    })
+                }, {merge : true});
+            }
+        });
+    }
     async addAll() {
         let q = query(collection(this.db, "users"));
         let docs = await getDocs(q);
@@ -43,7 +60,9 @@ export class IConversation {
                 await setDoc(this.myDoc, {
                     "activeConversations" : arrayUnion({
                         'id' : data.oAuthID,
-                        'fname' : data.firstName
+                        'fname' : data.firstName,
+                        'lname' : data.lastName,
+                        'photoURL' : data.photoURL
                     })
                 }, {merge : true});
             }
@@ -105,44 +124,3 @@ export class IMessage {
     }
 
 }
-
-
-// export class MessageHelper{
-//     constructor(oAuthId) {
-//         this.oAuthId = oAuthId;
-//         this.db = getFirestore(app);
-
-//         this.sendDocs = {}
-//         this.receiveDocs = {}
-//         this.replyCounter
-
-//         if(oAuthId.length < 1) {
-//             console.log("Not logged in");
-//             return;
-//         }
-
-//         this.myDoc = doc(this.db, "users", oAuthId);
-//         this.myGroups = [];
-
-//         const checkNewMessages = onSnapshot(myDoc, (data) => {
-//             this.myGroups = data.data().groups;
-//             console.log(this.myGroups);
-
-//         });   
-//     }
-
-//     readMessages(from, onNewMessage) {
-//         0
-//     }
-
-//     sendMessage(text, to) {
-//         // We need two references: 
-//             // one to the other guys 'users' doc so that we can notify him of a unread message
-//             // another to a document in 'messages' where we can write the message text
-//         const otherDoc = doc(this.db, "users", to);
-
-//         const sentMessagesDoc = this.db.collection('messages').doc(user_id + to).set({foo:'bar'}, {merge: true})
-//     }
-//   }
-
-

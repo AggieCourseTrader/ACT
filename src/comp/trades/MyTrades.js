@@ -70,7 +70,7 @@ function MyTrades() {
                           },
                         }}
                     >
-                      <MyMatches userId={user.uid}/>
+                      <MyMatches user={user}/>
                     </Paper>
                   </Grid>
                 </Grid>

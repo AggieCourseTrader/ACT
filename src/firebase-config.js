@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+//import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, 
     signInWithPopup, signOut } from "firebase/auth";
 
@@ -20,14 +20,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
+//const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 export {
     auth,
     app,
     signInWithPopup,
-    analytics,
+    //analytics,
     onAuthStateChanged,
     GoogleAuthProvider,
     signOut,

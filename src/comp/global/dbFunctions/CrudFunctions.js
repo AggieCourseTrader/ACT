@@ -12,13 +12,14 @@ import { app } from '../../../firebase-config'
 export const db = getFirestore(app);
 
 // collections to be used in the functions
-const trades = collection(db, "trades");
+export const trades = collection(db, "trades");
 const users = collection(db, "users");
-const courses = collection(db, "courses");
+export const courses = collection(db, "courses");
+export const reviews = collection(db, "reviews");
 
 
 // Adds given user to the user collection
-export async function addUser (email, displayName, oAuthId) {
+export async function addUser (email, displayName, oAuthId, photoURL) {
 
   // Split displayName into first and last name
   let names;
@@ -34,22 +35,25 @@ export async function addUser (email, displayName, oAuthId) {
   const lastName = names[1];
 
   // Look for document to check if user exists
-  const q = query(users, where("oAuthID", "==", oAuthId));
-  const existingUsers = await getDocs(q);
+  // const q = query(users, where("oAuthID", "==", oAuthId));
+  // const existingUsers = await getDocs(q);
    
   //Add user to database if they are not already in it 
-  if (existingUsers.empty) {
+  // if (existingUsers.empty) {
 
-    const userDoc = { 
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      oAuthID: oAuthId
-    }
 
-    const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
-    return docRef;
-  } 
+  const userDoc = {
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    oAuthID: oAuthId,
+    displayName: displayName,
+    photoURL : photoURL
+  }
+
+  const docRef = await setDoc(doc(db, "users", oAuthId), userDoc);
+  return docRef;
+  // }
 }
 
 // Get all of the course sections with the given name
@@ -88,20 +92,45 @@ export async function createTrade(creatingUserId, dropCourseId, addCourseId) {
 
   let tradeDoc;
   let tradeRef;
+  //let updateTradeSnap;
   
   const q = query(trades, where("creatorID", "==", creatingUserId), where("addClassID", "==", addCourseId),
                           where("dropClassID", "==", dropCourseId));
   const receivedTrade = await getDocs(q);
+
+  const addCourseQ = query(courses, where("crn", "==", addCourseId));
+  const receivedAdd = await getDocs(addCourseQ);
+
+  const dropCourseQ = query(courses, where("crn", "==", dropCourseId));
+  const receivedDrop = await getDocs(dropCourseQ);
+
+  if (receivedAdd.empty || receivedDrop.empty) {
+    
+    console.log("At least one of the input courses does not exist");
+    return null;
+  
+  }
   
   // If the trade to be created does not already exist
   if (receivedTrade.empty) {
  
+    // Get course data
+    let addClassDoc = await getCourseByCrn(addCourseId);
+    let addClass = "";
+    addClassDoc.forEach((d) => {addClass = d.data()});
+
+    let dropClassDoc = await getCourseByCrn(dropCourseId);
+    let dropClass = "";
+    dropClassDoc.forEach((d) => {dropClass = d.data()});
+    console.log("here");
     // All attributes except tradeId which is automatically generated
-    tradeDoc = { 
+    tradeDoc = {
+      addClass: addClass,
       addClassID: addCourseId,
       createdAt: serverTimestamp(),
       creatorID: creatingUserId,
       dropClassID: dropCourseId,
+      dropClass: dropClass,
       matchID: -1,
       status: "requested"
     }
@@ -143,8 +172,16 @@ export async function getMatchedTrades(userId) {
 export async function getTrade(tradeId) {
 
   const tradeRef = doc(db, "trades", tradeId);
+  
+  let tradeSnap; 
 
-  const tradeSnap = await getDoc(tradeRef);
+  try {
+    tradeSnap = await getDoc(tradeRef);
+  }
+  catch (e) {
+    console.log(e.message);
+    return null;
+  }
   
   if (!tradeSnap.exists()) {
     console.log("Trade does not exist");
@@ -215,8 +252,19 @@ export async function getTrades(dropCourseId, addCourseId) {
 export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
    
   const tradeRef = doc(db, "trades", tradeId);
+
+  // Get course data
+  let addClassDoc = await getCourseByCrn(newAddCourseId);
+  let addClass = "";
+  addClassDoc.forEach((d) => {addClass = d.data()});
+
+  let dropClassDoc = await getCourseByCrn(newDropCourseId);
+  let dropClass = "";
+  dropClassDoc.forEach((d) => {dropClass = d.data()});
   
   const updatedFields = {
+    addClass: addClass,
+    dropClass: dropClass,
     addClassID: newAddCourseId,
     dropClassID: newDropCourseId,
   }
@@ -227,12 +275,21 @@ export async function updateTrade(tradeId, newDropCourseId, newAddCourseId) {
 
 // Updates the given trade with the matched user id
 export async function updateTradeMatch(tradeId, matchedUserId) {
-   
+  console.log(tradeId);
+  console.log(matchedUserId);
   const tradeRef = doc(db, "trades", tradeId);
 
-  const tradeSnap = await getDoc(tradeRef);
+  let tradeSnap; 
 
-  if (tradeSnap.get('status') === "requested") {
+  try {
+    tradeSnap = await getDoc(tradeRef);
+  }
+  catch (e) {
+    console.log(e.message);
+    return null;
+  }
+
+  if (tradeSnap.get('status') === "requested" && matchedUserId !== tradeSnap.get('creatorID')) {
     
     const updatedFields = {
       matchID: matchedUserId,
@@ -263,8 +320,10 @@ export async function updateTradeStatus(tradeId, tradeStatus) {
 // Deletes the trade with the given tradeId
 export async function deleteTrade(tradeId) {
 
+
   const tradeRef = doc(db, "trades", tradeId);
   await deleteDoc(tradeRef);
+
 }
 
 export async function getTradeId(userId, dropCourseId, addCourseId) {
@@ -283,7 +342,55 @@ export async function getTradeId(userId, dropCourseId, addCourseId) {
 
   else {
     console.log("Trade does not exist");
+    return null
   }
 
   return tradeId;
+}
+
+export async function addReviews(userId, review, key, tradeSuccess, positiveExperience, reviewedId) {
+
+  let reviewDoc
+  let reviewRef
+
+  reviewDoc = {
+    reviewerID: userId,
+    reviewedID: reviewedId,
+    review: review,
+    tradeID: key,
+    tradeSuccess: tradeSuccess,
+    positiveExperience: positiveExperience,
+  }
+
+  reviewRef = await addDoc(reviews, reviewDoc);
+  return reviewRef;
+}
+
+export async function getReviews(reviewedID) {
+
+  const q = query(reviews, where("reviewedID", "==", reviewedID));
+  const receivedReviews = await getDocs(q);
+    
+  if (!receivedReviews.empty) {
+    return receivedReviews;
+  }
+
+  else {
+    console.log("No Review exist");
+    return null;
+  }
+}
+
+export async function getUserInfo(userId) {
+  const q = query(users, where("oAuthID", "==", userId));
+  const userInfo = await getDocs(q);
+
+  if (!userInfo.empty) {
+    return userInfo;
+  }
+
+  else {
+    console.log("user doesn't exist");
+    return null;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
@@ -9,15 +9,51 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import {getTrades, getTradesByDrop, getCoursesByCrn, getTradesByAdd, updateTradeMatch, createTrade} from "../global/dbFunctions/CrudFunctions"
+import { getTrade, createTrade, getReviews, getUserInfo} from "../global/dbFunctions/CrudFunctions"
+import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Modal from '@mui/material/Modal';
+
+import ReviewModal from '../marketplace/ReviewModal';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+
+import { onSnapshot, query, collection, where, limit} from 'firebase/firestore';
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
   const [dropClass, setDropClass] = useState({class:'', section: '', crn: ''});
+  const [tradeID, setTradeID] = useState([]);
+  const [modalDropClass, setModalDropClass] = useState([]);
+  const [modalAddClass, setModalAddClass] = useState([]);
 
   const [rows, setRows] = useState([]);
+  const tradesListener = useRef(null);
+
+  const [myTradeRows, setMyTradeRows] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [creatorInfo, setCreatorInfo] = useState([]);
+  const myTrades = useRef(null);
+  const [experiencePercentage, setExperiencePercentage] = useState(-1);
+  const [hasReviews, setHasReviews] = useState(false);
+
+  const [alert, setAlert] = useState(null)
+  // below is for modal
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+    setHasReviews(false)
+    setReviews([])
+    setCreatorInfo([])
+    setTradeID([])
+    setModalDropClass([])
+    setModalAddClass([])
+    setExperiencePercentage(-1)
+  }
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
@@ -47,122 +83,80 @@ function Marketplace() {
   // where both addClass and dropClass are filled
   // let rows = [];
 
-   
+  //! ----------------------------------------------//
+  // addclass and dropclass
+
+  // get my trades
+
+  // get other trader
+
+  // q = query where "addClass.course" === addClass.class
+  //           where "addClass.section" === addClass.section
+  //           where "dropClass.course" === dropClass.class
+  //           where "dropClass.section" === dropClass.section
 
 
+  //! ----------------------------------------------//
+
+
+ 
+  
   useEffect(() => {
-    const f = async () => {
-      if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTrades(addClass.crn, dropClass.crn);
-        // let trades;
-        // tradeSnap.then((data) => {
-        //   trades = data;
-        // });
-        console.log(trades);
-  
+    if(!user.uid) {
+      return;
+    }
+    //* Get trades listed by others
+    let conditions = [where("creatorID", "!=", user.uid), where("status", "==", "requested")]
+    if(dropClass.class !== "") conditions.push(where("addClass.course", "==", dropClass.class))
+    if(dropClass.section !== "") conditions.push(where("addClass.section", "==", dropClass.section))
+    if(addClass.class !== "") conditions.push(where("dropClass.course", "==", addClass.class))
+    if(addClass.section !== "") conditions.push(where("dropClass.section", "==", addClass.section))
+    tradesListener.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
+      (snap) => {
         let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            // ensure trade isnt already matched
-            console.log(doc.data());
-            if (doc.get('matchID') === -1) {
-              // not matched, add to rows var
-              console.log("here")
-              let addClassString = addClass.class + ": " + addClass.section;
-              let dropClassString = dropClass.class + ": " + dropClass.section;
-              arr.push({id: doc.get("trade_id"), add: addClassString, drop: dropClassString});
-            }
-          })
-        }
+        snap.forEach((doc) => {
+          const data = doc.data();
+          arr.push({
+            id: doc.id,
+            add: data.dropClass,
+            drop: data.addClass
+          });
+        });
         setRows(arr);
-      }
-      else if (addClass.class !== '' && addClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTradesByDrop(addClass.crn);
-        
-        // let trades;
-        // tradeSnap.then((data) => {
-        //   trades = data;
-        // });
-        console.log(trades);
-  
+      });
+           
+    //* Get trades listed by me
+    conditions = [where("creatorID", "==", user.uid), where("status", "==", "requested")]
+    if(addClass.class !== "") conditions.push(where("addClass.course", "==", addClass.class))
+    if(addClass.section !== "") conditions.push(where("addClass.section", "==", addClass.section))
+    if(dropClass.class !== "") conditions.push(where("dropClass.course", "==", dropClass.class))
+    if(dropClass.section !== "") conditions.push(where("dropClass.section", "==", dropClass.section))
+    myTrades.current = onSnapshot(query(collection(db, "trades"), ...conditions, limit(50)), 
+      (snap) => {
         let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            // ensure trade isnt already matched
-            console.log(doc.data());
-            if (doc.get('status') === "requested") {
-              // not matched, add to rows var
-              console.log("here")
-              arr.push(doc.data());
-            }
-          })
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-          console.log(courseData);
-          // Merge the course names with the trade requests
-          arr = arr.map((x, index) => {
-            let returnVal = {};
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            returnVal.drop = ele.course + ": " + ele.section;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            returnVal.add = ele.course + ": " + ele.section;
-            returnVal.id = x.trade_id;
-            return returnVal;
-          })
-  
-        }
-        setRows(arr);
+        snap.forEach((doc) => {
+          const data = doc.data();
+
+          arr.push({
+            id: doc.id,
+            add: data.addClass,
+            drop: data.dropClass
+          });
+          
+        });
+        setMyTradeRows(arr);
+      });
+
+    //* Remove any event listeners
+    return () => {
+      if(tradesListener.current !== null) {
+        tradesListener.current();
       }
-      else if (dropClass.class !== '' && dropClass.section !== '') {
-        let trades;
-        setRows([]);
-        trades = await getTradesByAdd(dropClass.crn);
-  
-        let arr = [];
-        if (trades !== null) {
-          console.log(trades);
-          trades.forEach((doc) => {
-            if (doc.get('status') === "requested") {
-              arr.push(doc.data());
-            }
-          })
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-  
-          // Merge the course names with the trade requests
-          arr = arr.map((x, index) => {
-            let returnVal = {};
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            returnVal.drop = ele.course + ": " + ele.section;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            returnVal.add = ele.course + ": " + ele.section;
-            returnVal.id = x.trade_id;
-            return returnVal;
-          })
-  
-        }
-        setRows(arr);
+      if(myTrades.current !== null) {
+        myTrades.current();
       }
-      else {
-        setRows([]);
-      }
-    };
-    f();
-  }, [addClass, dropClass]);
+    }
+  }, [addClass, dropClass, user]);
 
 
     
@@ -175,6 +169,12 @@ function Marketplace() {
     flex: 1,
     editable: true,
     sortable: false,
+    renderCell: (params) => (
+      <Chip color="success" size="small" 
+      style={{verticalAlign:"middle", backgroundColor:'#5b6236'}} 
+      icon={<AddCircleOutlineIcon/>} 
+      label={[params.value.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + params.value.section}</span>]}/>
+    )
   },
   {
     field: 'drop',
@@ -182,19 +182,26 @@ function Marketplace() {
     flex: 1,
     editable: true,
     sortable: false,
+    renderCell: (params) => (
+      <Chip size="small" color="primary" 
+        icon={<RemoveCircleOutlineIcon/>} 
+        style={{verticalAlign:"middle", backgroundColor:'#661429'}}
+        label={[params.value.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + params.value.section}</span>]}
+      /> 
+    )
   },
   {
     field: 'action',
     headerName: 'I want to Match',
     flex: 1,
     sortable: false,
+    // working here, change this button so that it brings up a modal that has a button that has trading functionality
     renderCell: (params) => (
       <strong>
         <Button
           variant = 'outlined'
-          onClick={() => {
-            updateTradeMatch(params.id, user.uid);
-            alert('match successful');
+          onClick={() =>  {
+            getBio(params.id);
           }}
         >
           Trade
@@ -234,6 +241,45 @@ function Marketplace() {
 
 
 
+  function getBio(id) {
+    (async () => {
+      let trade = await getTrade(id);
+      setModalDropClass(trade.data().dropClass.course + "-" + trade.data().dropClass.section);
+      setModalAddClass(trade.data().addClass.course + "—" + trade.data().addClass.section);
+      let creatorID = trade.data().creatorID
+      let arr = []
+      let reviews = await getReviews(creatorID);
+      let sumTotal = 0
+      let sumGood = 0
+      if(reviews !== null) {
+        setHasReviews(true)
+        reviews.forEach(async (doc) => {
+          let creatorID = doc.data().reviewerID
+          let creatorInfo = await getUserInfo(creatorID)
+          let firstName, lastName;
+          creatorInfo.forEach((info) => {
+            firstName = info.data().firstName
+            lastName = info.data().lastName
+          })
+          if(doc.data().positiveExperience) {
+            sumGood = sumGood+1
+          }
+          sumTotal = sumTotal+1
+          setExperiencePercentage(Math.round(sumGood/sumTotal*100))
+          arr.push({firstName: firstName, lastName: lastName, review: doc.data().review})
+        });
+      }
+      setReviews(arr)
+
+      let info = await getUserInfo(creatorID);
+      info.forEach((doc) => {
+        setCreatorInfo(doc.data());
+      });
+      setTradeID(id);
+    })();
+    setOpen(true)
+  } 
+
    const selectionAddCallback = (data) => {
     if(data !== undefined){
       if(typeof data === 'object') {
@@ -246,6 +292,9 @@ function Marketplace() {
         setAddClass({class:'', section: '', crn: '' })
       }
     }
+    else {
+      setAddClass({class:'', section: '', crn: '' })
+    }
   }
 
   const selectionDropCallback = (data) => {
@@ -257,13 +306,14 @@ function Marketplace() {
           setDropClass({...dropClass, section:data.section, crn:data.crn})
         } 
       }
+      else {
+        setDropClass({class:'', section: '', crn: '' })
+      }
     } else {
       setDropClass({class:'', section: '', crn: '' })
     }
-  }
 
-  console.log(addClass)
-  console.log(dropClass)
+  }
 
   return (
     <div>
@@ -299,15 +349,15 @@ function Marketplace() {
             </Box>
           </Box>
           <Box sx = {{
-            border: 2,
-            borderRadius: 2,
+            // border: 2,
+            // borderRadius: 2,
             marginLeft: "15%",
             marginRight: '15%',
             height: 300
           }}>   
             {/* table section */}
             <DataGrid
-              rows={rows}
+              rows={rows.concat(myTradeRows)}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}
@@ -318,18 +368,44 @@ function Marketplace() {
             </Box>
             <Box sx = {{textAlign: "center", m: 2}}>
               <Button variant = "outlined" justifyContent = "center"
-                onClick={() => {
+                onClick={ async () => {
                   if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-                    createTrade(user.uid, dropClass.crn, addClass.crn);
-                    alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                    const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
+                    if(val !== null) {
+                      // this doesnt show up. look into mui alerts to figure how this works
+                      setAlert(
+                      <Alert severity="success">
+                        <AlertTitle>Success</AlertTitle>
+                        trade request created
+                      </Alert>
+                      );
+                      // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                    }
+                    else { 
+                      setAlert(
+                        <Alert severity="error">
+                          <AlertTitle>Failure</AlertTitle>
+                          trade already exists
+                        </Alert>
+                        );
+                    }
                   }
                 }}
               >
                 Create Trade
               </Button>
+              <div className="Alert">{alert}</div>
             </Box>
         </Box>
       <Footer/>
+      <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+      >
+          <ReviewModal hasReviews={hasReviews} reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass} experiencePercentage={experiencePercentage}/>
+        </Modal>
     </div>
   );
 }

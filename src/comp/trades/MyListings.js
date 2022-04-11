@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
@@ -14,8 +13,7 @@ import EditTrades from './EditTrades'
 import Button from '@mui/material/Button';
 import { collection, onSnapshot, query, where} from 'firebase/firestore';
 import { db } from '../../firebase-config';
-import { getCoursesByCrn } from '../global/dbFunctions/CrudFunctions';
-
+import {getTradeId} from '../global/dbFunctions/CrudFunctions';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
@@ -28,10 +26,15 @@ export default function MyListings({userId}) {
   const [openAdd, setOpenAdd] = React.useState(false);
   const [addClass, setAddClass] = React.useState (null);
   const [dropClass, setDropClass] = React.useState(null);
+  const [tradeId, setTradeId] = React.useState(null);
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
   function handleOpen (add,drop) {
+    (async () => {
+      let tradeId = await getTradeId(userId, drop.crn, add.crn);
+      setTradeId(tradeId)
+    })();
     setAddClass(add)
     setDropClass(drop)
     setOpen(true);
@@ -48,21 +51,6 @@ export default function MyListings({userId}) {
           snap.forEach((doc) => {
             arr.push(doc.data());
           });
-  
-          // The trade requests only have a crn so we have to get the course names from the crns
-          let crns = arr.map((d) => d.addClassID);
-          crns = crns.concat(arr.map((d) => d.dropClassID));
-  
-          let courseData = await getCoursesByCrn(crns);
-  
-          // Merge the course names with the trade requests
-          arr = arr.map((x) => {
-            let ele = courseData.find(ele => ele.crn === x.addClassID);
-            x.addClass = ele;
-            ele = courseData.find(ele => ele.crn === x.dropClassID);
-            x.dropClass = ele;
-            return x;
-          })
   
           // Return
           setTrades(arr);
@@ -88,7 +76,7 @@ export default function MyListings({userId}) {
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades add={undefined} drop={undefined} update={false}/>
+                <EditTrades add={undefined} drop={undefined} tradeId={undefined} userId={userId}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
@@ -137,7 +125,7 @@ export default function MyListings({userId}) {
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"> 
-            <EditTrades add={addClass} drop={dropClass} update={true}/>
+            <EditTrades add={addClass} drop={dropClass} tradeId={tradeId}  userId={userId}/>
         </Modal>
       </React.Fragment>
   );

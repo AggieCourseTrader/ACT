@@ -34,15 +34,20 @@ const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 // const mdTheme = createTheme();
 
 function CourseSearchBox({ db, selectionCallBack, defaultData}) {
+	// Contains all course and sections results
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
-	// const [queryCounter, setQueryCounter] = useState(0);
+
+	// Used by input box - 1
 	const [searchText, setSearchText] = useState('');
+	// Use to notify input box 2 that something was selected
 	const [courseSelected, setCourseSelected] = useState('');
+
+	// Default values for both
 	const [sectionDefValue, setSectionDefValue] = useState('');
 	const [classDefValue, setClassDefValue] = useState('');
-	//console.log(sectionSelected)
 
+	// Temp var to hold section selected until
 	const f = async (searchText, db) => {
 		let text = searchText;
 		let courseText = text.replace(/\s*\d+\s*/g, '').replace(/\s*/g, '');
@@ -143,7 +148,7 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 	const h = async (cSelected, db) => {
 		setSectionResults([]);
 
-		if(cSelected === "") {
+		if(cSelected === "" || cSelected === undefined) {
 			return;
 		}
 		let arr = [];
@@ -225,6 +230,8 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 
 		g();
 	}, [defaultData, db]);
+
+
 	//* Updates search results whenever something is typed
 	useEffect(() => {
 		f(searchText, db);
@@ -235,14 +242,11 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 		h(courseSelected, db);
 	}, [courseSelected, db]);
 
-	// let getCourseList = async (text) => {
-		
-	// }
+
 	return (
 		<>
-				<Autocomplete
-
-				value={classDefValue}
+			<Autocomplete
+				value={classDefValue || null}
 				onChange={(e, v) => {
 					console.log(v)
 					setCourseSelected(searchResults.find(x => x.name === v))
@@ -250,19 +254,18 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 					setClassDefValue(v);
 				}}
 				sx={csb}
-
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
 				filterOptions={(x) => x}
 				renderInput={(params) => <TextField {...params} onChange = {(e) => {setSearchText(e.target.value)}} label="Search a course" />}
 			
-				/>
+			/>
 			
 
-				<Autocomplete
+			<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
-				value={sectionDefValue}
+				value={sectionDefValue || null}
 				autoHighlight
 				onChange={(e, v) => {
 					selectionCallBack(v)
@@ -270,30 +273,18 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				}}
 				openOnFocus
 				sx = {ssb}
-
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}
-				// options={sectionResults.map((x) => x.section)}
-
 				options={sectionResults}
-				// defaultValue={
-				// 	() => {
-				// 		if (defaultData.section !== undefined){
-				// 			const val = sectionResults.find(x => x.section === defaultData.section)
-				// 			console.log(val);
-				// 			return val;
-				// 		}
-				// 		return "";
-				// 	}
-				// }
+
 				getOptionLabel={(option) => option.section || ""}
 				renderOption={(props, option) => (
 					renderSection(props, option)
 				)}
 
 				renderInput={(params) => <TextField {...params} label="Select a section" />}
-				/>
+			/>
 
 		
 

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {arrayRemove, updateDoc, doc, setDoc, arrayUnion} from "firebase/firestore";
-import {addReviews, db} from "../global/dbFunctions/CrudFunctions";
+import {addReviews, db, deleteTrade, updateTradeStatus} from "../global/dbFunctions/CrudFunctions";
 import {Avatar} from "@chatscope/chat-ui-kit-react"
 import {TextField} from "@mui/material";
 import Radio from '@mui/material/Radio';
@@ -191,6 +191,7 @@ const view2 = (user,setActiveConversation,setActiveConversationObj,activeConvers
           }
           else {
             await submitReview(user, setActiveConversation, setActiveConversationObj, activeConversation, activeConversationObj, open, handleClose, setExperience, setReviewText, setSuccess, setNext, experience, success, reviewText);
+            (activeConversationObj?.tradeId) ? await updateTradeStatus(activeConversationObj?.tradeId, "closed"): null;
             setActiveConversation("");
             setActiveConversationObj({
               fname: "",
@@ -270,8 +271,11 @@ const view3 = (user,setActiveConversation,setActiveConversationObj,activeConvers
                 matchID : "-1"
               }, {merge: true})
             }
-            
+            else if(activeConversationObj?.tradeId && relist === "0") {
+              deleteTrade(activeConversationObj?.tradeId);
+            }
 
+            
             if(activeConversationObj?.creatorId === user.uid) {
               await submitReview(user, setActiveConversation, setActiveConversationObj, activeConversation, activeConversationObj, open, handleClose, setExperience, setReviewText, setSuccess, setNext, experience, success, reviewText);
               setActiveConversation("");

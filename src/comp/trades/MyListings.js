@@ -90,6 +90,7 @@ export default function MyListings({userId}) {
                 if(!(row.addClass) || !(row.dropClass)) {
                   return false
                 }
+                
                 return (
                   <TableRow key={"my-listings-" + index}>
                     <TableCell>

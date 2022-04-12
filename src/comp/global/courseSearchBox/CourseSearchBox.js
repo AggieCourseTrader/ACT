@@ -4,7 +4,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { Autocomplete, TextField } from '@mui/material';
 // import Grid from '@mui/material/Grid';
 import { getCoursesByName } from '../dbFunctions/CrudFunctions';
-
+import { useResponsive } from '@farfetch/react-context-responsive';
 // import {createTheme} from '@mui/material/styles';
 
 //4 Structure ---------------------//
@@ -15,10 +15,11 @@ import { getCoursesByName } from '../dbFunctions/CrudFunctions';
 //				if selected then call selectionCallBack
 //4 -------------------------------//
 
-const csb = { width: "12em", minWidth: "12em", marginLeft : "1em" };
+const csb = { width: "12em" , minWidth: "12em", marginLeft : "1em" };
+const csbMobile = { width: "100%", marginTop: "0.5em"}
 
 const ssb = { width : "20em", midWidth : "12em", marginLeft: "1em", float : "right" };
-
+const ssbMobile = { width : "100%", marginTop: "0.5em" };
 const rsParentDiv = { width: "100%", minHeight: "3em", overflow: "hidden"};
 
 const rsSectionDiv = {float: "left", width: "10%"};
@@ -34,6 +35,7 @@ const rsTimeDivLi = {textAlign: "right", fontSize: "0.75em"};
 // const mdTheme = createTheme();
 
 function CourseSearchBox({ db, selectionCallBack, defaultData}) {
+	const { lessThan } = useResponsive();
 	// Contains all course and sections results
 	const [searchResults, setSearchResults] = useState([]);
 	const [sectionResults, setSectionResults] = useState(['All sections']);
@@ -253,7 +255,8 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 					selectionCallBack(searchResults.find(x => x.name === v))
 					setClassDefValue(v);
 				}}
-				sx={csb}
+				sx={(lessThan.sm) ? csbMobile : csb}
+				size={(lessThan.sm) ? 'small' : 'medium'}
 				id="course-search-box"
 				noOptionsText={'Start typing ...'}
 				options={searchResults.map((x) => x.name)}
@@ -266,13 +269,14 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 			<Autocomplete
 				disabled={(courseSelected === undefined) ? true : false}
 				value={sectionDefValue || null}
+				size={(lessThan.sm) ? 'small' : 'medium'}
 				autoHighlight
 				onChange={(e, v) => {
 					selectionCallBack(v)
 					setSectionDefValue(v);
 				}}
 				openOnFocus
-				sx = {ssb}
+				sx = {(lessThan.sm) ? ssbMobile : ssb}
 				
 				id="course-search-box"
 				noOptionsText={'No course selected'}

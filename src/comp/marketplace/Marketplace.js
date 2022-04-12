@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
@@ -14,15 +14,19 @@ import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Modal from '@mui/material/Modal';
-
 import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useResponsive } from '@farfetch/react-context-responsive';
 
+import { useSnackbar } from 'notistack';
+
+import './marketplace.css';
 
 import { onSnapshot, query, collection, where, limit} from 'firebase/firestore';
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
+  const { lessThan } = useResponsive();
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
@@ -44,6 +48,12 @@ function Marketplace() {
   const [alert, setAlert] = useState(null)
   // below is for modal
   const [open, setOpen] = React.useState(false);
+
+
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+
   const handleClose = () => {
     setOpen(false);
     setHasReviews(false)
@@ -98,7 +108,23 @@ function Marketplace() {
 
   //! ----------------------------------------------//
 
-
+   const getSize = (lT) => {
+    if(lT.sm) {
+      return 'xs';
+    }
+    else if(lT.md) {
+      return 'sm';
+    }
+    else if(lT.lg) {
+      return 'md';
+    }
+    else if(lT.xl) {
+      return 'lg';
+    }
+    else {
+      return 'xl';
+    }
+   }
  
   
   useEffect(() => {
@@ -119,7 +145,8 @@ function Marketplace() {
           arr.push({
             id: doc.id,
             add: data.dropClass,
-            drop: data.addClass
+            drop: data.addClass,
+            creatorId: data?.creatorID,
           });
         });
         setRows(arr);
@@ -140,12 +167,14 @@ function Marketplace() {
           arr.push({
             id: doc.id,
             add: data.addClass,
-            drop: data.dropClass
+            drop: data.dropClass,
+            creatorId: data?.creatorID,
           });
           
         });
         setMyTradeRows(arr);
       });
+
 
     //* Remove any event listeners
     return () => {
@@ -167,7 +196,7 @@ function Marketplace() {
     field: 'add',
     headerName: 'Class I want to Add',
     flex: 1,
-    editable: true,
+    editable: false,
     sortable: false,
     renderCell: (params) => (
       <Chip color="success" size="small" 
@@ -180,7 +209,7 @@ function Marketplace() {
     field: 'drop',
     headerName: 'Class I can Drop',
     flex: 1,
-    editable: true,
+    editable: false,
     sortable: false,
     renderCell: (params) => (
       <Chip size="small" color="primary" 
@@ -193,15 +222,28 @@ function Marketplace() {
   {
     field: 'action',
     headerName: 'I want to Match',
-    flex: 1,
+    // flex: 1,
+    flex: 0.6,
     sortable: false,
     // working here, change this button so that it brings up a modal that has a button that has trading functionality
     renderCell: (params) => (
       <strong>
         <Button
+          sx={(params.row?.creatorId === user?.uid) ? 
+            {
+              opacity: 0.5,
+              backgroundColor: '#DCDCDC',
+              cursor: 'not-allowed',
+          } : false}
           variant = 'outlined'
           onClick={() =>  {
-            getBio(params.id);
+            console.log(params);
+            if(params.row?.creatorId === user?.uid){
+              enqueueSnackbar("You can't trade with yourself!", {variant: 'error'});
+            }
+            else {
+              getBio(params.id);
+            }
           }}
         >
           Trade
@@ -316,88 +358,85 @@ function Marketplace() {
   }
 
   return (
-    <div>
+    <>
+      
       <Navbar name = "Trade Marketplace" auth={auth} user={user}/>
-      <Box sx={{ flexGrow: 1, height: '80vh', background: '#f6f6f6'}}>
-        <Box sx={{ flexGrow: 1}}>
-            <Box sx = {{display: "flex", justifyContent: "center", flexWrap : "wrap", m: 2}}>
-
-              <Typography sx = {{
-                fontSize : "4vmin",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color : "#500000",
-                fontWeight: "lighter"
-              }}>I want a spot in </Typography>
-
-              <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
-
-            </Box>
-            <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
-
+      <Box className={"outBox " + getSize(lessThan)}>
+        <Box className={"inBox " + getSize(lessThan)}>
+          <Box className={"csb " + getSize(lessThan)}>
             <Typography sx = {{
-                fontSize : "4vmin",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color : "#500000",
-                fontWeight: "lighter"
-              }}>I can drop </Typography>
+              fontSize : "4vmin",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              color : "#500000",
+              fontWeight: "lighter"
+            }}>I want a spot in </Typography>
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
 
-              <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
-            </Box>
+
           </Box>
-          <Box sx = {{
-            // border: 2,
-            // borderRadius: 2,
-            marginLeft: "15%",
-            marginRight: '15%',
-            height: 300
-          }}>   
-            {/* table section */}
-            <DataGrid
-              rows={rows.concat(myTradeRows)}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              rowHeight={38}
-              disableSelectionOnClick
-              disableColumnMenu
-            />
-            </Box>
-            <Box sx = {{textAlign: "center", m: 2}}>
-              <Button variant = "outlined" justifyContent = "center"
-                onClick={ async () => {
-                  if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-                    const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
-                    if(val !== null) {
-                      // this doesnt show up. look into mui alerts to figure how this works
-                      setAlert(
-                      <Alert severity="success">
-                        <AlertTitle>Success</AlertTitle>
-                        trade request created
-                      </Alert>
-                      );
-                      // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
-                    }
-                    else { 
-                      setAlert(
-                        <Alert severity="error">
-                          <AlertTitle>Failure</AlertTitle>
-                          trade already exists
-                        </Alert>
-                        );
-                    }
-                  }
-                }}
-              >
-                Create Trade
-              </Button>
-              <div className="Alert">{alert}</div>
-            </Box>
+          <Box className={"csb " + getSize(lessThan)}>
+
+          <Typography sx = {{
+              fontSize : "4vmin",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              color : "#500000",
+              fontWeight: "lighter"
+            }}>I can drop </Typography>
+
+            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
+          </Box>
         </Box>
-      <Footer/>
+        <Box className={"tableBox " + getSize(lessThan)}>   
+          {/* table section */}
+          <DataGrid
+            rows={rows.concat(myTradeRows)}
+            columns={columns}
+            pageSize={(lessThan.sm) ? 4 : 5}
+            rowsPerPageOptions={[5]}
+            rowHeight={38}
+            disableSelectionOnClick
+            disableColumnMenu
+          />
+        </Box>
+        <Box sx = {{textAlign: "center", m: 2}}>
+            <Button variant = "outlined" justifyContent = "center"
+              onClick={ async () => {
+                if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+                  const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
+                  if(val !== null) {
+                    // this doesnt show up. look into mui alerts to figure how this works
+                    enqueueSnackbar('Trade Created', { variant: 'success' });
+                    // setAlert(
+                    // <Alert severity="success">
+                    //   <AlertTitle>Success</AlertTitle>
+                    //   trade request created
+                    // </Alert>
+                    // );
+                    // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
+                  }
+                  else { 
+                    enqueueSnackbar('Trade already exists', { variant: 'error' });
+                    // setAlert(
+                    //   <Alert severity="error">
+                    //     <AlertTitle>Failure</AlertTitle>
+                    //     trade already exists
+                    //   </Alert>
+                    //   );
+                  }
+                }
+              }}
+            >
+              Create Trade
+            </Button>
+            <div className="Alert">{alert}</div>
+        </Box>
+        <Footer/>
+          
+        </Box>
       <Modal
           open={open}
           onClose={handleClose}
@@ -406,7 +445,7 @@ function Marketplace() {
       >
           <ReviewModal hasReviews={hasReviews} reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass} experiencePercentage={experiencePercentage}/>
         </Modal>
-    </div>
+    </>
   );
 }
 

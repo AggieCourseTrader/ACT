@@ -76,7 +76,7 @@ export default function MyListings({userId}) {
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades add={undefined} drop={undefined} tradeId={undefined} userId={userId}/>
+                <EditTrades handleClose={handleCloseAdd} add={undefined} drop={undefined} tradeId={undefined} userId={userId}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
@@ -126,7 +126,7 @@ export default function MyListings({userId}) {
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"> 
-            <EditTrades add={addClass} drop={dropClass} tradeId={tradeId}  userId={userId}/>
+            <EditTrades handleClose={handleClose} add={addClass} drop={dropClass} tradeId={tradeId}  userId={userId}/>
         </Modal>
       </React.Fragment>
   );

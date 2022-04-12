@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit'
-import Alert from '@mui/material/Alert';
+import { useSnackbar } from 'notistack';
 import { Box } from '@mui/system';
 
 
@@ -43,7 +43,8 @@ const useStyles = makeStyles({
 function EditTrades(props) {
   const [addClass, setAddClass] = useState (props.add);
   const [dropClass, setDropClass] = useState(props.drop);
-  const [alert, setAlert] = useState(null);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const classes = useStyles();
 
   const selectionAddCallback = (data) => {
@@ -82,20 +83,22 @@ function EditTrades(props) {
             if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
               let resp = await updateTrade(props.tradeId, dropClass.crn, addClass.crn);
               console.log(resp)
-              setAlert(<Alert severity="success">Congrats your trade was Updated</Alert>)
+              enqueueSnackbar('Trade Updated', {variant: 'success'});
+              props.handleClose();
             } else {
-              setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+              enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
             }
           } else if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
             let resp = await createTrade(props.userId, dropClass.crn, addClass.crn);
             console.log(resp)
-            setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
+            enqueueSnackbar('Trade Created', {variant: 'success'});
+            props.handleClose();
           } else {
-            setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+            enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
           }
         })();
     } else {
-      setAlert(<Alert severity="error">All dropdowns must be filled</Alert>)
+     enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
     }
   }
 
@@ -104,10 +107,11 @@ function EditTrades(props) {
       (async () => {
           let del = await deleteTrade(props.tradeId);
           console.log(del)
-          setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
+          enqueueSnackbar('Trade Deleted', {variant: 'success'});
+          props.handleClose();
       })();
     } else {
-      setAlert(<Alert severity="error">There is no trade to delete</Alert>);
+      enqueueSnackbar('Trade not found', {variant: 'error'});
     }
   }
 

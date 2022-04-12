@@ -9,6 +9,8 @@ import CardContent from '@mui/material/CardContent';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip';
+import { Link } from "react-router-dom";
+
 
 
 const useStyles = makeStyles({
@@ -122,6 +124,7 @@ function ReviewModal(props) {
                         onClick={() => {
                             updateTradeMatch(props.tradeID, props.user.uid);
                         }}
+                        component = {Link} to ="/my-trades"
                     >
                         Confirm Trade
                     </Button>

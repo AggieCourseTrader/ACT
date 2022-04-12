@@ -11,8 +11,8 @@ import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
 import { getTrade, createTrade, getReviews, getUserInfo} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import Modal from '@mui/material/Modal';
 import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
@@ -45,7 +45,7 @@ function Marketplace() {
   const [experiencePercentage, setExperiencePercentage] = useState(-1);
   const [hasReviews, setHasReviews] = useState(false);
 
-  const [alert, setAlert] = useState(null)
+  const [alert, setAlert] = useState(false);
   // below is for modal
   const [open, setOpen] = React.useState(false);
 
@@ -402,37 +402,38 @@ function Marketplace() {
             disableColumnMenu
           />
         </Box>
-        <Box sx = {{textAlign: "center", m: 2}}>
+        <Box className={"createTradeBox"}>
             <Button variant = "outlined" justifyContent = "center"
+              className={(alert) ? "createTradeButton loading" : "createTradeButton"}
               onClick={ async () => {
+                if(alert == true) {
+                  return;
+                }
                 if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+                  setAlert(true);
                   const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
+                  setAlert(false);
                   if(val !== null) {
-                    // this doesnt show up. look into mui alerts to figure how this works
-                    enqueueSnackbar('Trade Created', { variant: 'success' });
-                    // setAlert(
-                    // <Alert severity="success">
-                    //   <AlertTitle>Success</AlertTitle>
-                    //   trade request created
-                    // </Alert>
-                    // );
-                    // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
-                  }
+                    enqueueSnackbar('Trade Created', { variant: 'success' }); }
                   else { 
                     enqueueSnackbar('Trade already exists', { variant: 'error' });
-                    // setAlert(
-                    //   <Alert severity="error">
-                    //     <AlertTitle>Failure</AlertTitle>
-                    //     trade already exists
-                    //   </Alert>
-                    //   );
                   }
+                }
+
+                else {
+                  enqueueSnackbar('Please fill out all fields', { variant: 'info' });
                 }
               }}
             >
               Create Trade
             </Button>
-            <div className="Alert">{alert}</div>
+            {alert && (
+              <CircularProgress
+                className="buttonProgress"
+                size={24}
+              />
+            )}
+
         </Box>
         <Footer/>
           

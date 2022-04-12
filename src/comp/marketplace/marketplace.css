@@ -48,6 +48,24 @@
     margin-top:0.5em;
 }
 
+.createTradeBox {
+    text-align: center;
+    position: relative;
+}
+
+.createTradeButton.loading {
+    opacity: 0.5;
+}
+
+.buttonProgress {
+    color: maroon;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+}
+
 /* .xs .MuiDataGrid-columnHeaders {
     min-height: 30px !important;
     max-height: 30px !important;

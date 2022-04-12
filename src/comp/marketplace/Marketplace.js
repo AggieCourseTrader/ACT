@@ -76,37 +76,7 @@ function Marketplace() {
   
    }, /*removed dependency array*/)
 
-  // const selectionDropCallback = (data) => {
-  //   if(data !== undefined){
-  //     if(typeof data === 'object'){
-  //       if(data.name){
-  //         setDropClass({...dropClass, class:data.name})
-  //       } else if (data.crn) {
-  //         setDropClass({...dropClass, section:data.section, crn:data.crn})
-  //       } 
-  //     }
-  //   } else {
-  //     setDropClass({class:'', section: '', crn: '' })
-  //   }
-  // }
 
-  // where both addClass and dropClass are filled
-  // let rows = [];
-
-  //! ----------------------------------------------//
-  // addclass and dropclass
-
-  // get my trades
-
-  // get other trader
-
-  // q = query where "addClass.course" === addClass.class
-  //           where "addClass.section" === addClass.section
-  //           where "dropClass.course" === dropClass.class
-  //           where "dropClass.section" === dropClass.section
-
-
-  //! ----------------------------------------------//
 
    const getSize = (lT) => {
     if(lT.sm) {
@@ -253,33 +223,6 @@ function Marketplace() {
   },
 ];
 
-// const rows = [
-//   { id: 1, add: 'CSCE 110: 401', drop: 'CSCE 121: 503'},
-//   { id: 2, add: 'CSCE 210: 302', drop: 'CSCE 221: 503'},
-//   { id: 3, add: 'CSCE 310: 501', drop: 'CSCE 321: 503'},
-//   { id: 4, add: 'CSCE 410: 411', drop: 'CSCE 421: 503'},
-//   { id: 5, add: 'CSCE 421: 212', drop: 'CSCE 411: 503'},
-//   { id: 6, add: 'CSCE 489: 301', drop: 'CSCE 222: 503'},
-//   { id: 7, add: 'CSCE 482: 402', drop: 'CSCE 310: 503'},
-//   { id: 8, add: 'CSCE 315: 305', drop: 'CSCE 470: 503'},
-//   { id: 9, add: 'CSCE 312: 207', drop: 'CSCE 420: 503'},
-// ];
-
-  // const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
 
 
 

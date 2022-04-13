@@ -51,7 +51,7 @@ function Marketplace() {
 
 
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
 
   const handleClose = () => {

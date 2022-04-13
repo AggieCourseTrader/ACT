@@ -11,8 +11,29 @@ import MyMatches from './MyMatches';
 import Navbar from "../global/navbar/Navbar";
 import Footer from "../global/Footer";
 
-function MyTrades() {
+import { useResponsive } from '@farfetch/react-context-responsive';
+import './myTrades.css';
+const getSize = (lT) => {
+  if(lT.sm) {
+    return 'xs';
+  }
+  else if(lT.md) {
+    return 'sm';
+  }
+  else if(lT.lg) {
+    return 'md';
+  }
+  else if(lT.xl) {
+    return 'lg';
+  }
+  else {
+    return 'xl';
+  }
+}
 
+
+function MyTrades() {
+  const { lessThan } = useResponsive();
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
 
@@ -44,15 +65,14 @@ function MyTrades() {
                   {/* My Listings */}
                   <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Paper
-                        sx={{
-                          p: 2,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          height: {
-                            xs: 300,
-                            sm: 500,
-                          },
-                        }}
+                      className={"paper " + getSize(lessThan)}
+                        // sx={{
+                        //   p: 2,
+                        //   height: {
+                        //     xs: 300,
+                        //     sm: 500,
+                        //   },
+                        // }}
                     >
                       <MyListings userId={user.uid}/>
                     </Paper>
@@ -60,15 +80,7 @@ function MyTrades() {
                   {/* My Matches */}
                   <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Paper
-                        sx={{
-                          p: 2,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          height: {
-                            xs: 300,
-                            sm: 500,
-                          },
-                        }}
+                      className={"paper " + getSize(lessThan)}
                     >
                       <MyMatches user={user}/>
                     </Paper>

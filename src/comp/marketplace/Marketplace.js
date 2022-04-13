@@ -11,18 +11,23 @@ import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
 import { getTrade, createTrade, getReviews, getUserInfo, doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Modal from '@mui/material/Modal';
 import TermsContext from '../global/authentication/TermsContext'
+import CircularProgress from '@mui/material/CircularProgress';
+
+import Modal from '@mui/material/Modal';
 import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useResponsive } from '@farfetch/react-context-responsive';
 
+import { useSnackbar } from 'notistack';
+
+import './marketplace.css';
 
 import { onSnapshot, query, collection, where, limit} from 'firebase/firestore';
 function Marketplace() {
   // Declare a new state variable, which we'll call "count"
+  const { lessThan } = useResponsive();
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
   const [addClass, setAddClass] = useState ({class:'', section: '', crn: ''});
@@ -41,10 +46,16 @@ function Marketplace() {
   const [experiencePercentage, setExperiencePercentage] = useState(-1);
   const [hasReviews, setHasReviews] = useState(false);
 
-  const [alert, setAlert] = useState(null)
   const {termContext,setTermContext} = useContext(TermsContext)
+  const [alert, setAlert] = useState(false);
   // below is for modal
   const [open, setOpen] = React.useState(false);
+
+
+
+  const { enqueueSnackbar } = useSnackbar();
+
+
   const handleClose = () => {
     setOpen(false);
     setHasReviews(false)
@@ -76,39 +87,25 @@ function Marketplace() {
   
    }, /*removed dependency array*/)
 
-  // const selectionDropCallback = (data) => {
-  //   if(data !== undefined){
-  //     if(typeof data === 'object'){
-  //       if(data.name){
-  //         setDropClass({...dropClass, class:data.name})
-  //       } else if (data.crn) {
-  //         setDropClass({...dropClass, section:data.section, crn:data.crn})
-  //       } 
-  //     }
-  //   } else {
-  //     setDropClass({class:'', section: '', crn: '' })
-  //   }
-  // }
-
-  // where both addClass and dropClass are filled
-  // let rows = [];
-
-  //! ----------------------------------------------//
-  // addclass and dropclass
-
-  // get my trades
-
-  // get other trader
-
-  // q = query where "addClass.course" === addClass.class
-  //           where "addClass.section" === addClass.section
-  //           where "dropClass.course" === dropClass.class
-  //           where "dropClass.section" === dropClass.section
 
 
-  //! ----------------------------------------------//
-
-
+   const getSize = (lT) => {
+    if(lT.sm) {
+      return 'xs';
+    }
+    else if(lT.md) {
+      return 'sm';
+    }
+    else if(lT.lg) {
+      return 'md';
+    }
+    else if(lT.xl) {
+      return 'lg';
+    }
+    else {
+      return 'xl';
+    }
+   }
  
   
   useEffect(() => {
@@ -129,7 +126,8 @@ function Marketplace() {
           arr.push({
             id: doc.id,
             add: data.dropClass,
-            drop: data.addClass
+            drop: data.addClass,
+            creatorId: data?.creatorID,
           });
         });
         setRows(arr);
@@ -150,12 +148,14 @@ function Marketplace() {
           arr.push({
             id: doc.id,
             add: data.addClass,
-            drop: data.dropClass
+            drop: data.dropClass,
+            creatorId: data?.creatorID,
           });
           
         });
         setMyTradeRows(arr);
       });
+
 
     //* Remove any event listeners
     return () => {
@@ -177,7 +177,7 @@ function Marketplace() {
     field: 'add',
     headerName: 'Class I want to Add',
     flex: 1,
-    editable: true,
+    editable: false,
     sortable: false,
     renderCell: (params) => (
       <Chip color="success" size="small" 
@@ -190,7 +190,7 @@ function Marketplace() {
     field: 'drop',
     headerName: 'Class I can Drop',
     flex: 1,
-    editable: true,
+    editable: false,
     sortable: false,
     renderCell: (params) => (
       <Chip size="small" color="primary" 
@@ -203,15 +203,28 @@ function Marketplace() {
   {
     field: 'action',
     headerName: 'I want to Match',
-    flex: 1,
+    // flex: 1,
+    flex: 0.6,
     sortable: false,
     // working here, change this button so that it brings up a modal that has a button that has trading functionality
     renderCell: (params) => (
       <strong>
         <Button
+          sx={(params.row?.creatorId === user?.uid) ? 
+            {
+              opacity: 0.5,
+              backgroundColor: '#DCDCDC',
+              cursor: 'not-allowed',
+          } : false}
           variant = 'outlined'
           onClick={() =>  {
-            getBio(params.id);
+            console.log(params);
+            if(params.row?.creatorId === user?.uid){
+              enqueueSnackbar("You can't trade with yourself!", {variant: 'error'});
+            }
+            else {
+              getBio(params.id);
+            }
           }}
         >
           Trade
@@ -221,33 +234,6 @@ function Marketplace() {
   },
 ];
 
-// const rows = [
-//   { id: 1, add: 'CSCE 110: 401', drop: 'CSCE 121: 503'},
-//   { id: 2, add: 'CSCE 210: 302', drop: 'CSCE 221: 503'},
-//   { id: 3, add: 'CSCE 310: 501', drop: 'CSCE 321: 503'},
-//   { id: 4, add: 'CSCE 410: 411', drop: 'CSCE 421: 503'},
-//   { id: 5, add: 'CSCE 421: 212', drop: 'CSCE 411: 503'},
-//   { id: 6, add: 'CSCE 489: 301', drop: 'CSCE 222: 503'},
-//   { id: 7, add: 'CSCE 482: 402', drop: 'CSCE 310: 503'},
-//   { id: 8, add: 'CSCE 315: 305', drop: 'CSCE 470: 503'},
-//   { id: 9, add: 'CSCE 312: 207', drop: 'CSCE 420: 503'},
-// ];
-
-  // const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
 
 
 
@@ -326,88 +312,86 @@ function Marketplace() {
   }
 
   return (
-    <div>
+    <>
+      
       <Navbar name = "Trade Marketplace" auth={auth} user={user}/>
-      <Box sx={{ flexGrow: 1, height: '80vh', background: '#f6f6f6'}}>
-        <Box sx={{ flexGrow: 1}}>
-            <Box sx = {{display: "flex", justifyContent: "center", flexWrap : "wrap", m: 2}}>
-
-              <Typography sx = {{
-                fontSize : "4vmin",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color : "#500000",
-                fontWeight: "lighter"
-              }}>I want a spot in </Typography>
-
-              <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
-
-            </Box>
-            <Box sx = {{display: "flex", justifyContent: "center", m: 2}}>
-
+      <Box className={"outBox " + getSize(lessThan)}>
+        <Box className={"inBox " + getSize(lessThan)}>
+          <Box className={"csb " + getSize(lessThan)}>
             <Typography sx = {{
-                fontSize : "4vmin",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                color : "#500000",
-                fontWeight: "lighter"
-              }}>I can drop </Typography>
+              fontSize : "4vmin",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              color : "#500000",
+              fontWeight: "lighter"
+            }}>I want a spot in </Typography>
+            <CourseSearchBox db={db} selectionCallBack={selectionAddCallback} />
 
-              <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
-            </Box>
+
           </Box>
-          <Box sx = {{
-            // border: 2,
-            // borderRadius: 2,
-            marginLeft: "15%",
-            marginRight: '15%',
-            height: 300
-          }}>   
-            {/* table section */}
-            <DataGrid
-              rows={rows.concat(myTradeRows)}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              rowHeight={38}
-              disableSelectionOnClick
-              disableColumnMenu
-            />
-            </Box>
-            <Box sx = {{textAlign: "center", m: 2}}>
-              <Button variant = "outlined" justifyContent = "center"
-                onClick={ async () => {
-                  if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
-                    const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
-                    if(val !== null) {
-                      // this doesnt show up. look into mui alerts to figure how this works
-                      setAlert(
-                      <Alert severity="success">
-                        <AlertTitle>Success</AlertTitle>
-                        trade request created
-                      </Alert>
-                      );
-                      // alert('trade request created \nadd ' + addClass.class + ': ' + addClass.section + ' and drop ' + dropClass.class + ': ' + dropClass.section);
-                    }
-                    else { 
-                      setAlert(
-                        <Alert severity="error">
-                          <AlertTitle>Failure</AlertTitle>
-                          trade already exists
-                        </Alert>
-                        );
-                    }
-                  }
-                }}
-              >
-                Create Trade
-              </Button>
-              <div className="Alert">{alert}</div>
-            </Box>
+          <Box className={"csb " + getSize(lessThan)}>
+
+          <Typography sx = {{
+              fontSize : "4vmin",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              color : "#500000",
+              fontWeight: "lighter"
+            }}>I can drop </Typography>
+
+            <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
+          </Box>
         </Box>
-      <Footer/>
+        <Box className={"tableBox " + getSize(lessThan)}>   
+          {/* table section */}
+          <DataGrid
+            rows={rows.concat(myTradeRows)}
+            columns={columns}
+            pageSize={(lessThan.sm) ? 4 : 5}
+            rowsPerPageOptions={[5]}
+            rowHeight={38}
+            disableSelectionOnClick
+            disableColumnMenu
+          />
+        </Box>
+        <Box className={"createTradeBox"}>
+            <Button variant = "outlined" justifyContent = "center"
+              className={(alert) ? "createTradeButton loading" : "createTradeButton"}
+              onClick={ async () => {
+                if(alert == true) {
+                  return;
+                }
+                if (addClass.class !== '' && addClass.section !== '' && dropClass.class !== '' && dropClass.section !== '') {
+                  setAlert(true);
+                  const val = await createTrade(user.uid, dropClass.crn, addClass.crn);
+                  setAlert(false);
+                  if(val !== null) {
+                    enqueueSnackbar('Trade Created', { variant: 'success' }); }
+                  else { 
+                    enqueueSnackbar('Trade already exists', { variant: 'error' });
+                  }
+                }
+
+                else {
+                  enqueueSnackbar('Please fill out all fields', { variant: 'info' });
+                }
+              }}
+            >
+              Create Trade
+            </Button>
+            {alert && (
+              <CircularProgress
+                className="buttonProgress"
+                size={24}
+              />
+            )}
+
+        </Box>
+        <Footer/>
+          
+        </Box>
       <Modal
           open={open}
           onClose={handleClose}
@@ -416,7 +400,7 @@ function Marketplace() {
       >
           <ReviewModal hasReviews={hasReviews} reviews={reviews} creatorInfo={creatorInfo} tradeID={tradeID} user={user} addClass={modalDropClass} dropClass={modalAddClass} experiencePercentage={experiencePercentage}/>
         </Modal>
-    </div>
+    </>
   );
 }
 

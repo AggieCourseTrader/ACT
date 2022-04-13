@@ -7,6 +7,7 @@ import { createTrade, deleteTrade, getTrade,
 
 
 test ('Create trade, get trade, and delete trade', async () => {
+
     
     // Creating a trade
     let docReference = await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 15977, 34157);
@@ -24,6 +25,9 @@ test ('Create trade, get trade, and delete trade', async () => {
     // Making sure when user attempts to create the same trade,
     // the trade is not created
     expect(await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 15977, 34157)).toBe(null);
+
+    // Test to make sure to not add trade when add course and drop course are the same
+    expect(await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 15977, 15977)).toBe(null);
 
     // Making sure a trade with courses that do not exist cannot be createdAt
     expect(await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 12345789, 34157)).toBe(null);

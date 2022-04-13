@@ -25,6 +25,16 @@ jest.mock('react-router-dom', () => ({
     useHref(): () => mockedUseHref,
  }));
  */
+ const mockEnqueue = jest.fn();
+
+ jest.mock('notistack', () => ({
+   ...jest.requireActual('notistack'),
+   useSnackbar: () => {
+     return {
+       enqueueSnackbar: mockEnqueue
+     };
+   }
+ }));
 
 
 const mockedNavigate = jest.fn();

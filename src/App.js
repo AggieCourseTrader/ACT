@@ -37,6 +37,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ResponsiveProvider breakpoints={breakpoints} breakpointsMax={breakpointsMax}>
       <SnackbarProvider 
         maxSnack={10}
         anchorOrigin={{
@@ -44,7 +45,6 @@ function App() {
           horizontal: 'right',
         }}
       >
-        <ResponsiveProvider breakpoints={breakpoints} breakpointsMax={breakpointsMax}>
           <BrowserRouter>
             <Routes>
               <Route exact path="/marketplace" element={<Marketplace />} />
@@ -54,8 +54,8 @@ function App() {
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </BrowserRouter>
-        </ResponsiveProvider>
       </SnackbarProvider>
+      </ResponsiveProvider>
     </ThemeProvider>
   );
 }

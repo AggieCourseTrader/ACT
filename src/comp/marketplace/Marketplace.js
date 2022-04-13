@@ -9,8 +9,9 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { getTrade, createTrade, getReviews, getUserInfo} from "../global/dbFunctions/CrudFunctions"
+import { getTrade, createTrade, getReviews, getUserInfo, doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
+import TermsContext from '../global/authentication/TermsContext'
 import CircularProgress from '@mui/material/CircularProgress';
 
 import Modal from '@mui/material/Modal';
@@ -45,6 +46,7 @@ function Marketplace() {
   const [experiencePercentage, setExperiencePercentage] = useState(-1);
   const [hasReviews, setHasReviews] = useState(false);
 
+  const {termContext,setTermContext} = useContext(TermsContext)
   const [alert, setAlert] = useState(false);
   // below is for modal
   const [open, setOpen] = React.useState(false);
@@ -66,15 +68,25 @@ function Marketplace() {
   }
 
   useEffect(() => {
-   onAuthStateChanged(auth, (user) => {
-     if (user) {
-      setUser(user);
-     } else {
-       navigate("/")
-     }
-    });
-  
-   }, /*removed dependency array*/)
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        if(termContext) {
+         setUser(user);
+        } else {
+          (async () => {
+            let doesUser = await doesUserExist(user.uid);
+            if(doesUser) {
+              setTermContext(true)
+            } else {
+              navigate("/terms")
+            }
+          })(); 
+        }
+      } else {
+        navigate("/")
+      }
+     });
+    }, /*removed dependency array*/)
 
 
 

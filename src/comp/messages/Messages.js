@@ -1,4 +1,4 @@
-import {React, useEffect, useRef, useState} from 'react';
+import {React, useEffect, useRef, useState, useContext} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
-
+import {doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import {
   MainContainer,
   ChatContainer,
@@ -29,12 +29,14 @@ import notificationStyles from './notificationStyles.css';
 
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import {useNavigate} from 'react-router-dom'
+import TermsContext from '../global/authentication/TermsContext'
 
 
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
   const convHelper = useRef(false);
+  const {termContext,setTermContext} = useContext(TermsContext)
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
   const [activeConversationObj, setActiveConversationObj] = useState({
@@ -62,14 +64,24 @@ function Messages() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+      if(user) {
+        if(termContext) {
+         setUser(user);
+        } else {
+          (async () => {
+            let doesUser = await doesUserExist(user.uid);
+            if(doesUser) {
+              setTermContext(true)
+            } else {
+              navigate("/terms")
+            }
+          })(); 
+        }
       } else {
         navigate("/")
       }
-    });
-
-  },)
+     });
+    }, /*removed dependency array*/)
 
   useEffect(() => {
     if(conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 import {onAuthStateChanged, auth} from '../../firebase-config'
 import CourseSearchBox  from '../global/courseSearchBox/CourseSearchBox'
@@ -9,12 +9,12 @@ import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Navbar from '../global/navbar/Navbar';
 import Footer from "../global/Footer";
-import { getTrade, createTrade, getReviews, getUserInfo} from "../global/dbFunctions/CrudFunctions"
+import { getTrade, createTrade, getReviews, getUserInfo, doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Modal from '@mui/material/Modal';
-
+import TermsContext from '../global/authentication/TermsContext'
 import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -42,6 +42,7 @@ function Marketplace() {
   const [hasReviews, setHasReviews] = useState(false);
 
   const [alert, setAlert] = useState(null)
+  const {termContext,setTermContext} = useContext(TermsContext)
   // below is for modal
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
@@ -57,10 +58,19 @@ function Marketplace() {
 
   useEffect(() => {
    onAuthStateChanged(auth, (user) => {
-     if (user) {
-      setUser(user);
+     if(termContext) {
+      if (user) {
+        setUser(user);
+       }
      } else {
-       navigate("/")
+      (async () => {
+        doesUser = await doesUserExist(user.uid);
+        if(doesUser) {
+          setTermContext(true)
+        } else {
+          navigate("/")
+        }
+      })(); 
      }
     });
   

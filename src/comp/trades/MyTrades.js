@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { onAuthStateChanged, auth } from '../../firebase-config'
+import {doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -10,22 +11,33 @@ import MyListings from './MyListings';
 import MyMatches from './MyMatches';
 import Navbar from "../global/navbar/Navbar";
 import Footer from "../global/Footer";
+import TermsContext from '../global/authentication/TermsContext'
 
 function MyTrades() {
 
   let navigate = useNavigate();
   const [user, setUser] = useState(false);
+  const {termContext,setTermContext} = useContext(TermsContext)
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+      if(termContext) {
+       if (user) {
+         setUser(user);
+        }
       } else {
-        navigate("/")
+       (async () => {
+         doesUser = await doesUserExist(user.uid);
+         if(doesUser) {
+           setTermContext(true)
+         } else {
+           navigate("/")
+         }
+       })(); 
       }
-    });
-
-  }, /*removed dependency array*/)
+     });
+   
+    }, /*removed dependency array*/)
 
   // 
   return (

@@ -64,22 +64,23 @@ function Messages() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if(termContext) {
-       if (user) {
+      if(user) {
+        if(termContext) {
          setUser(user);
+        } else {
+          (async () => {
+            let doesUser = await doesUserExist(user.uid);
+            if(doesUser) {
+              setTermContext(true)
+            } else {
+              navigate("/terms")
+            }
+          })(); 
         }
       } else {
-       (async () => {
-         doesUser = await doesUserExist(user.uid);
-         if(doesUser) {
-           setTermContext(true)
-         } else {
-           navigate("/")
-         }
-       })(); 
+        navigate("/")
       }
      });
-   
     }, /*removed dependency array*/)
 
   useEffect(() => {

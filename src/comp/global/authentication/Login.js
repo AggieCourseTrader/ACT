@@ -47,15 +47,14 @@ function Login() {
 useEffect(() => {
   onAuthStateChanged(auth, (user) => {
     if(user) {
-      let doesUser
-    (async () => {
-        doesUser = await doesUserExist(user.uid);
+      (async () => {
+        let doesUser = await doesUserExist(user.uid);
         console.log(doesUser)
         if(doesUser) {
           setTermContext(true)
           navigate("/marketplace")
         } else {
-          navigate("/terms-service")
+          navigate("/terms")
         }
       })(); 
     }

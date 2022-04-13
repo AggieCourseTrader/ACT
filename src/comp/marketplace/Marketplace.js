@@ -68,24 +68,25 @@ function Marketplace() {
   }
 
   useEffect(() => {
-   onAuthStateChanged(auth, (user) => {
-     if(termContext) {
-      if (user) {
-        setUser(user);
-       }
-     } else {
-      (async () => {
-        doesUser = await doesUserExist(user.uid);
-        if(doesUser) {
-          setTermContext(true)
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        if(termContext) {
+         setUser(user);
         } else {
-          navigate("/")
+          (async () => {
+            let doesUser = await doesUserExist(user.uid);
+            if(doesUser) {
+              setTermContext(true)
+            } else {
+              navigate("/terms")
+            }
+          })(); 
         }
-      })(); 
-     }
-    });
-  
-   }, /*removed dependency array*/)
+      } else {
+        navigate("/")
+      }
+     });
+    }, /*removed dependency array*/)
 
 
 

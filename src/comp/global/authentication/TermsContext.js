@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-const TermsContext = createContext();
+const TermsContext = createContext(false);
 
 export const TermsProvider = TermsContext.Provider;
 

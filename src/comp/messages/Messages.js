@@ -71,6 +71,12 @@ function Messages() {
 
   },)
 
+  useEffect(() => {
+    if(conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
+      setActiveConversation(conversationArr.activeConversations[0].id);
+      setActiveConversationObj(conversationArr.activeConversations[0]);
+    }
+  }, [conversationArr]);
 
   useEffect(() => {
     if (activeConversation) {

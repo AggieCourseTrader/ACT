@@ -6,8 +6,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit'
 import { useSnackbar } from 'notistack';
-import { Box } from '@mui/system';
+import { useResponsive } from '@farfetch/react-context-responsive';
 
+import { Box } from '@mui/system';
+import './editTrades.css';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -23,8 +25,7 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: "center",
     width: '100%',
-    marginRight: "10%",
-    marginLeft: "10%",
+
     flexWrap: 'wrap',
   },
   containerDrop: {
@@ -32,11 +33,29 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: "center",
     width: '100%',
-    marginRight: "10%",
-    marginLeft: "10%",
+    // marginRight: "10%",
+    // marginLeft: "10%",
     flexWrap: 'wrap',
   },
 });
+
+const getSize = (lT) => {
+  if(lT.sm) {
+    return 'xs';
+  }
+  else if(lT.md) {
+    return 'sm';
+  }
+  else if(lT.lg) {
+    return 'md';
+  }
+  else if(lT.xl) {
+    return 'lg';
+  }
+  else {
+    return 'xl';
+  }
+ }
 
 
 
@@ -44,6 +63,7 @@ function EditTrades(props) {
   const [addClass, setAddClass] = useState (props.add);
   const [dropClass, setDropClass] = useState(props.drop);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { lessThan } = useResponsive();
 
   const classes = useStyles();
 
@@ -116,15 +136,7 @@ function EditTrades(props) {
   }
 
   return (
-    <Box sx={{   
-      position: 'absolute',
-      bgcolor: '#f6f6f6',
-      border: '2px solid #000',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 900,
-      boxShadow: 24,}}>
+    <Box className={"modalBox " + getSize(lessThan)} >
       <div className={classes.wrapper}>
         <div className={classes.container}>
           <EditIcon/>

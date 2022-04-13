@@ -100,18 +100,21 @@ function ReviewModal(props) {
                     <div className={classes.reviews}>
                         {props.reviews.map((review) => 
                             <>
-                                <Card 
-                                    sx={{ 
-                                        marginBottom: "2%" , maxWidth: "20em", overflowWrap: "anywhere", minWidth: "20em",
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Typography variant="subtitle2" align="left" gutterBottom='true'>Review By {review.firstName} {review.lastName}</Typography> 
-                                        <Typography variant="body2" align="left" gutterBottom='true'>
-                                            {review.review}
-                                        </Typography> 
-                                    </CardContent>
-                                </Card>
+                                { (review.review !== "")
+                                    ?<Card 
+                                        sx={{ 
+                                            marginBottom: "2%" , maxWidth: "20em", overflowWrap: "anywhere", minWidth: "20em",
+                                        }}
+                                    >
+                                        <CardContent>
+                                            <Typography variant="subtitle2" align="left" gutterBottom='true'>Review By {review.firstName} {review.lastName}</Typography> 
+                                            <Typography variant="body2" align="left" gutterBottom='true'>
+                                                {review.review}
+                                            </Typography> 
+                                        </CardContent>
+                                    </Card>
+                                    :<div></div>
+                                }   
                             </>       
                         )}
                     </div>

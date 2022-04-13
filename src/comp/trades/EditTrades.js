@@ -5,9 +5,11 @@ import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit'
-import Alert from '@mui/material/Alert';
-import { Box } from '@mui/system';
+import { useSnackbar } from 'notistack';
+import { useResponsive } from '@farfetch/react-context-responsive';
 
+import { Box } from '@mui/system';
+import './editTrades.css';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -23,8 +25,7 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: "center",
     width: '100%',
-    marginRight: "10%",
-    marginLeft: "10%",
+
     flexWrap: 'wrap',
   },
   containerDrop: {
@@ -32,18 +33,38 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: "center",
     width: '100%',
-    marginRight: "10%",
-    marginLeft: "10%",
+    // marginRight: "10%",
+    // marginLeft: "10%",
     flexWrap: 'wrap',
   },
 });
+
+const getSize = (lT) => {
+  if(lT.sm) {
+    return 'xs';
+  }
+  else if(lT.md) {
+    return 'sm';
+  }
+  else if(lT.lg) {
+    return 'md';
+  }
+  else if(lT.xl) {
+    return 'lg';
+  }
+  else {
+    return 'xl';
+  }
+ }
 
 
 
 function EditTrades(props) {
   const [addClass, setAddClass] = useState (props.add);
   const [dropClass, setDropClass] = useState(props.drop);
-  const [alert, setAlert] = useState(null);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { lessThan } = useResponsive();
+
   const classes = useStyles();
 
   const selectionAddCallback = (data) => {
@@ -82,20 +103,22 @@ function EditTrades(props) {
             if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
               let resp = await updateTrade(props.tradeId, dropClass.crn, addClass.crn);
               console.log(resp)
-              setAlert(<Alert severity="success">Congrats your trade was Updated</Alert>)
+              enqueueSnackbar('Trade Updated', {variant: 'success'});
+              props.handleClose();
             } else {
-              setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+              enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
             }
           } else if(dropClass.crn && addClass.crn && (dropClass.crn !== addClass.crn)) {
             let resp = await createTrade(props.userId, dropClass.crn, addClass.crn);
             console.log(resp)
-            setAlert(<Alert severity="success">Congrats your trade was created</Alert>)
+            enqueueSnackbar('Trade Created', {variant: 'success'});
+            props.handleClose();
           } else {
-            setAlert(<Alert severity="error">All dropdowns must be filled or Add and drop can not be the same class</Alert>)
+            enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
           }
         })();
     } else {
-      setAlert(<Alert severity="error">All dropdowns must be filled</Alert>)
+     enqueueSnackbar('Please fill all dropdowns and make sure the drop and add courses are different', {variant: 'info'});
     }
   }
 
@@ -104,23 +127,16 @@ function EditTrades(props) {
       (async () => {
           let del = await deleteTrade(props.tradeId);
           console.log(del)
-          setAlert(<Alert severity="success">Congrats your trade was deleted</Alert>);
+          enqueueSnackbar('Trade Deleted', {variant: 'success'});
+          props.handleClose();
       })();
     } else {
-      setAlert(<Alert severity="error">There is no trade to delete</Alert>);
+      enqueueSnackbar('Trade not found', {variant: 'error'});
     }
   }
 
   return (
-    <Box sx={{   
-      position: 'absolute',
-      bgcolor: '#f6f6f6',
-      border: '2px solid #000',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 900,
-      boxShadow: 24,}}>
+    <Box className={"modalBox " + getSize(lessThan)} >
       <div className={classes.wrapper}>
         <div className={classes.container}>
           <EditIcon/>

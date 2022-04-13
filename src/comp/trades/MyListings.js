@@ -16,10 +16,29 @@ import { db } from '../../firebase-config';
 import {getTradeId} from '../global/dbFunctions/CrudFunctions';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import './editTrades.css';
+import { useResponsive } from '@farfetch/react-context-responsive';
 
-
+const getSize = (lT) => {
+  if(lT.sm) {
+    return 'xs';
+  }
+  else if(lT.md) {
+    return 'sm';
+  }
+  else if(lT.lg) {
+    return 'md';
+  }
+  else if(lT.xl) {
+    return 'lg';
+  }
+  else {
+    return 'xl';
+  }
+}
 
 export default function MyListings({userId}) {
+  const { lessThan } = useResponsive();
   const listener = React.useRef(null);
   const [trades, setTrades] = React.useState([]);
   const [open, setOpen] = React.useState(false);
@@ -72,11 +91,12 @@ export default function MyListings({userId}) {
         <div style={{display:'flex', position:'relative'}}>
           <Title>My Listings</Title>
               <Modal
+                className={"modalParent " + getSize(lessThan)}
                 open={openAdd}
                 onClose={handleCloseAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"> 
-                <EditTrades add={undefined} drop={undefined} tradeId={undefined} userId={userId}/>
+                <EditTrades handleClose={handleCloseAdd} add={undefined} drop={undefined} tradeId={undefined} userId={userId}/>
               </Modal>
               <Button variant="contained" size="small" sx={{right:'10px', position:'absolute'}} onClick={handleOpenAdd}>Add</Button>
           </div>
@@ -122,11 +142,12 @@ export default function MyListings({userId}) {
           </Table>
         </TableContainer>
         <Modal
+            className={"modalParent " + getSize(lessThan)}
             open={open}
             onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"> 
-            <EditTrades add={addClass} drop={dropClass} tradeId={tradeId}  userId={userId}/>
+            <EditTrades handleClose={handleClose} add={addClass} drop={dropClass} tradeId={tradeId}  userId={userId}/>
         </Modal>
       </React.Fragment>
   );

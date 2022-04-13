@@ -15,24 +15,52 @@ import {theme} from './assets/theme';
 import {ThemeProvider } from '@mui/material/styles';
 import {TermsProvider} from './comp/global/authentication/TermsContext'
 
+import { SnackbarProvider } from 'notistack';
+import { ResponsiveProvider } from '@farfetch/react-context-responsive';
+
+const breakpoints = {
+  xs: "320px",
+  sm: "576px",
+  md: "960px",
+  lg: "1280px",
+  xl: "1800px"
+};
+
+const breakpointsMax = {
+  xs: "319px",
+  sm: "575px",
+  md: "959px",
+  lg: "1279px",
+  xl: "1799px"
+};
+
 
 function App() {
   const [termContext, setTermContext] = useState(null)
 
   return (
-    <TermsProvider value={{termContext,setTermContext}}>
-      <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/marketplace" element={<Marketplace />} />
-          <Route exact path="/my-trades" element={<MyTrades />}/>
-          <Route exact path="/messages" element={<Messages />}/>
-          <Route exact path="/terms-service" element={<Terms />}/>
-          <Route exact path="/" element={<Login />}/>
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
-      </ThemeProvider>
+   <TermsProvider value={{termContext,setTermContext}}>
+    <ThemeProvider theme={theme}>
+      <ResponsiveProvider breakpoints={breakpoints} breakpointsMax={breakpointsMax}>
+      <SnackbarProvider 
+        maxSnack={10}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+          <BrowserRouter>
+            <Routes>
+              <Route exact path="/marketplace" element={<Marketplace />} />
+              <Route exact path="/my-trades" element={<MyTrades />}/>
+              <Route exact path="/messages" element={<Messages />}/>
+              <Route exact path="/" element={<Login />}/>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </BrowserRouter>
+      </SnackbarProvider>
+      </ResponsiveProvider>
+    </ThemeProvider>
     </TermsProvider>
   );
 }

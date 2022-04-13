@@ -13,52 +13,107 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip'
 
-import { collection, getDocs,  query,  arrayUnion, setDoc, where, doc } from 'firebase/firestore';
+import { collection, getDocs,  query,  arrayUnion, setDoc, where, doc, onSnapshot } from 'firebase/firestore';
 
 import {getCreatedTrades, getMatchedTrades, db } from '../global/dbFunctions/CrudFunctions';
 
 
 export default function MyMatches({user}) {
   const [trades, setTrades] = React.useState([]);
+  const [myTrades, setMyTrades] = React.useState([]);
+  const [otherTrades, setOtherTrades] = React.useState([]);
+  const listenerM = React.useRef(null);
+  const listenerO = React.useRef(null);
 
   // Init listener
   React.useEffect(() => {
     const f = async () => {
-      console.log(user);
-      if(user !== undefined) {
-        const myTrades = await getCreatedTrades(user.uid);
-        const otherTrades = await getMatchedTrades(user.uid);
+      const userId = user?.uid;
+      if(listenerO.current === null && userId !== undefined) {
+        listenerO.current = onSnapshot(query(collection(db, "trades"), where("creatorID", "==", userId)), async (snap) => {
   
-        let arr = [];
-        myTrades.forEach((doc) => {
-          if(doc.data().matchID !== -1){
-            arr.push({...doc.data(), connectingUserId: doc.data().matchID});
-          }
-          
+          let arr = [];
+          snap.forEach((doc) => {
+            if(doc.data().matchID !== -1){
+              arr.push({...doc.data(), connectingUserId: doc.data().matchID});
+            }
+          });
+  
+          // Return
+          setMyTrades(arr);
         });
-        console.log(arr)
+      }
+      if(listenerM.current === null && userId !== undefined) {
+        listenerM.current = onSnapshot(query(collection(db, "trades"), where("matchID", "==", userId)), async (snap) => {
   
-        // Since we are not the creator of the trade the course being added or dropped is opposite for us
-        otherTrades.forEach((doc) => {
-          const data = doc.data();
-          let t = data.dropClassID;
-          data.dropClassID = data.addClassID;
-          data.addClassID = t;
-          t = data.dropClass
-          data.dropClass = data.addClass
-          data.addClass = t
-          data.connectingUserId = doc.data().creatorID
-          arr.push(data);
+          let arr = [];
+          snap.forEach((doc) => {
+            const data = doc.data();
+            let t = data.dropClassID;
+            data.dropClassID = data.addClassID;
+            data.addClassID = t;
+            t = data.dropClass
+            data.dropClass = data.addClass
+            data.addClass = t
+            data.connectingUserId = doc.data().creatorID
+            arr.push(data);
+          });
+  
+          // Return
+          setOtherTrades(arr);
         });
-  
-        // Return
-        setTrades(arr);
-        
       }
     }
 
     f();
+
+    return () => {
+      if(listenerO.current !== null){
+        listenerO.current();
+      }
+      if(listenerM.current !== null){
+        listenerM.current();
+      }
+    }
   }, [user]);
+  // // Init listener
+  // React.useEffect(() => {
+  //   const f = async () => {
+  //     console.log(user);
+  //     if(user !== undefined) {
+  //       const myTrades = await getCreatedTrades(user.uid);
+  //       const otherTrades = await getMatchedTrades(user.uid);
+  
+  //       let arr = [];
+  //       myTrades.forEach((doc) => {
+  //         if(doc.data().matchID !== -1){
+  //           arr.push({...doc.data(), connectingUserId: doc.data().matchID});
+  //         }
+          
+  //       });
+  //       console.log(arr)
+  
+  //       // Since we are not the creator of the trade the course being added or dropped is opposite for us
+  //       otherTrades.forEach((doc) => {
+  //         const data = doc.data();
+  //         let t = data.dropClassID;
+  //         data.dropClassID = data.addClassID;
+  //         data.addClassID = t;
+  //         t = data.dropClass
+  //         data.dropClass = data.addClass
+  //         data.addClass = t
+  //         data.connectingUserId = doc.data().creatorID
+  //         arr.push(data);
+  //       });
+  
+  //       // Return
+  //       setTrades(arr);
+        
+  //     }
+  //   }
+
+  //   f();
+  // }, [user]);
 
   React.useEffect(() => {
     console.log(trades);
@@ -70,7 +125,7 @@ export default function MyMatches({user}) {
         <TableContainer>
           <Table size="small">
             <TableBody>
-              {trades.map((row, index) => {
+              {myTrades.concat(otherTrades).map((row, index) => {
                 if(!("addClass" in row)  || !("dropClass" in row)) {
                   return false
                 }

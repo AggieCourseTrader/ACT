@@ -9,6 +9,8 @@ import CardContent from '@mui/material/CardContent';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip';
+import { Link } from "react-router-dom";
+
 
 
 const useStyles = makeStyles({
@@ -98,18 +100,21 @@ function ReviewModal(props) {
                     <div className={classes.reviews}>
                         {props.reviews.map((review) => 
                             <>
-                                <Card 
-                                    sx={{ 
-                                        marginBottom: "2%" , maxWidth: "20em", overflowWrap: "anywhere", minWidth: "20em",
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Typography variant="subtitle2" align="left" gutterBottom='true'>Review By {review.firstName} {review.lastName}</Typography> 
-                                        <Typography variant="body2" align="left" gutterBottom='true'>
-                                            {review.review}
-                                        </Typography> 
-                                    </CardContent>
-                                </Card>
+                                { (review.review !== "")
+                                    ?<Card 
+                                        sx={{ 
+                                            marginBottom: "2%" , maxWidth: "20em", overflowWrap: "anywhere", minWidth: "20em",
+                                        }}
+                                    >
+                                        <CardContent>
+                                            <Typography variant="subtitle2" align="left" gutterBottom='true'>Review By {review.firstName} {review.lastName}</Typography> 
+                                            <Typography variant="body2" align="left" gutterBottom='true'>
+                                                {review.review}
+                                            </Typography> 
+                                        </CardContent>
+                                    </Card>
+                                    :<div></div>
+                                }   
                             </>       
                         )}
                     </div>
@@ -122,6 +127,7 @@ function ReviewModal(props) {
                         onClick={() => {
                             updateTradeMatch(props.tradeID, props.user.uid);
                         }}
+                        component = {Link} to ="/my-trades"
                     >
                         Confirm Trade
                     </Button>

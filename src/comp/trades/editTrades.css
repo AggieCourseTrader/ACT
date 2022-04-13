@@ -1,0 +1,22 @@
+.modalParent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalParent.xs {
+    align-items: flex-start;
+}
+
+.modalBox {
+    background-color: #f6f6f6; 
+    width: 40em;
+    height: 30em;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.modalBox.xs {
+    width: 100%;
+}

@@ -41,6 +41,9 @@ function TermsPage() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
            setUser(user);
+           if(termContext) {
+            navigate("/marketplace")
+           }
           } else {
             navigate("/")
           }

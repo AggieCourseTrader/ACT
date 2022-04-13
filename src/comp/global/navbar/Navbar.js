@@ -88,12 +88,14 @@ function ResponsiveAppBar(props) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/my-trades">
-                <Typography textAlign="center" color="primary">My Trades</Typography>
-              </MenuItem>
               <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/marketplace">
                 <Typography textAlign="center" color="primary">Marketplace</Typography>
               </MenuItem>
+
+              <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/my-trades">
+                <Typography textAlign="center" color="primary">My Trades</Typography>
+              </MenuItem>
+
               <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/messages">
                 <Typography textAlign="center" color="primary">Messages</Typography>
               </MenuItem>

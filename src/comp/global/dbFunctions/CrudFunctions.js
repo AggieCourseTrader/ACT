@@ -5,7 +5,7 @@ import '../../../config.js';
 //import { SettingsSystemDaydream, SystemSecurityUpdate } from "@mui/icons-material";
 
 import { getFirestore, collection, doc, query, where, setDoc, addDoc, getDoc,
-         getDocs, deleteDoc, updateDoc,  serverTimestamp } from 'firebase/firestore';
+         getDocs, deleteDoc, updateDoc,  serverTimestamp} from 'firebase/firestore';
 
 import { app } from '../../../firebase-config'
 
@@ -400,4 +400,16 @@ export async function getUserInfo(userId) {
     console.log("user doesn't exist");
     return null;
   }
+}
+
+
+export async function doesUserExist(userId) {
+  const userRef = doc(db, "users", userId);
+  const userSnap = await getDoc(userRef);
+  if(userSnap.exists()){
+    return true
+  } else {
+    return false
+  }
+
 }

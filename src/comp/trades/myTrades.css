@@ -1,0 +1,12 @@
+.paper {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    padding: 1em;
+}
+
+.paper.xs {
+    height: 300px;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}

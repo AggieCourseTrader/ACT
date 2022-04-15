@@ -6,7 +6,7 @@ import { createTrade, deleteTrade, getTrade,
         updateTrade, updateTradeMatch} from "./CrudFunctions"
 
 
-test ('Create trade, get trade, and delete trade', async () => {
+test.skip ('Create trade, get trade, and delete trade', async () => {
 
     
     // Creating a trade
@@ -40,7 +40,7 @@ test ('Create trade, get trade, and delete trade', async () => {
 });
 
 // Checking that function that updates trades works
-test ('Testing trade update function', async () => {
+test.skip ('Testing trade update function', async () => {
     // Creating a trade
     let docReference = await createTrade("5NoA7gdIGUhHOM0pv7iM1btKvm23", 45144, 13290);
 
@@ -72,7 +72,7 @@ test ('Testing trade update function', async () => {
 });
 
 // Checking that function that update trade match works
-test ('Testing trade match updating', async () => {
+test.skip ('Testing trade match updating', async () => {
 
 
     // Creating a trade

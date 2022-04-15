@@ -22,15 +22,17 @@ import {
   MessageSeparator,
   InfoButton
 } from "@chatscope/chat-ui-kit-react";
-
 //! Do not remove ------------------------------------>
+
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import notificationStyles from './notificationStyles.css';
 // ---------------------------------------------------//
-
 import {onAuthStateChanged, auth} from '../../firebase-config'
+
 import {useNavigate} from 'react-router-dom'
 import TermsContext from '../global/authentication/TermsContext'
+
+var validator = require('validator');
 
 
 
@@ -215,11 +217,13 @@ function Messages() {
                 </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
+
                     <Message
                         key={"mesageArr." + index}
                         className={(user) ? ((m.sender === user.uid) ? "outg" : "inc") : "outg"}
                         model={{
-                          message: m.text,
+
+                          message: validator.escape(m.text),
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>

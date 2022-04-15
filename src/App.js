@@ -1,3 +1,4 @@
+import './config.js';
 import './App.css';
 import MyTrades from  './comp/trades/MyTrades';
 import Marketplace from './comp/marketplace/Marketplace';

@@ -1,3 +1,4 @@
+import '../../config.js';
 import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
 

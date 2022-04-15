@@ -1,3 +1,4 @@
+import '../../../config.js';
 import React, { useState, useEffect, useContext} from 'react';
 import SignInButton from './SignInButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";
@@ -59,7 +60,7 @@ useEffect(() => {
       })(); 
     }
   });
-}, /*removed dependency array*/)
+},)
 
  var provider = new GoogleAuthProvider();
   // provider.setCustomParameters({

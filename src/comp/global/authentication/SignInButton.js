@@ -1,3 +1,4 @@
+import '../../../config.js';
 import { signInWithPopup } from "../../../firebase-config"
 // import { GoogleAuthProvider } from "../firebase-config"
 import Button from '@mui/material/Button';

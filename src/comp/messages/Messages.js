@@ -1,3 +1,4 @@
+import '../../config.js';
 import {React, useEffect, useRef, useState, useContext} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
@@ -17,7 +18,7 @@ import {
   ConversationList,
   Conversation,
   Avatar,
-  ConversationHeader, StarButton,
+  ConversationHeader,
   MessageSeparator,
   InfoButton
 } from "@chatscope/chat-ui-kit-react";
@@ -85,8 +86,14 @@ function Messages() {
 
   useEffect(() => {
     if(conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
-      setActiveConversation(conversationArr.activeConversations[0].id);
-      setActiveConversationObj(conversationArr.activeConversations[0]);
+      try {
+        setActiveConversation(conversationArr?.activeConversations[0].id);
+        setActiveConversationObj(conversationArr?.activeConversations[0]);
+      } catch (e) {
+        console.log(e);
+      }
+      // setActiveConversation(conversationArr.activeConversations[0].id);
+      // setActiveConversationObj(conversationArr.activeConversations[0]);
     }
   }, [conversationArr]);
 
@@ -194,7 +201,8 @@ function Messages() {
             <ChatContainer className="aggieTheme">
               <ConversationHeader>
                 {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
-                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                {(activeConversation !== "") ? <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                    : <ConversationHeader.Content userName="Match with others on the Marketplace to begin chatting!"/>}
                 <ConversationHeader.Actions>
                   {(activeConversation !== "") ?
                   <div as="VideoCallButton" title="Show info" onClick={() => {
@@ -203,7 +211,6 @@ function Messages() {
                     <Button onClick={handleOpen} variant="outlined">End trade</Button>
                   </div>
                   : false}
-
                 </ConversationHeader.Actions>
                 </ConversationHeader>
               <MessageList style={{}}>
@@ -226,16 +233,17 @@ function Messages() {
               }
 
               </MessageList>
-              
 
+              {(activeConversation !== "") ?
+                  <MessageInput
+                      disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false}
+                      attachButton={false}
+                      placeholder="Type message here"
+                      onSend={(e, v, t) => {
+                        sendTxt(t)
+                      }}/>
+                  : false}
 
-              <MessageInput 
-                disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false} 
-                attachButton={false}
-                placeholder="Type message here" 
-                onSend={(e, v, t) => {
-                sendTxt(t)
-              }}/>
 
 
             </ChatContainer>

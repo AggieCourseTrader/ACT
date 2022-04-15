@@ -1,3 +1,4 @@
+import '../../../config.js';
 import React from 'react';
 import SignInButton from './SignInButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";

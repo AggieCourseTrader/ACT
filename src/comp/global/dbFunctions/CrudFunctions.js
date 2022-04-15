@@ -1,3 +1,4 @@
+import '../../../config.js';
 
 //1 Firebase config -----------------------------------------------------//
 // * Firebase imports and init

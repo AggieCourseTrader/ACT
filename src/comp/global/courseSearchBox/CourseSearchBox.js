@@ -1,3 +1,4 @@
+import '../../../config.js';
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from "firebase/firestore";
 // import { ConstructionOutlined } from '@mui/icons-material';

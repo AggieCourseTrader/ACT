@@ -1,3 +1,4 @@
+import '../../../config.js';
 import React from 'react';
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';

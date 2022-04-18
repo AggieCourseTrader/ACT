@@ -8,6 +8,31 @@ import { useNavigate } from "react-router-dom";
 
 import { BrowserRouter, Routes, Route,} from "react-router-dom";
 
+
+const mockEnqueue = jest.fn();
+
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  useSnackbar: () => {
+    return {
+      enqueueSnackbar: mockEnqueue
+    };
+  }
+}));
+
+
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+const actualNav = jest.requireActual('react-router-dom');
+return {
+    ...actualNav,
+    useNavigate: () => mockedNavigate,
+};
+});
+
+
+
 /*
 const mockedUsedNavigate = jest.fn();
 const mockedUseHref = jest.fn();
@@ -25,27 +50,7 @@ jest.mock('react-router-dom', () => ({
     useHref(): () => mockedUseHref,
  }));
  */
- const mockEnqueue = jest.fn();
 
- jest.mock('notistack', () => ({
-   ...jest.requireActual('notistack'),
-   useSnackbar: () => {
-     return {
-       enqueueSnackbar: mockEnqueue
-     };
-   }
- }));
-
-
-const mockedNavigate = jest.fn();
-
-jest.mock('react-router-dom', () => {
-const actualNav = jest.requireActual('react-router-dom');
-return {
-    ...actualNav,
-    useNavigate: () => mockedNavigate,
-};
-});
 
 /*
 const mockedUseHref = jest.fn();
@@ -62,7 +67,7 @@ return {
 */
 
 describe('Marketplace', () => {
-  test('renders Marketplace component', () => {
+  test('renders Marketplace component', async () => {
 
     render(<BrowserRouter><Marketplace /></BrowserRouter>)
 
@@ -71,6 +76,9 @@ describe('Marketplace', () => {
     //expect(screen.getByText('Sign In with your tamu account')).toBeInTheDocument();
   });
 });
+
+
+
 
 
 

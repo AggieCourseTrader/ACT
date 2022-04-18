@@ -2,9 +2,10 @@
  * @jest-environment node
  */
 
-import { createTrade, deleteTrade, getTrade, 
-        updateTrade, updateTradeMatch} from "./CrudFunctions"
+import { createTrade, deleteTrade, getTrade, getUserInfo,
+        updateTrade, updateTradeMatch, addUser, db } from "./CrudFunctions"
 
+import { deleteDoc, doc } from 'firebase/firestore'
 
 test ('Create trade, get trade, and delete trade', async () => {
 
@@ -109,6 +110,35 @@ test ('Testing trade match updating', async () => {
     // Testing that trade is deleted properly
     await deleteTrade(tradeId);
     expect(await getTrade(tradeId)).toBe(null);
+});
+
+
+// Checking that functions for creating and retrieving users work
+test ('Testing addUser', async () => {
+
+    // Creating a trade
+    let docReference = await addUser("fake@tamu.edu", "Fake Name", "12345",
+     "https://lh3.googleusercontent.com/a/AATXAJzgKHKZBnYOhYe8QvAWf5Mn4EG4eZj7bWRWDa_I=s96-c");
+
+
+    let querySnapshot = await getUserInfo("12345");
+
+    let docSnapshot = querySnapshot.docs[0];
+
+
+    // Testing that created user is in the database with correct data
+    expect(docSnapshot.get('email')).toBe("fake@tamu.edu");
+    expect(docSnapshot.get('firstName')).toBe("Fake");
+    expect(docSnapshot.get('lastName')).toBe("Name");    
+    expect(docSnapshot.get('oAuthID')).toBe("12345");    
+    expect(docSnapshot.get('displayName')).toBe("Fake Name");   
+    expect(docSnapshot.get('photoURL')).toBe(
+        "https://lh3.googleusercontent.com/a/AATXAJzgKHKZBnYOhYe8QvAWf5Mn4EG4eZj7bWRWDa_I=s96-c");    
+
+    await deleteDoc(doc(db, "users", "12345"));
+
+    expect(await getUserInfo("12345")).toBe(null);
+
 });
 
 

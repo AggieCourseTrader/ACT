@@ -1,4 +1,5 @@
-import {React, useEffect, useRef, useState} from 'react';
+import '../../config.js';
+import {React, useEffect, useRef, useState, useContext} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
@@ -6,7 +7,7 @@ import Button from '@mui/material/Button';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
-
+import {doesUserExist} from "../global/dbFunctions/CrudFunctions"
 import {
   MainContainer,
   ChatContainer,
@@ -17,24 +18,28 @@ import {
   ConversationList,
   Conversation,
   Avatar,
-  ConversationHeader, StarButton,
+  ConversationHeader,
   MessageSeparator,
   InfoButton
 } from "@chatscope/chat-ui-kit-react";
-
 //! Do not remove ------------------------------------>
+
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import notificationStyles from './notificationStyles.css';
 // ---------------------------------------------------//
-
 import {onAuthStateChanged, auth} from '../../firebase-config'
+
 import {useNavigate} from 'react-router-dom'
+import TermsContext from '../global/authentication/TermsContext'
+
+var validator = require('validator');
 
 
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
   const convHelper = useRef(false);
+  const {termContext,setTermContext} = useContext(TermsContext)
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
   const [activeConversationObj, setActiveConversationObj] = useState({
@@ -62,19 +67,35 @@ function Messages() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+      if(user) {
+        if(termContext) {
+         setUser(user);
+        } else {
+          (async () => {
+            let doesUser = await doesUserExist(user.uid);
+            if(doesUser) {
+              setTermContext(true)
+            } else {
+              navigate("/terms")
+            }
+          })(); 
+        }
       } else {
         navigate("/")
       }
-    });
-
-  },)
+     });
+    }, /*removed dependency array*/)
 
   useEffect(() => {
     if(conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
-      setActiveConversation(conversationArr.activeConversations[0].id);
-      setActiveConversationObj(conversationArr.activeConversations[0]);
+      try {
+        setActiveConversation(conversationArr?.activeConversations[0].id);
+        setActiveConversationObj(conversationArr?.activeConversations[0]);
+      } catch (e) {
+        console.log(e);
+      }
+      // setActiveConversation(conversationArr.activeConversations[0].id);
+      // setActiveConversationObj(conversationArr.activeConversations[0]);
     }
   }, [conversationArr]);
 
@@ -182,7 +203,8 @@ function Messages() {
             <ChatContainer className="aggieTheme">
               <ConversationHeader>
                 {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
-                <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                {(activeConversation !== "") ? <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                    : <ConversationHeader.Content userName="Match with others on the Marketplace to begin chatting!"/>}
                 <ConversationHeader.Actions>
                   {(activeConversation !== "") ?
                   <div as="VideoCallButton" title="Show info" onClick={() => {
@@ -191,16 +213,17 @@ function Messages() {
                     <Button onClick={handleOpen} variant="outlined">End trade</Button>
                   </div>
                   : false}
-
                 </ConversationHeader.Actions>
                 </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
+
                     <Message
                         key={"mesageArr." + index}
                         className={(user) ? ((m.sender === user.uid) ? "outg" : "inc") : "outg"}
                         model={{
-                          message: m.text,
+
+                          message: validator.escape(m.text),
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>
@@ -214,16 +237,17 @@ function Messages() {
               }
 
               </MessageList>
-              
 
+              {(activeConversation !== "") ?
+                  <MessageInput
+                      disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false}
+                      attachButton={false}
+                      placeholder="Type message here"
+                      onSend={(e, v, t) => {
+                        sendTxt(t)
+                      }}/>
+                  : false}
 
-              <MessageInput 
-                disabled={(activeConversationObj?.status === "closed" || activeConversation === "") ? true : false} 
-                attachButton={false}
-                placeholder="Type message here" 
-                onSend={(e, v, t) => {
-                sendTxt(t)
-              }}/>
 
 
             </ChatContainer>

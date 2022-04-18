@@ -1,3 +1,4 @@
+import '../../../config.js';
 import { signInWithPopup } from "../../../firebase-config"
 // import { GoogleAuthProvider } from "../firebase-config"
 import Button from '@mui/material/Button';
@@ -16,8 +17,6 @@ function SignInButton(props) {
 			// const token = credential.accessToken;
 			// The signed-in user info.
 			const user = result.user;
-	
-			console.log("Logged in as " + user.displayName);
 			// ...
 		}).catch((error) => {
 			// Handle Errors here.

@@ -17,6 +17,7 @@ import {getTradeId} from '../global/dbFunctions/CrudFunctions';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import './editTrades.css';
+import './myListings.css';
 import { useResponsive } from '@farfetch/react-context-responsive';
 
 const getSize = (lT) => {
@@ -113,7 +114,7 @@ export default function MyListings({userId}) {
                 
                 return (
                   <TableRow key={"my-listings-" + index}>
-                    <TableCell>
+                    <TableCell className={"tableCell " + getSize(lessThan)}>
                     
                     <span style= {{verticalAlign:"middle", fontSize : "1.1em", color : "#525252" }}> Drop </span>
                     
@@ -129,7 +130,7 @@ export default function MyListings({userId}) {
                           icon={<AddCircleOutlineIcon/>} 
                           label={[row.addClass.course  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + row.addClass.section}</span>]}/>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell className={"tableCell " + getSize(lessThan)} align="right">
                       <IconButton>
                         <EditIcon onClick={() => handleOpen({class: row.addClass.course, section: row.addClass.section, crn: row.addClass.crn},
                            {class:row.dropClass.course, section:row.dropClass.section, crn:row.dropClass.crn})}/>

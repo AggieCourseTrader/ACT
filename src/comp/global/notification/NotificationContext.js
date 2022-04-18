@@ -1,3 +1,4 @@
+import '../../../config.js';
 import { createContext } from "react";
 
 const NotificationContext = createContext();

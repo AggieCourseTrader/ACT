@@ -1,3 +1,4 @@
+import '../../config.js';
 import React from 'react';
 
 function PageNotFound() {

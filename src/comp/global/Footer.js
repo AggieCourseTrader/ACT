@@ -22,20 +22,15 @@ function Footer(props) {
   return (
      <div className={classes.footer}>
       <Typography variant="body2" color='secondary' align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
-          Aggie Course Trader
-        </Link>{' '}
+        {'Copyright © Aggie Course Trader'} {' '}
         {new Date().getFullYear()}
         {'.'}
       </Typography>
-      <br></br>
       <Typography variant="body2" color='secondary' align="center" {...props}>
-        View our full{' '} 
         <Link color="inherit" href={Privacy} target="_blank">
           Privacy Policy
         </Link>{' '}
-        and
+        {'–'}
         {' '}<Link color="inherit" href={ToS} target="_blank">
           Terms of Service 
         </Link>

@@ -75,7 +75,7 @@ useEffect(() => {
           sx={{background: "#500000"}}>
             <div className={classes.wrapper}>
                 <div className={classes.container}>
-                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" gutterBottom='true'>Sign In with your tamu account</Typography>  
+                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" gutterBottom="true">Sign In with your tamu account</Typography>  
                 </div>
                 <div className={classes.container}>
                   <SignInButton auth={auth} provider={provider} />

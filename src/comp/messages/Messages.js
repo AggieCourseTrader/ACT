@@ -1,5 +1,5 @@
 import '../../config.js';
-import {React, useEffect, useRef, useState, useContext} from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import {IMessage, IConversation} from './MessagesHelper';
 import Navbar from '../global/navbar/Navbar';
 import Chip from '@mui/material/Chip';
@@ -31,21 +31,21 @@ import {onAuthStateChanged, auth} from '../../firebase-config'
 
 import {useNavigate} from 'react-router-dom'
 import TermsContext from '../global/authentication/TermsContext'
+import Footer from "../global/Footer";
 
 var validator = require('validator');
-
 
 
 function Messages() {
   const [messageArr, setMessageArr] = useState([]);
   const convHelper = useRef(false);
-  const {termContext,setTermContext} = useContext(TermsContext)
+  const {termContext, setTermContext} = useContext(TermsContext)
   const [conversationArr, setConversationArr] = useState([]);
   const [activeConversation, setActiveConversation] = useState('');
   const [activeConversationObj, setActiveConversationObj] = useState({
-      fname : "",
-      lname : "",
-      photoURL : "",
+    fname: "",
+    lname: "",
+    photoURL: "",
   });
 
 
@@ -67,27 +67,27 @@ function Messages() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if(user) {
-        if(termContext) {
-         setUser(user);
+      if (user) {
+        if (termContext) {
+          setUser(user);
         } else {
           (async () => {
             let doesUser = await doesUserExist(user.uid);
-            if(doesUser) {
+            if (doesUser) {
               setTermContext(true)
             } else {
               navigate("/terms")
             }
-          })(); 
+          })();
         }
       } else {
         navigate("/")
       }
-     });
-    }, /*removed dependency array*/)
+    });
+  }, /*removed dependency array*/)
 
   useEffect(() => {
-    if(conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
+    if (conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
       try {
         setActiveConversation(conversationArr?.activeConversations[0].id);
         setActiveConversationObj(conversationArr?.activeConversations[0]);
@@ -105,13 +105,12 @@ function Messages() {
       if (convHelper.current) {
         convHelper.current.clearUnread(activeConversation);
       }
-    }
-    else {
+    } else {
       setMessageArr([]);
-      if(messageHelper.current)
+      if (messageHelper.current)
         messageHelper.current.unSub();
 
-      
+
     }
 
     return () => {
@@ -135,7 +134,7 @@ function Messages() {
       }
     }
 
-  
+
   }, [user]);
 
   const sendTxt = (text) => {
@@ -152,11 +151,13 @@ function Messages() {
 
 
   return (
-      <>
+      <React.Fragment>
 
-      <CloseConversation user={user} setActiveConversation={setActiveConversation} setActiveConversationObj={setActiveConversationObj} open={open} handleClose={handleClose} activeConversation={activeConversation} activeConversationObj={activeConversationObj}/>
+        <CloseConversation user={user} setActiveConversation={setActiveConversation}
+                           setActiveConversationObj={setActiveConversationObj} open={open} handleClose={handleClose}
+                           activeConversation={activeConversation} activeConversationObj={activeConversationObj}/>
         <Navbar name="Messages" auth={auth} user={user}/>
-        <div style={{flexGrow: 1, height: "90vh"}}>
+        <div style={{flexGrow: 1, height: "80vh"}}>
           <MainContainer responsive>
 
             <Sidebar position="left" scrollable={false}>
@@ -166,7 +167,10 @@ function Messages() {
                 {(conversationArr) ? ("activeConversations" in conversationArr) ?
                     conversationArr.activeConversations.map((d, index) =>
                         <Conversation
-                            onClick={() => {setActiveConversation(d.id); setActiveConversationObj(d)}}
+                            onClick={() => {
+                              setActiveConversation(d.id);
+                              setActiveConversationObj(d)
+                            }}
                             key={"conversation." + d.id + index}
                             unreadCnt={(activeConversation !== d.id) ? (conversationArr.unreadMessages) ? (d.id in conversationArr.unreadMessages) ? conversationArr.unreadMessages[d.id] : 0 : 0 : 0}
                             active={(activeConversation === d.id)}
@@ -175,26 +179,39 @@ function Messages() {
                           <Conversation.Content>
                             {d.fname + " " + d.lname}
                             <span>
-                            <Chip color="success" size="small" 
-                                key={"chipadd." + d.id + index}
-                                style={{verticalAlign:"middle", marginTop: "0.5em", backgroundColor:'#5b6236'}}
-                                icon={<AddCircleOutlineIcon/>} 
-                                label={[d.addClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.addClassSection}</span>]}/>
-                            <Chip size="small" color="primary" 
-                                key={"chipdrop." + d.id + index}
-                                icon={<RemoveCircleOutlineIcon/>} 
-                                style={{verticalAlign:"middle", marginTop: "0.1em", marginBottom: "0.1em", backgroundColor:'#661429'}}
-                                label={[d.dropClass  , <span style={{color: "#e0e0e0", verticalAlign: "middle", fontSize:"0.9em"}}>{"—" + d.dropClassSection}</span>]}/>
+                            <Chip color="success" size="small"
+                                  key={"chipadd." + d.id + index}
+                                  style={{verticalAlign: "middle", marginTop: "0.5em", backgroundColor: '#5b6236'}}
+                                  icon={<AddCircleOutlineIcon/>}
+                                  label={[d.addClass, <span style={{
+                                    color: "#e0e0e0",
+                                    verticalAlign: "middle",
+                                    fontSize: "0.9em"
+                                  }}>{"—" + d.addClassSection}</span>]}/>
+                            <Chip size="small" color="primary"
+                                  key={"chipdrop." + d.id + index}
+                                  icon={<RemoveCircleOutlineIcon/>}
+                                  style={{
+                                    verticalAlign: "middle",
+                                    marginTop: "0.1em",
+                                    marginBottom: "0.1em",
+                                    backgroundColor: '#661429'
+                                  }}
+                                  label={[d.dropClass, <span style={{
+                                    color: "#e0e0e0",
+                                    verticalAlign: "middle",
+                                    fontSize: "0.9em"
+                                  }}>{"—" + d.dropClassSection}</span>]}/>
                             </span>
                           </Conversation.Content>
                           <Conversation.Operations>
-                            <InfoButton onClick={() => handleOpen()} />
+                            <InfoButton onClick={() => handleOpen()}/>
                           </Conversation.Operations>
                           {/* <Conversation.Operations onClick={() => {
                             handleOpen();
                           }} 
                           // /> */}
-                         </Conversation>
+                        </Conversation>
                     )
                     : false : false}
               </ConversationList>
@@ -202,19 +219,21 @@ function Messages() {
             </Sidebar>
             <ChatContainer className="aggieTheme">
               <ConversationHeader>
-                {(activeConversationObj.photoURL !== "") ? <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
-                {(activeConversation !== "") ? <ConversationHeader.Content userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
+                {(activeConversationObj.photoURL !== "") ?
+                    <Avatar src={activeConversationObj.photoURL} name="Avatar"/> : false}
+                {(activeConversation !== "") ? <ConversationHeader.Content
+                        userName={activeConversationObj.fname + " " + activeConversationObj.lname}/>
                     : <ConversationHeader.Content userName="Match with others on the Marketplace to begin chatting!"/>}
                 <ConversationHeader.Actions>
                   {(activeConversation !== "") ?
-                  <div as="VideoCallButton" title="Show info" onClick={() => {
-                    handleOpen();
-                  }}>
-                    <Button onClick={handleOpen} variant="outlined">End trade</Button>
-                  </div>
-                  : false}
+                      <div as="VideoCallButton" title="Show info" onClick={() => {
+                        handleOpen();
+                      }}>
+                        <Button onClick={handleOpen} variant="outlined">End trade</Button>
+                      </div>
+                      : false}
                 </ConversationHeader.Actions>
-                </ConversationHeader>
+              </ConversationHeader>
               <MessageList style={{}}>
                 {messageArr.map((m, index) =>
 
@@ -223,18 +242,19 @@ function Messages() {
                         className={(user) ? ((m.sender === user.uid) ? "outg" : "inc") : "outg"}
                         model={{
 
-                          message: validator.escape(m.text),
+                          // message: validator.escape(m.text),
+                          message: m.text,
                           direction: (user) ? ((m.sender === user.uid) ? "outgoing" : "incoming") : "outgoing",
                           position: determinePosition(m, index, messageArr)
                         }}/>
                 )}
-              
-              {
-                (activeConversationObj?.status === "closed") ?
-                  displayClosedConv()
-                :
-                  false
-              }
+
+                {
+                  (activeConversationObj?.status === "closed") ?
+                      displayClosedConv()
+                      :
+                      false
+                }
 
               </MessageList>
 
@@ -249,13 +269,12 @@ function Messages() {
                   : false}
 
 
-
             </ChatContainer>
           </MainContainer>
 
         </div>
-
-      </>
+        <Footer/>
+      </React.Fragment>
   )
 }
 
@@ -289,7 +308,7 @@ function determinePosition(m, index, messageArr) {
 
 function displayClosedConv() {
   return (
-    <MessageSeparator className="closed" content="This conversation was closed" as="h2" />
+      <MessageSeparator className="closed" content="This conversation was closed" as="h2"/>
   )
 }
 

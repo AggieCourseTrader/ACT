@@ -1,0 +1,99 @@
+rules_version = '2';
+
+function isFromTamu(request) {
+	return request.auth != null &&
+  			request.auth.token.email.matches(".*@tamu.edu")
+}
+
+function ownsChat(userId, docKey) {
+	return docKey.matches(".*" + userId + ".*")
+}
+
+function ownsMessageStatusDoc(request, document) {
+	return request.auth != null &&
+  			document == request.auth.uid
+}
+
+function arrayUnionOnly(before, after) {
+	return (before == null && after is list && after.size() == 1) || 
+  			(after is list && before is list && 
+        after.size() - before.size() <= 1)         
+}
+
+function getChangedElement(before, after) {
+	return (before != null) ? after.removeAll(before) : after
+}
+
+function notNull(resource) {
+	return (resource == null) ? [] : resource
+}
+function getNestedElement(arr, d1, d2) {
+	return (arr == null) ? null : ((arr[d1] == null) ? null : arr[d1][d2])
+}
+function validEnemyActiveConversation(data, resource) {
+	return data.keys().hasAll(['activeConversations']) &&
+  			data.activeConversations is list && 
+        arrayUnionOnly(getNestedElement(resource, "data", "activeConversations"), data.activeConversations) &&
+        (getChangedElement(getNestedElement(resource, "data", "activeConversations"), data.activeConversations).size() == 0 ||
+  			(getChangedElement(getNestedElement(resource, "data", "activeConversations"), data.activeConversations)[0] is map &&
+        getChangedElement(getNestedElement(resource, "data", "activeConversations"), data.activeConversations)[0].keys().hasOnly([
+        	'addClass', 'addClassSection', 'creatorId', 'dropClass', 'dropClassSection',
+      		'fname', 'id', 'lname', 'photoURL', 'status', 'tradeId']))
+        )
+}       
+
+function getMapDiff(data, resource) {
+	return data.diff((resource != null) ? resource : {}).affectedKeys()
+}
+
+function validEnemyUnreadMessages(data, request, resource) {
+	return isFromTamu(request) &&
+  			data.keys().hasAll(['unreadMessages']) &&
+  			data.unreadMessages is map &&
+        getMapDiff(data.unreadMessages, {}).hasOnly([request.auth.uid]) &&
+        // getMapDiff(data.unreadMessages, getNestedElement(resource, "data", "unreadMessages")).hasOnly([request.auth.uid]) &&
+				data.unreadMessages[request.auth.uid] is number
+}
+
+function validEnemyMessageStatusData(request) {
+	return request.resource.data.keys().hasOnly(['activeConversations', 'unreadMessages']) &&
+  			(!request.resource.data.keys().hasAll(['activeConversations']) || validEnemyActiveConversation(request.resource.data, resource)) &&
+        (!request.resource.data.keys().hasAll(['unreadMessages']) || validEnemyUnreadMessages(request.resource.data, request, resource))
+
+}
+
+service cloud.firestore {
+
+  match /databases/{database}/documents {
+  	match /users/{user} {
+  	allow read, write: if isFromTamu(request)
+  	}
+    match /messages/{document}/list/{subdoc} {
+      allow read, write: if
+          request.time < timestamp.date(2022, 4, 25) &&
+          isFromTamu(request) &&
+          ownsChat(request.auth.uid, document)
+    }
+		match /courses/{document} {
+    	allow read: if isFromTamu(request)
+      allow write: if(false)
+    }
+    match /majors/{document} {
+			allow read: if isFromTamu(request)
+      allow write: if(true)
+    }
+    match /messageStatus/{document} {
+    	allow create, update: if ownsMessageStatusDoc(request, document) ||
+                  	validEnemyMessageStatusData(request) ||
+                    debug(getNestedElement(null, "data", "unreadMessages"))
+      allow delete, read: if ownsMessageStatusDoc(request, document)
+    }
+    match /reviews/{document} {
+    	allow read, write: if(true)
+    }
+    match /trades/{document} {
+    	allow read, write : if(true)
+    }
+
+  }
+}

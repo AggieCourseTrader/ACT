@@ -42,7 +42,6 @@ describe('Login', () => {
       expect(error).toMatch(FirebaseError);
     }
     
-
   });
 });
 

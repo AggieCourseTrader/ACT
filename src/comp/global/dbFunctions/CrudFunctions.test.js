@@ -18,7 +18,7 @@ import {
 let testEnv = await initializeTestEnvironment({
     projectId: "test-project"
 });
-*.
+*/
 
 
 test.skip ('Create trade, get trade, and delete trade', async () => {

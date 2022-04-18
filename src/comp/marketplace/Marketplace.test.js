@@ -66,16 +66,19 @@ return {
 });
 */
 
-describe('Marketplace', () => {
-  test('renders Marketplace component', async () => {
 
-    render(<BrowserRouter><Marketplace /></BrowserRouter>)
+test('renders Marketplace component', async () => {
 
-    //expect(screen.getByText('Search:')).toBeInTheDocument();
+  render(<BrowserRouter><Marketplace /></BrowserRouter>)
 
-    //expect(screen.getByText('Sign In with your tamu account')).toBeInTheDocument();
-  });
+  
+  //expect(await screen.findByText(/Search a course/)).toBeInTheDocument();
+  //expect(await screen.findByText(/Select a section/)).toBeInTheDocument();
+  //expect(await screen.findByText(/CREATE TRADE/)).toBeInTheDocument();
+  
+
 });
+
 
 
 

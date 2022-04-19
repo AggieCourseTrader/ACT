@@ -75,7 +75,7 @@ useEffect(() => {
           sx={{background: "#500000"}}>
             <div className={classes.wrapper}>
                 <div className={classes.container}>
-                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" gutterBottom="true">Sign In with your tamu account</Typography>  
+                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" marginBottom="3%">Sign In with your TAMU account</Typography>
                 </div>
                 <div className={classes.container}>
                   <SignInButton auth={auth} provider={provider} />
@@ -86,23 +86,23 @@ useEffect(() => {
            sx={{background: "#f6f6f6"}}>
               <div className={classes.wrapper}>
                 <div className={classes.containerBlock}>
-                  <Typography component="h1" variant="h2" align="left" gutterBottom='true'>Welcome to Aggie Course Trader</Typography>  
-                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
+                  <Typography component="h1" variant="h2" align="left" marginBottom="3%">Welcome to Aggie Course Trader</Typography>
+                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" gutterBottom='true'>An app built for TAMU students</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Meet the tailored built app for TAMU students to help ease the stress of courese registration</Typography> 
+                      <Typography variant="h6" align="left" marginBottom='2%'>An app built for TAMU students</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Meet the tailored built app for TAMU students to help ease the stress of courese registration</Typography>
                     </CardContent>
                   </Card>
-                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
+                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" gutterBottom='true'>Search and add trades to the marketplace</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>In 3 easy steps a user can search for trades on our markeplace hub and add / edit there own on the my trades page</Typography> 
+                      <Typography variant="h6" align="left" marginBottom='2%'>Search and add trades to the marketplace</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>In 3 easy steps a user can search for trades on our markeplace hub and add / edit there own on the my trades page</Typography>
                     </CardContent>
                   </Card>
-                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
+                  <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" gutterBottom='true'>Built in Chat System</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>Once you find a match you can use our built in private and secure chat system to work out the trade details with the other studnet</Typography> 
+                      <Typography variant="h6" align="left" marginBottom='2%'>Built in Chat System</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match you can use our built in private and secure chat system to work out the trade details with the other studnet</Typography>
                     </CardContent>
                   </Card>
                 </div>

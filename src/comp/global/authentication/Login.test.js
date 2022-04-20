@@ -27,7 +27,6 @@ jest.mock('react-router-dom', () => {
 */
 
 
-
 describe('Login', () => {
   test('renders Login component', async () => {
 
@@ -41,7 +40,6 @@ describe('Login', () => {
     } catch (error) {
       expect(error).toMatch(FirebaseError);
     }
-    
   });
 });
 

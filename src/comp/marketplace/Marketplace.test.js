@@ -71,11 +71,13 @@ test('renders Marketplace component', async () => {
 
   render(<BrowserRouter><Marketplace /></BrowserRouter>)
 
-  
-  //expect(await screen.findByText(/Search a course/)).toBeInTheDocument();
-  //expect(await screen.findByText(/Select a section/)).toBeInTheDocument();
-  //expect(await screen.findByText(/CREATE TRADE/)).toBeInTheDocument();
-  
+  // Checks for text fields/dropdowns  
+  expect(await screen.findAllByText(/Search a course/)).toHaveLength(4);
+  expect(await screen.findAllByText(/Select a section/)).toHaveLength(4);
+
+  // Checks for buttons
+  expect(await screen.findAllByText(/Trade/)).toHaveLength(5);
+  expect(await screen.findByText(/Create Trade/)).toBeInTheDocument();
 
 });
 

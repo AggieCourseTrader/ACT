@@ -1,5 +1,8 @@
+import '../../config.js';
 import { getFirestore, collection, getDocs, onSnapshot, query, doc, arrayUnion, serverTimestamp, where,  increment, setDoc, updateDoc, addDoc, orderBy} from 'firebase/firestore';
 import { app } from '../../firebase-config'
+
+var validator = require('validator');
 
 //! Data: 
 //* Unread Messages count : 'users' table --> groups collection 
@@ -99,12 +102,16 @@ export class IMessage {
 
 
     async sendMessage(text) {
+
+        var escaped_text = validator.escape(text);
+
         // Add message to database
         await addDoc(this.messageLoc, {
-            text : text, 
+            text : escaped_text,
             timestamp : serverTimestamp(),
             sender : this.oAuthId
         });
+        console.log(escaped_text);
 
         // // Notify other user of text
         // const exists = await getDoc(this.receiverDoc);

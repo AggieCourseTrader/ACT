@@ -1,11 +1,8 @@
-import React from 'react';
+import '../../../config.js';
+import React, { useState, useEffect, useContext} from 'react';
 import SignInButton from './SignInButton';
 import { auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";
-import { addUser } from '../dbFunctions/CrudFunctions' 
-
-
-// import { useNavigate } from "react-router-dom";
-
+import { doesUserExist } from '../dbFunctions/CrudFunctions' 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from "react-router-dom";
@@ -13,6 +10,7 @@ import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import TermsContext from './TermsContext'
 
 const useStyles = makeStyles({
   wrapper: {
@@ -42,29 +40,27 @@ const useStyles = makeStyles({
 });
 
 function Login() {
- // ALl javascript, functiosn, or fetchs to db will be up here
-
-// const [loggedIn, setLogIn] = useState(false);
- //const [user, setUser] = useState(false);
+ 
+ const {termContext,setTermContext} = useContext(TermsContext)
  const navigate = useNavigate();
  const classes = useStyles();
 
- onAuthStateChanged(auth, (user) => {
-   if (user) {
-     // User is signed in, see docs for a list of available properties
-     // https://firebase.google.com/docs/reference/js/firebase.User
-     // const uid = user.uid;
-    // setLogIn(true);
-     //setUser(user);
-     addUser (user.email, user.displayName, user.uid, user.photoURL);
-     navigate("/marketplace")
-   } else {
-     // User is signed out
-     //setLogIn(false);
-     //setUser(false);
-     console.log("fail");
-   }
- });
+useEffect(() => {
+  onAuthStateChanged(auth, (user) => {
+    if(user) {
+      (async () => {
+        let doesUser = await doesUserExist(user.uid);
+        console.log(doesUser)
+        if(doesUser) {
+          setTermContext(true)
+          navigate("/marketplace")
+        } else {
+          navigate("/terms")
+        }
+      })(); 
+    }
+  });
+},)
 
  var provider = new GoogleAuthProvider();
   // provider.setCustomParameters({
@@ -100,7 +96,7 @@ function Login() {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" gutterBottom='true'>Search and add trades to the marketplace</Typography> 
-                      <Typography variant="body1" align="left" gutterBottom='true'>In 3 easy steps a user can search for trades on our markeplace place hub and add / edit there own on the my trades page</Typography> 
+                      <Typography variant="body1" align="left" gutterBottom='true'>In 3 easy steps a user can search for trades on our markeplace hub and add / edit there own on the my trades page</Typography> 
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '3%' }}>

@@ -1,0 +1,74 @@
+.outBox {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    justify-content: space-between;
+}
+
+.outBox.xs {
+    height: 100vh;
+}
+
+.inBox {
+    margin-top:2em;
+}
+
+.inBox.xs {
+    margin-top:0;
+}
+
+.tableBox {
+    margin-left: 15%;
+    margin-right: 15%;
+    height: 18.75em;
+}
+
+
+.tableBox.md, .tableBox.sm, .tableBox.xs {
+    margin-left: 0%;
+    margin-right: 0%;
+}
+
+.tableBox.xs {
+    height: 16.75em;
+}
+
+.csb {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap; 
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.csb.xs {
+    flex-direction: column;
+    margin-top:0.5em;
+}
+
+.createTradeBox {
+    text-align: center;
+    position: relative;
+}
+
+.createTradeButton.loading {
+    opacity: 0.5;
+}
+
+.buttonProgress {
+    color: maroon;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+}
+
+/* .xs .MuiDataGrid-columnHeaders {
+    min-height: 30px !important;
+    max-height: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+} */

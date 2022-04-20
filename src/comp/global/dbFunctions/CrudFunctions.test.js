@@ -7,18 +7,7 @@ import { createTrade, deleteTrade, getTrade, getUserInfo,
 
 import { deleteDoc, doc } from 'firebase/firestore'
 
-/*
-import {
-    assertFails,
-    assertSucceeds,
-    initializeTestEnvironment,
-    RulesTestEnvironment,
-  } from "@firebase/rules-unit-testing"
 
-let testEnv = await initializeTestEnvironment({
-    projectId: "test-project"
-});
-*/
 
 
 test ('Create trade, get trade, and delete trade', async () => {

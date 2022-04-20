@@ -78,7 +78,6 @@ test('renders Marketplace component', async () => {
   // Checks for buttons
   expect(await screen.findAllByText(/Trade/)).toHaveLength(5);
   expect(await screen.findByText(/Create Trade/)).toBeInTheDocument();
-  
 
 });
 

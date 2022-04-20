@@ -13,21 +13,6 @@ import { BrowserRouter, Routes, Route, useNavigate} from "react-router-dom";
 
 
 
-
-/*
-const mockedNavigate = jest.fn();
-
-jest.mock('react-router-dom', () => {
-  const actualNav = jest.requireActual('react-router-dom');
-  return {
-    ...actualNav,
-    useNavigate: () => mockedNavigate,
-  };
-});
-*/
-
-
-
 describe('Login', () => {
   test('renders Login component', async () => {
 
@@ -41,7 +26,7 @@ describe('Login', () => {
     } catch (error) {
       expect(error).toMatch(FirebaseError);
     }
-    
+
   });
 });
 

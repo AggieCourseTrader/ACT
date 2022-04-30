@@ -75,7 +75,7 @@ useEffect(() => {
           sx={{background: "#500000"}}>
             <div className={classes.wrapper}>
                 <div className={classes.container}>
-                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" marginBottom="3%">Sign In with your TAMU account</Typography>
+                  <Typography component="h1" variant="h6" color="#FFFFFF" align="center" marginBottom="3%">Sign in with your TAMU account</Typography>
                 </div>
                 <div className={classes.container}>
                   <SignInButton auth={auth} provider={provider} />
@@ -90,19 +90,19 @@ useEffect(() => {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" marginBottom='2%'>An app built for TAMU students</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>Meet the tailored built app for TAMU students to help ease the stress of courese registration</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Meet the app tailored for TAMU students to help ease the stress of course registration.</Typography>
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" marginBottom='2%'>Search and add trades to the marketplace</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>In 3 easy steps a user can search for trades on our markeplace hub and add / edit there own on the my trades page</Typography>
+                      <Typography variant="h6" align="left" marginBottom='2%'>Search for and add trades to the marketplace</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>In 3 easy steps, you can search for trades on the markeplace hub, create your own trades, and match with other peoples trades.</Typography>
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" marginBottom='2%'>Built in Chat System</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match you can use our built in private and secure chat system to work out the trade details with the other studnet</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match, you can use the built-in private and secure chat system to work out trade details with other students.</Typography>
                     </CardContent>
                   </Card>
                 </div>

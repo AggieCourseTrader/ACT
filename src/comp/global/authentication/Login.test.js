@@ -18,7 +18,7 @@ describe('Login', () => {
 
     render(<BrowserRouter><Login /></BrowserRouter>);
 
-    expect(await screen.findByText(/Sign In with your TAMU account/)).toBeInTheDocument();
+    expect(await screen.findByText(/Sign in with your TAMU account/)).toBeInTheDocument();
       
     // Testing that with no information entered, the login button fails
     try {

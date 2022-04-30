@@ -101,7 +101,7 @@ useEffect(() => {
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
-                      <Typography variant="h6" align="left" marginBottom='2%'>Built in Chat System</Typography>
+                      <Typography variant="h6" align="left" marginBottom='2%'>Built in chat system</Typography>
                       <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match, you can use the built-in private and secure chat system to work out trade details with other students.</Typography>
                     </CardContent>
                   </Card>

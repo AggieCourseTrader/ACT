@@ -96,7 +96,7 @@ useEffect(() => {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" marginBottom='2%'>Search for and add trades to the marketplace</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>In 3 easy steps, you can search for trades on the markeplace hub, create your own trades, and match with other peoples trades.</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>In 3 easy steps, you can search for trades on the markeplace hub, create your own trades, and match with other people's trades.</Typography>
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>

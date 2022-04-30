@@ -90,7 +90,7 @@ useEffect(() => {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" marginBottom='2%'>An app built for TAMU students</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>Meet the app tailored for TAMU students to help ease the stress of course registration</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Meet the app tailored for TAMU students to help ease the stress of course registration.</Typography>
                     </CardContent>
                   </Card>
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
@@ -102,7 +102,7 @@ useEffect(() => {
                   <Card sx={{ minWidth: 400, marginRight: '10%', marginBottom: '2%' }}>
                     <CardContent>
                       <Typography variant="h6" align="left" marginBottom='2%'>Built in Chat System</Typography>
-                      <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match, you can use the built-in private and secure chat system to work out trade details with other students</Typography>
+                      <Typography variant="body1" align="left" marginBottom='2%'>Once you find a match, you can use the built-in private and secure chat system to work out trade details with other students.</Typography>
                     </CardContent>
                   </Card>
                 </div>

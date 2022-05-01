@@ -41,3 +41,7 @@ This prepares the application for deployment.
 ### Deployment
 
 This project was deployed on [Google Firebase](https://console.firebase.google.com/). The entirety of this project relies on our Firestore database and will not be usable without your own instance.
+
+### Contribution Guide
+
+Contributing to this project directly is discouraged, as it is the result of a semester's worth of development by five individuals for our Senior Capstone Design project. However, if you would like to expand on our work (and possibly even commercialize the application), we encourage you to fork the repository and continue working from there. Course data is not available within the repository. Reach out directly to Texas A&M for a copy of this data.

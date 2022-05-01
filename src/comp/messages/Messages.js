@@ -7,7 +7,9 @@ import Button from '@mui/material/Button';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseConversation from "./CloseConversation";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {doesUserExist} from "../global/dbFunctions/CrudFunctions"
+import { useLocation } from 'react-router-dom'
 import {
   MainContainer,
   ChatContainer,
@@ -64,6 +66,7 @@ function Messages() {
   console.log(styles);
   let navigate = useNavigate();
 
+  const location = useLocation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -89,8 +92,15 @@ function Messages() {
   useEffect(() => {
     if (conversationArr !== [] && activeConversation === '' && conversationArr?.activeConversations) {
       try {
-        setActiveConversation(conversationArr?.activeConversations[0].id);
-        setActiveConversationObj(conversationArr?.activeConversations[0]);
+
+        if(location?.state?.tradeId) {
+          setActiveConversation(conversationArr.activeConversations.find(conversation => conversation.tradeId === location?.state?.tradeId).id);
+          setActiveConversationObj(conversationArr.activeConversations.find(conversation => conversation.tradeId === location?.state?.tradeId));
+        }
+        else {
+          setActiveConversation(conversationArr?.activeConversations[0].id);
+          setActiveConversationObj(conversationArr?.activeConversations[0]);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -205,7 +215,7 @@ function Messages() {
                             </span>
                           </Conversation.Content>
                           <Conversation.Operations>
-                            <InfoButton onClick={() => handleOpen()}/>
+                            <div as="InfoButton" onClick={handleOpen}><HighlightOffIcon fontSize="small"/> </div>
                           </Conversation.Operations>
                           {/* <Conversation.Operations onClick={() => {
                             handleOpen();

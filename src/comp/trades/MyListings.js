@@ -65,7 +65,7 @@ export default function MyListings({userId}) {
   React.useEffect(() => {
     const f = async () => {
       if(listener.current === null && userId !== undefined) {
-        listener.current = onSnapshot(query(collection(db, "trades"), where("creatorID", "==", userId)), async (snap) => {
+        listener.current = onSnapshot(query(collection(db, "trades"), where("creatorID", "==", userId), where("matchID", "==", -1)), async (snap) => {
   
           let arr = [];
           snap.forEach((doc) => {

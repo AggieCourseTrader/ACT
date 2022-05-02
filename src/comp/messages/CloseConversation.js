@@ -64,6 +64,10 @@ const submitReview = async (user, setActiveConversation, setActiveConversationOb
 
     data.status = "closed";
 
+    await updateDoc(doc(db, "messageStatus", activeConversation), {
+      "activeConversations": arrayRemove(data)
+    });
+    
     await setDoc(doc(db, "messageStatus", activeConversation), {
       "activeConversations" : arrayUnion(data)
     }, {merge : true});

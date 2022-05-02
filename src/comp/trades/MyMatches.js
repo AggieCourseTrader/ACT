@@ -179,7 +179,11 @@ export default function MyMatches({user}) {
                             // }
 
                         });
-                      }}component={Link} to="/messages">
+                      }}component={Link}
+                      to = {"/messages"}
+                      state = {{'tradeId' : row.trade_id}}
+                      >
+
                         <ChatIcon/>
                       </IconButton>
                     </TableCell>

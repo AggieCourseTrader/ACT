@@ -14,7 +14,7 @@ import { getTrade, createTrade, getReviews, getUserInfo, doesUserExist} from "..
 import Chip from '@mui/material/Chip';
 import TermsContext from '../global/authentication/TermsContext'
 import CircularProgress from '@mui/material/CircularProgress';
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Modal from '@mui/material/Modal';
 import ReviewModal from '../marketplace/ReviewModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';

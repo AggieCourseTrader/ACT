@@ -271,10 +271,16 @@ function CourseSearchBox({ db, selectionCallBack, defaultData}) {
 				disabled={(courseSelected === undefined) ? true : false}
 				value={sectionDefValue || null}
 				size={(lessThan.sm) ? 'small' : 'medium'}
-				autoHighlight
+				
 				onChange={(e, v) => {
-					selectionCallBack(v)
+					if(v === null) {
+						selectionCallBack("sectionCleared");
+					}
+					else {
+						selectionCallBack(v);
+					}
 					setSectionDefValue(v);
+					
 				}}
 				openOnFocus
 				sx = {(lessThan.sm) ? ssbMobile : ssb}

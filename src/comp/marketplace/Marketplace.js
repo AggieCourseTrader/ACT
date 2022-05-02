@@ -281,12 +281,18 @@ function Marketplace() {
    const selectionAddCallback = (data) => {
     if(data !== undefined){
       if(typeof data === 'object') {
-        if(data.name){
+        if(data?.name){
           setAddClass({...addClass, class:data.name})
-        } else if (data.crn) {
+        } else if (data?.crn) {
           setAddClass({...addClass, section:data.section, crn:data.crn})
-        } 
-      } else {
+        }   
+        else if (data === 'sectionCleared') {
+          setAddClass({...addClass, section:'', crn : ''})
+        }
+      } else if(data === 'sectionCleared'){
+        setAddClass({...addClass, section:'', crn: ''})
+      }
+      else {
         setAddClass({class:'', section: '', crn: '' })
       }
     }
@@ -303,6 +309,12 @@ function Marketplace() {
         } else if (data.crn) {
           setDropClass({...dropClass, section:data.section, crn:data.crn})
         } 
+        else if (data === 'sectionCleared') {
+          setDropClass({...dropClass, section:'', crn : ''})
+        }
+      }
+      else if(data === 'sectionCleared'){
+        setDropClass({...dropClass, section:'', crn: ''})
       }
       else {
         setDropClass({class:'', section: '', crn: '' })
@@ -310,7 +322,6 @@ function Marketplace() {
     } else {
       setDropClass({class:'', section: '', crn: '' })
     }
-
   }
 
   return (

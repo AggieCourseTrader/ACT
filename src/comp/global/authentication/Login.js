@@ -63,9 +63,9 @@ useEffect(() => {
 },)
 
  var provider = new GoogleAuthProvider();
-  // provider.setCustomParameters({
-  //   'hd': 'tamu.edu'
-  // });
+  provider.setCustomParameters({
+    'hd': 'tamu.edu'
+  });
 
   return (
     <div>

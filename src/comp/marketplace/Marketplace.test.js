@@ -48,7 +48,7 @@ test('renders Marketplace component', async () => {
   expect(await screen.findAllByText(/Select a section/)).toHaveLength(4);
 
   // Checks for buttons
-  expect(await screen.findAllByText(/Trade/)).toHaveLength(5);
+  expect(await screen.findAllByText(/Trade/)).toHaveLength(6);
   expect(await screen.findByText(/Create Trade/)).toBeInTheDocument();
 
 

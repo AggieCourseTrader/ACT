@@ -5,6 +5,7 @@ import Login from './Login';
 import SignInButton from './SignInButton';
 import { renderEditInputCell } from '@mui/x-data-grid';
 
+
 import { addUser } from '../dbFunctions/CrudFunctions';
 import { deleteDoc, doc, getFirestore } from 'firebase/firestore';
 import { app, auth, onAuthStateChanged, GoogleAuthProvider } from "../../../firebase-config";
@@ -18,7 +19,9 @@ describe('Login', () => {
 
     render(<BrowserRouter><Login /></BrowserRouter>);
 
+
     expect(await screen.findByText(/Sign in with your TAMU account/)).toBeInTheDocument();
+
       
     // Testing that with no information entered, the login button fails
     try {

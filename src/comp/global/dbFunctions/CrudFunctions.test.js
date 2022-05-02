@@ -5,6 +5,7 @@
 import { createTrade, deleteTrade, getTrade, getUserInfo,
         updateTrade, updateTradeMatch, addUser, db } from "./CrudFunctions"
 
+
 import { deleteDoc, doc } from 'firebase/firestore'
 
 

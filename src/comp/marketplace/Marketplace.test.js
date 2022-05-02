@@ -33,43 +33,15 @@ return {
 
 
 
-/*
-const mockedUsedNavigate = jest.fn();
-const mockedUseHref = jest.fn();
-
-
-jest.mock('react-router-dom', () => ({
-   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-}));
 
 
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useHref(): () => mockedUseHref,
- }));
- */
-
-
-/*
-const mockedUseHref = jest.fn();
-
-jest.mock('react-router-dom', () => {
-const actualHref = jest.requireActual('react-router-dom');
-return {
-    ...actualHref,
-    useHref: () => ({
-        Href: mockedUseHref,
-    }),
-};
-});
-*/
 
 
 test('renders Marketplace component', async () => {
 
   render(<BrowserRouter><Marketplace /></BrowserRouter>)
+
 
   // Checks for text fields/dropdowns  
   expect(await screen.findAllByText(/Search a course/)).toHaveLength(4);
@@ -78,6 +50,7 @@ test('renders Marketplace component', async () => {
   // Checks for buttons
   expect(await screen.findAllByText(/Trade/)).toHaveLength(5);
   expect(await screen.findByText(/Create Trade/)).toBeInTheDocument();
+
 
 });
 

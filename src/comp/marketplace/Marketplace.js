@@ -319,6 +319,7 @@ function Marketplace() {
       <Navbar name = "Trade Marketplace" auth={auth} user={user}/>
       <Box className={"outBox " + getSize(lessThan)}>
         <Box className={"inBox " + getSize(lessThan)}>
+
           <Box className={"csb " + getSize(lessThan)}>
             <Typography sx = {{
               fontSize : "4vmin",
@@ -346,7 +347,11 @@ function Marketplace() {
             <CourseSearchBox db={db} selectionCallBack={selectionDropCallback} />
           </Box>
         </Box>
+
         <Box className={"tableBox " + getSize(lessThan)}>   
+        <Box className="centeredTitle">
+          Trade Marketplace
+        </Box>
           {/* table section */}
           <DataGrid
             rows={rows.concat(myTradeRows)}

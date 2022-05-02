@@ -90,7 +90,7 @@ function ResponsiveAppBar(props) {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/marketplace">
-                <Typography textAlign="center" color="primary">Marketplace</Typography>
+                <Typography textAlign="center" color="primary" sx={{textDecoration: 'underline'}}>Marketplace</Typography>
               </MenuItem>
 
               <MenuItem onClick={handleCloseNavMenu} sx={{color: 'primary'}} component = {Link} to = "/my-trades">
@@ -114,10 +114,11 @@ function ResponsiveAppBar(props) {
             <Button 
               key='Marketplace' 
               onClick={handleCloseNavMenu} 
-              sx={{ my: 2, color: 'primary', display: 'block' }}
+              sx={{ my: 2, color: 'primary', display: 'block'}}
               component = {Link} to = "/marketplace"
             >
-                Marketplace
+              Marketplace
+                
             </Button>
             <Button 
               key='My Trades' 
